@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/02/21 16:09:04 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/02/21 16:51:29 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ char	**ft_split(char const *s, char c);
 
 int	main(void)
 {
-	char	**output;
+	char	**commands;
 	char	*rl;
 	int		i;
 	int		pid;
@@ -38,10 +38,11 @@ int	main(void)
 			free(rl);
 			return (0);
 		}
-		
-		while (output[i])
-			printf("%s\n", output[i++]);
+		parsing();
+		// ft_split, tree of params, building structures,
 
+		execution();
+		// forks, pipes, execve, builtins
 	}
 	return (0);
 }
