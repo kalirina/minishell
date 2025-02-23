@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/02/21 18:43:52 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/02/23 22:29:02 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,7 @@ typedef struct  s_separator
 } t_separator;
 
 // builtins
-int	cd_cmd(char *path);
+int		cd_cmd(char *path);
+char	*join_components(char **components);
 
 #endif
