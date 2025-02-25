@@ -6,31 +6,20 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 17:13:27 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/02/21 18:58:44 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/02/25 18:29:54 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-//Returns a pointer to the first instance of a char (to_peek)
-//inside the given string (sp), if nothing is found it returns sp
-char	*peek(char  *sp, char *es, char *to_peek)     // IS THIS THE SAME AS STRSRCH?????
+
+bool	is_space(char *str)
 {
-	int 	i;
-	char	*start;
-	
-	start = sp;
-	while (*sp && sp < es)
-	{
-		i = 0;
-		while (to_peek[i])
-		{
-			if (*sp == to_peek[i++])
-				return (sp);	
-		}
-		sp++;
-	}
-	return (start);
+	if (!str)
+		return (NULL);
+	if (*str == ' ' || (*str >= 9 && *str <= 13))
+		return (true);
+	return (false);
 }
 
 char	*skip_spaces(char *str)
@@ -41,3 +30,4 @@ char	*skip_spaces(char *str)
 		str++;
 	return (str);
 }
+

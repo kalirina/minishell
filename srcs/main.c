@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/02/21 17:40:10 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/02/25 17:11:50 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	main(void)
 			rl_line_buffer = NULL;
 			return (0);
 		}
-		start_parse(rl_line_buffer);
+		parsing(rl_line_buffer);
 		// ft_split, tree of params, building structures, 
 		
 		execution();

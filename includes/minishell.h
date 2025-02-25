@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/02/21 19:12:37 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/02/25 18:10:21 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,35 +20,32 @@
 #include <readline/history.h>
 #include <stdbool.h>
 
-typedef struct  s_command
-{
-	char	*program_name;
-	char	**args;
-	char	**opts;
-} t_command;
+# define MAX_TOKEN 100
 
-typedef struct	s_file
+# define INVALID 0
+# define CMD 1
+# define OPT 2
+# define ARG 3
+# define PIPE 4			// |
+# define INPUT 5		// <
+# define OUTPUT 6		// >
+# define APPEND 7		// >>
+# define REDIRECT 8		// <<
+# define SEPARATOR 9	// ;
+ 
+typedef struct	s_token
 {
-	char	*path;
-	char	*permissions;
-} t_file;
+	char		*str;
+	int			index;
+	int			type;
+	t_token		*prev;
+	t_token		*next;
+} t_token;
 
-typedef enum    s_type
+
+typedef struct	s_minish
 {
-	NULL,
-	PIPE,			//		|
-	IN,				//		<
-	OUT,			//		>
-	HEREDOC,		//		<<
-	OUT_APPEND		//		>>
-} t_type;
-
-typedef struct  s_separator
-{
-	t_type		type;
-	t_command	*left;
-	t_command	*right;
-} t_separator;
-
+	
+} t_minish;
 
 #endif
