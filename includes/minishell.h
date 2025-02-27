@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/02/25 18:10:21 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/02/27 17:54:00 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,29 +23,32 @@
 # define MAX_TOKEN 100
 
 # define INVALID 0
-# define CMD 1
-# define OPT 2
-# define ARG 3
-# define PIPE 4			// |
-# define INPUT 5		// <
-# define OUTPUT 6		// >
-# define APPEND 7		// >>
-# define REDIRECT 8		// <<
-# define SEPARATOR 9	// ;
+# define WORD 1			// commands and args
+# define VAR 2		// $var
+# define PIPE 3			// |
+# define INPUT 4		// <
+# define OUTPUT 5		// >
+# define APPEND 6		// >>
+# define HEREDOC 7		// <<
+# define SEMICOLON 8	// ;
  
 typedef struct	s_token
 {
-	char		*str;
-	int			index;
+	char		*value;
 	int			type;
-	t_token		*prev;
-	t_token		*next;
 } t_token;
 
-
-typedef struct	s_minish
+typedef struct	s_node
 {
-	
-} t_minish;
+	int				type;
+	char			*value;
+	struct t_node	*left;
+	struct t_node	*right;
+} t_node;
+
+typedef struct	s_shell
+{
+	t_token		*tokens;
+} t_shell;
 
 #endif

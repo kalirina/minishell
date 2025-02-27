@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/02/25 17:11:50 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/02/27 15:55:29 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,13 @@ char	**ft_split(char const *s, char c);
 
 int	main(void)
 {
+	t_shell	shell;
 	char	**output;
 	char	*rl;
 	int i;
 
+	//check if argc > 1 ?
+	//init_shell(&shell);
 	while (1)
 	{
 		i = 0;
@@ -32,11 +35,9 @@ int	main(void)
 			rl_line_buffer = NULL;
 			return (0);
 		}
-		parsing(rl_line_buffer);
-		// ft_split, tree of params, building structures, 
+		process_input(shell, rl_line_buffer); 
 		
 		execution();
-		// forks, pipes, execve, builtins
 	}
 	return (0);
 }
