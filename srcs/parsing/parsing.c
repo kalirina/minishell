@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/02/27 18:23:20 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/04 13:59:52 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,17 @@ int	find_type(char *pt)
 {
 	if (!pt)
 		return (0);
-	if (*pt == '$')
-		return (2);
-	if (ft_strcmp(pt, "|") == 0)
+	if (ft_strncmp(pt, "|", 2) == 0)
 		return (3);
-	if (ft_strcmp(pt, "<") == 0)
+	if (ft_strncmp(pt, "<", 2) == 0)
 		return (4);
-	if (ft_strcmp(pt, ">") == 0)
+	if (ft_strncmp(pt, ">", 2) == 0)
 		return (5);
-	if (ft_strcmp(pt, ">>") == 0)
+	if (ft_strncmp(pt, ">>", 2) == 0)
 		return (6);
-	if (ft_strcmp(pt, "<<") == 0)
+	if (ft_strncmp(pt, "<<", 2) == 0)
 		return (7);
-	if (ft_strcmp(pt, ";") == 0)
+	if (ft_strncmp(pt, ";", 1) == 0)
 		return (8);
 	else
 		return (1);
@@ -51,7 +49,7 @@ t_token *next_token(char **ps)
 	while (**ps && !is_space(**ps)) 
 		(*ps)++;
 	t->value = ft_strndup(start, *ps - start);
-	t->type = find_type(t->str);
+	t->type = find_type(t->value);
 	if (**ps)
 	{
 		**ps = '\0';
@@ -67,7 +65,7 @@ void	process_input(t_shell *shell, char *ps)
 	i = 0;
 	while (1)
 	{
-		shell.tokens[i] = next_token(&ps);
+		shell->tokens[i] = next_token(&ps);
 		if (shell->tokens[i] == NULL)
 			break;
 		i++;
@@ -90,7 +88,7 @@ t_node	*new_node(int type, char *value)
 
 t_node	*parse_cmd(t_shell *shell, int i)
 {
-	t_token	*t = shell->tonkens[i];
+	t_token	*t = shell->tokens[i];
 	if (t->type != WORD)
 		return (NULL);
 	return (new_node(WORD, t->value));

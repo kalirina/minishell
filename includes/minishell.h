@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/02/27 17:54:00 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/04 13:58:04 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdbool.h>
+#include "../libft/libft.h"
 
 # define MAX_TOKEN 100
 
@@ -49,6 +50,16 @@ typedef struct	s_node
 typedef struct	s_shell
 {
 	t_token		*tokens;
+	t_node		*ast;
 } t_shell;
+
+void	process_input(t_shell *shell, char *ps);
+
+
+//parsing utils
+char	*skip_spaces(char *str);
+bool	is_space(char str);
+char	*ft_strndup(const char *s, size_t n);
+
 
 #endif

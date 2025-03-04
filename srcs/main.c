@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/02/27 15:55:29 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/04 13:50:06 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,6 @@ char	**ft_split(char const *s, char c);
 int	main(void)
 {
 	t_shell	shell;
-	char	**output;
-	char	*rl;
 	int i;
 
 	//check if argc > 1 ?
@@ -29,15 +27,10 @@ int	main(void)
 		readline("minishell>");
 		add_history(rl_line_buffer);
 		if (strcmp(rl_line_buffer, "exit") == 0)
-		{
-			rl_clear_history();
-			free(rl_line_buffer);
-			rl_line_buffer = NULL;
 			return (0);
-		}
-		process_input(shell, rl_line_buffer); 
+		process_input(&shell, rl_line_buffer); 
 		
-		execution();
+		//execution();
 	}
 	return (0);
 }
