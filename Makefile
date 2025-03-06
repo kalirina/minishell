@@ -2,9 +2,9 @@ NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 SRCS = srcs/main.c\
-		srcs/parsing/parsing.c\
-		srcs/utils/paress_utils.c		
-
+		srcs/lexing/lexing.c\
+		srcs/utils/parse_utils.c\
+		srcs/utils/list_utils.c
 OBJS = $(SRCS:.c=.o)
 LIBFT = libft/libft.a
 INCLUDES = -I include -I libft
