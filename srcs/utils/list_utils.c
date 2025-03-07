@@ -6,24 +6,13 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 10:40:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/06 15:54:51 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/07 15:22:03 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-// t_token	*new_token(char	*str)
-// {
-// 	t_token	*t;
-
-// 	t = (t_token *)malloc(sizeof(t_token));
-// 	if (!t)
-// 		return (NULL);
-// 	t->str = str;
-// 	t->next = NULL;
-// 	return (t);
-// }
-
+//	INDEXES ALL THE TOKENS FROM 0 TO N
 void	index_tokens(t_token *head)
 {
 	int	i;
@@ -38,21 +27,23 @@ void	index_tokens(t_token *head)
 	}
 }
 
-t_token	*add_token(t_token *head, t_token *new)
+//	ADDS A TOKEN AT THE END OF THE LIST
+t_token	*add_token(t_token **head, t_token *new)
 {
 	t_token	*tmp;
 
-	if (!head)
+	if (!head || !(*head))
 		return (new);
-	tmp = head;
+	tmp = *head;
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new;
 	new->next = NULL;
-	index_tokens(head);	
-	return (head);
+	index_tokens(*head);	
+	return (*head);
 }
 
+//	REMOVES A NODE OF THE LIST GIVEN ITS INDEX
 void	remove_node(t_token *head, int index) 
 {
 	t_token	*temp;
@@ -76,4 +67,51 @@ void	remove_node(t_token *head, int index)
 		return;
 	prev->next = temp->next;
 	free(temp);
+}
+
+//	ADDS THE STRING AT THE END OF THE GIVEN TOKEN
+//	x = 0	with space				"hello"  + "world" = "hello world"
+//	x = 1	no space				        ""		  = "helloworld"
+void	addstr_token(t_token *t, char *to_add, int x)
+{
+	char	*new;
+	int		s1;
+	int		s2;
+	int		i;
+
+	if (!t)
+		return;
+	s1 = ft_strlen(t->str);
+	s2 = ft_strlen(to_add);
+	i = 0;
+	if (x == 0)
+	{
+		new = (char *)malloc(sizeof(char) * (s1+s2) + 2);
+		if (!new)
+			return;
+		while (i < s1)
+		{
+			new[i] = s1[i];
+			i++;
+		}
+		while(i < s1+s2)
+		{
+			new
+		}
+		new[i] = '\0';
+	}
+}
+
+//	FREES THE LIST OF TOKENS
+void	free_tokens(t_token *head)
+{
+	t_token	*tmp;
+	
+	while (head)
+	{
+		tmp = head;
+		head = head->next;
+		free(tmp->str);
+		free(tmp);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/06 15:52:50 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/07 16:49:01 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 #define MINISHELL_H
 
 #include <stdlib.h>
-#include <stdio.h>
 #include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
@@ -23,25 +22,27 @@
 
 # define MAX_TOKEN 100
 
-// # define INVALID 0
-// # define WORD 1			// commands and args
-// # define VAR 2		// $var
-// # define PIPE 3			// |
-// # define INPUT 4		// <
-// # define OUTPUT 5		// >
-// # define APPEND 6		// >>
-// # define HEREDOC 7		// <<
-// # define SEMICOLON 8	// ;
+# define INVALID 0
+# define WORD 1			// commands and args
+# define VAR 2			// $var
+# define PIPE 3			// |
+# define INPUT 4		// <
+# define OUTPUT 5		// >
+# define APPEND 6		// >>
+# define HEREDOC 7		// <<
+# define SEMICOLON 8	// ;
+# define S_QUOTE 9		// '
+# define D_QUOTE 10		// "
  
-typedef enum e_node
-{
-	WORD,
-	PIPE,			//|
-	OUT, 			//>
-	D_OUT,	 		//>>
-	IN,				//<
-	HEREDOC, 		//<<
-} t_node_type;
+// typedef enum e_node
+// {
+// 	WORD,
+// 	PIPE,			//|
+// 	OUT, 			//>
+// 	D_OUT,	 		//>>
+// 	IN,				//<
+// 	HEREDOC, 		//<<
+// } t_node_type;
 
 typedef struct	s_token
 {
@@ -52,15 +53,15 @@ typedef struct	s_token
 
 typedef struct	s_node
 {
-	t_node_type		type;
+	int				type;
 	char			*value;
-	struct t_node	*left;
-	struct t_node	*right;
+	struct s_node	*left;
+	struct s_node	*right;
 } t_node;
 
 typedef struct	s_shell
 {
-	t_token		**tokens;
+	t_token		*tokens;
 	t_node		*ast;
 } t_shell;
 
@@ -71,7 +72,7 @@ char	*skip_spaces(char *str);
 bool	is_space(char str);
 char	*ft_strndup(const char *s, size_t n);
 
-t_token	*add_token(t_token *head, t_token *new);
+t_token	*add_token(t_token **head, t_token *new);
 
 
 
