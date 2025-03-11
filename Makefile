@@ -4,7 +4,8 @@ CFLAGS = -Wall -Wextra -Werror
 SRCS = srcs/main.c\
 		srcs/lexing/lexing.c\
 		srcs/utils/parse_utils.c\
-		srcs/utils/list_utils.c
+		srcs/utils/list_utils.c\
+		srcs/parsing/parsing.c
 OBJS = $(SRCS:.c=.o)
 LIBFT = libft/libft.a
 INCLUDES = -I include -I libft

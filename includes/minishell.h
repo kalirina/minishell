@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/07 16:49:01 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/11 15:47:40 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,17 +22,16 @@
 
 # define MAX_TOKEN 100
 
-# define INVALID 0
-# define WORD 1			// commands and args
-# define VAR 2			// $var
+# define CMD 1			// commands and args
+//# define VAR 2			// $var
 # define PIPE 3			// |
 # define INPUT 4		// <
 # define OUTPUT 5		// >
 # define APPEND 6		// >>
 # define HEREDOC 7		// <<
-# define SEMICOLON 8	// ;
-# define S_QUOTE 9		// '
-# define D_QUOTE 10		// "
+//# define SEMICOLON 8	// ;
+//# define S_QUOTE 9		// '
+//# define D_QUOTE 10		// "
  
 // typedef enum e_node
 // {
@@ -54,7 +53,7 @@ typedef struct	s_token
 typedef struct	s_node
 {
 	int				type;
-	char			*value;
+	char			**args;
 	struct s_node	*left;
 	struct s_node	*right;
 } t_node;
@@ -66,6 +65,7 @@ typedef struct	s_shell
 } t_shell;
 
 void	lexer(t_shell *shell, char *line);
+void	parser(t_shell *shell);
 
 //parsing utils
 char	*skip_spaces(char *str);

@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/07 14:38:53 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/11 15:49:09 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	main(void)
 		if (strcmp(rl_line_buffer, "exit") == 0)
 			return (0);
 		lexer(shell, rl_line_buffer);
-		//parser(shell);
+		parser(shell);
 		//execution();
 		//free_all();
 	}
