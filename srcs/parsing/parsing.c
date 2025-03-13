@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/11 16:33:30 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/13 09:21:46 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,9 +61,9 @@ t_node	*parse_cmd(t_token **tokens)
 
 	tmp = *tokens;
 	count = 0;
-	while (tmp && !ft_strncmp(tmp->str, "|", 1) && !ft_strncmp(tmp->str, ">", 1)
-			&& !ft_strncmp(tmp->str, "<", 1) && !ft_strncmp(tmp->str, "<<", 2)
-			&& !ft_strncmp(tmp->str, ">>", 2))
+	while (tmp && ft_strncmp(tmp->str, "|", 1) != 0 && ft_strncmp(tmp->str, ">", 1) != 0
+			&& ft_strncmp(tmp->str, "<", 1) != 0 && ft_strncmp(tmp->str, "<<", 2) != 0
+			&& ft_strncmp(tmp->str, ">>", 2) != 0)
 	{
 		count++;
 		tmp = tmp->next;
@@ -87,7 +87,7 @@ t_node	*parse_pipe(t_token **tokens)
 {
 	t_node *left;
 	t_node *right;
-	
+
 	left = parse_cmd(tokens);
 	while (*tokens && ft_strncmp((*tokens)->str, "|", 1) == 0)
 	{
@@ -101,6 +101,7 @@ t_node	*parse_pipe(t_token **tokens)
 t_node	*parse_redirect(t_token **tokens)
 {
 	t_node	*left;
+	t_node	*redirect;
 	char	*operator;
 	char	**filename;
 
@@ -114,9 +115,10 @@ t_node	*parse_redirect(t_token **tokens)
 			return (left);
 		filename = malloc(2 * sizeof(char *));
 		filename[0] = (*tokens)->str;
-		filename[1] = NULL;		
+		filename[1] = NULL;
 		*tokens = (*tokens)->next;
-		left = new_redirect_node(operator, filename, left, NULL);
+		redirect = new_redirect_node(operator, filename, left, NULL);
+		left = redirect;
 	}
 	return (left);
 }

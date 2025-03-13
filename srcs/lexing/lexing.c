@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/11 15:46:55 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/13 09:01:49 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,7 @@ void	lexer(t_shell *shell, char *line)
 {
 	t_token	*t;
 	t_token *new;
-	int	i;
 
-	i = 0;
 	t = NULL;
 	new = next_token(&line);
 	while (new != NULL)
