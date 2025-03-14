@@ -6,23 +6,28 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:58:25 by irkalini          #+#    #+#             */
-/*   Updated: 2025/02/28 00:11:12 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/14 14:33:16 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 #include "../libft/libft.h"
 
+char	*cd_home(void)
+{
+	char	*buf;
+
+	buf = malloc(sizeof(char) * 1024);
+	buf = getenv("HOME");
+	return (buf);
+}
+
 int	cd_cmd(char *path)
 {
 	struct stat	buffer;
-	//char		*normal_path;
 
 	if (path == NULL)
-		return (0);
-	// normal_path = normalise_path(path);
-	// if (normal_path == NULL)
-	// 	return (0);
+		path = cd_home();
 	if (stat(path, &buffer) != 0)
 		return (0);
 	if(!S_ISDIR(buffer.st_mode))
@@ -32,72 +37,6 @@ int	cd_cmd(char *path)
 	if (chdir(path) == -1)
 		printf("Error chdir");
 }
-
-// int main()
-// {
-// 	cd_cmd("/home/irkalini/minishell");
-// 	return (0);
-// }
-
-// char	*normalise_path(const char *path)
-// {
-// 	char	**components;
-// 	char	*normal_path;
-// 	int		i;
-
-// 	components = ft_split(path, '/');
-// 	i = 0;
-// 	while (components[i])
-// 	{
-// 		if (ft_strncmp(components[i], ".", ft_strlen(components[i])) == 0)
-// 			free(components[i]);
-// 		else if (ft_strncmp(components[i], "..", ft_strlen(components[i])) == 0)
-// 		{
-// 			if (i > 0)
-// 			{
-// 				free(components[i - 1]);
-// 				free(components[i]);
-// 			}
-// 		}
-// 		i++;
-// 	}
-// 	components[i] = NULL;
-// 	// i = 0;
-// 	// while (components[i])
-// 	// 	printf("%s\n", components[i++]);
-// 	normal_path = join_components(components);
-// 	//free_components(components);
-// 	//return (normal_path);
-// }
-
-// char	*join_components(char **components)
-// {
-// 	char	*path;
-// 	int		i;
-// 	int		j;
-// 	int		len;
-
-// 	i = 0;
-// 	len = 0;
-// 	while (components[i])
-// 	{
-// 		j = 0;
-// 		while (components[i][j])
-// 		{
-// 			len++;
-// 			j++;
-// 		}
-// 		i++;
-// 	}
-// 	printf("%d", len);
-// 	// path = malloc(sizeof(char) * (len + 2));
-// 	// i = 0;
-// 	// path[0] = "/"
-// 	// while (components[i])
-// 	// {
-
-// 	// }
-// }
 
 
 

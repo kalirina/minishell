@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/11 15:47:40 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/14 13:46:46 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdbool.h>
-#include "../libft/libft.h"
+#include "../srcs/libft/libft.h"
 
 # define MAX_TOKEN 100
 
@@ -32,7 +32,7 @@
 //# define SEMICOLON 8	// ;
 //# define S_QUOTE 9		// '
 //# define D_QUOTE 10		// "
- 
+
 // typedef enum e_node
 // {
 // 	WORD,
@@ -74,6 +74,9 @@ char	*ft_strndup(const char *s, size_t n);
 
 t_token	*add_token(t_token **head, t_token *new);
 
-
+//builtins
+void	echo_cmd(char **args);
+void	env_cmd(void);
+void	pwd_cmd(void);
 
 #endif
