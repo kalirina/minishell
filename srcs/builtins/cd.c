@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:58:25 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/14 14:33:16 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/15 16:21:46 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,16 @@ char	*cd_home(void)
 
 int	cd_cmd(char *path)
 {
-	struct stat	buffer;
+	//struct stat	buffer;
 
 	if (path == NULL)
 		path = cd_home();
-	if (stat(path, &buffer) != 0)
-		return (0);
-	if(!S_ISDIR(buffer.st_mode))
-		return (0);
-	if (access(path, X_OK) == -1)
+	// if (stat(path, &buffer) != 0)
+	// 	return (0);
+	// if(!S_ISDIR(buffer.st_mode))
+	// 	return (0);
+	if ((access(path, F_OK)== -1) || (access(path, X_OK) == -1) ||
+		(access(path, R_OK) == -1) || (access(path, W_OK) == -1))
 		return (0);
 	if (chdir(path) == -1)
 		printf("Error chdir");
