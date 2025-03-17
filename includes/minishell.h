@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/14 13:46:46 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/16 15:04:25 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdbool.h>
+#include <sys/stat.h>
 #include "../srcs/libft/libft.h"
 
 # define MAX_TOKEN 100
@@ -78,5 +79,6 @@ t_token	*add_token(t_token **head, t_token *new);
 void	echo_cmd(char **args);
 void	env_cmd(void);
 void	pwd_cmd(void);
+int		cd_cmd(char *path);
 
 #endif

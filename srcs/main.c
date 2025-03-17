@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/15 16:17:05 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/16 16:04:39 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,14 +30,16 @@ int	main(void)
 		//parser(shell);
 		//execution();
 		args = ft_split(rl_line_buffer, ' '); //while parsing is not finished
-		if (ft_strncmp(args[0], "echo", 4) == 0)
+		if (ft_strncmp(args[0], "echo", 4) == 0 && ft_strlen(args[0]) == 4)
 			echo_cmd(args);
-		else if (ft_strncmp(args[0],"env", 3) == 0)
+		else if (ft_strncmp(args[0],"env", 3) == 0 && ft_strlen(args[0]) == 3)
 			env_cmd();
-		else if (ft_strncmp(args[0],"pwd", 3) == 0)
+		else if (ft_strncmp(args[0],"pwd", 3) == 0 && ft_strlen(args[0]) == 3)
 			pwd_cmd();
-		else if (ft_strncmp(args[0],"cd", 2) == 0)
+		else if (ft_strncmp(args[0],"cd", 2) == 0 && ft_strlen(args[0]) == 2)
 			cd_cmd(args[1]);
+		// else
+		// 	execve();
 		//free_all();
 	}
 	return (0);
