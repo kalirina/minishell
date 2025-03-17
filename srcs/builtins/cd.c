@@ -6,12 +6,11 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:58:25 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/16 15:04:39 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/17 18:20:02 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-#include "../libft/libft.h"
 
 char	*cd_home(void)
 {

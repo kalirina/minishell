@@ -6,20 +6,20 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/16 15:04:25 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/17 19:13:18 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
+#include "../srcs/libft/libft.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdbool.h>
 #include <sys/stat.h>
-#include "../srcs/libft/libft.h"
 
 # define MAX_TOKEN 100
 
