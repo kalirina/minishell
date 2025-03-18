@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 22:55:41 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/14 12:20:23 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/18 10:40:41 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,4 +26,5 @@ void	pwd_cmd(void)
 	}
 	printf("%s\n", buf);
 	free(buf);
+	printf("My function\n");
 }

@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 18:17:24 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/17 19:44:41 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/18 10:40:49 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,9 +58,5 @@ void	unset_cmd(char **args)
 		}
 		i++;
 	}
-}
-
-void main(int argc, char **argv)
-{
-	unset_cmd(argv);
+	printf("My function\n");
 }

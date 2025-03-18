@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/17 19:13:18 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/18 12:53:49 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 #include <readline/history.h>
 #include <stdbool.h>
 #include <sys/stat.h>
+#include <sys/types.h>
+#include <sys/wait.h>
 
 # define MAX_TOKEN 100
 
@@ -63,6 +65,7 @@ typedef struct	s_shell
 {
 	t_token		*tokens;
 	t_node		*ast;
+	char		**my_environ;
 } t_shell;
 
 void	lexer(t_shell *shell, char *line);
@@ -75,9 +78,11 @@ char	*ft_strndup(const char *s, size_t n);
 
 t_token	*add_token(t_token **head, t_token *new);
 
+void	init_environ(t_shell *shell);
+void	sync_my_environ(t_shell *shell);
 //builtins
 void	echo_cmd(char **args);
-void	env_cmd(void);
+void	env_cmd(t_shell *shell);
 void	pwd_cmd(void);
 int		cd_cmd(char *path);
 

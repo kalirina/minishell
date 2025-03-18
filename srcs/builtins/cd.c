@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:58:25 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/17 18:20:02 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/18 10:41:29 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,5 @@ int	cd_cmd(char *path)
 		return (0);
 	if (chdir(path) == -1)
 		printf("Error chdir");
+	printf("My function\n");
 }
