@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 23:59:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/18 12:55:10 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/19 19:35:28 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,9 +38,12 @@ void	sync_my_environ(t_shell *shell)
 	int	i;
 
 	i = 0;
-	while (shell->my_environ[i])
-		free(shell->my_environ[i]);
-	free(shell->my_environ);
+	if (shell->my_environ)
+	{
+		while (shell->my_environ[i])
+			free(shell->my_environ[i++]);
+		free(shell->my_environ);
+	}
 	i = 0;
 	while (environ[i])
 		i++;

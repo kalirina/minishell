@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/18 12:53:49 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/19 23:06:00 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,10 +80,12 @@ t_token	*add_token(t_token **head, t_token *new);
 
 void	init_environ(t_shell *shell);
 void	sync_my_environ(t_shell *shell);
+void	execute(t_shell *shell, char **args);
 //builtins
 void	echo_cmd(char **args);
 void	env_cmd(t_shell *shell);
 void	pwd_cmd(void);
-int		cd_cmd(char *path);
+void	cd_cmd(char **args);
+void	export_cmd(t_shell *shell,char **args);
 
 #endif
