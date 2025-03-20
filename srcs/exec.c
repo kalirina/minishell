@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/20 10:08:28 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/20 12:51:24 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,25 +42,39 @@ void	exec_builtin(t_shell *shell,char **args)
 
 char	*get_ex_path(char *cmd)
 {
+	char	*path_env;
 	char	*path;
-	char	*copy;
 	char	**tmp;
 	int		i;
 
-	path = malloc(sizeof(char) * 1024);
-	if (!path)
+	i = 0;
+	path_env = getenv("PATH");
+	if (!path_env)
 		return (NULL);
-	path = getenv(cmd);
-	tmp = ft_split(path,':');
-	free(path);
-	copy = ft_strjoin("/", cmd);
+	tmp = ft_split(path_env, ':');
+	path = NULL;
 	while (tmp[i])
 	{
-		path = ft_strjoin(tmp[i], copy);
-		if ((access(path, F_OK)== -1) || (access(path, X_OK) == -1))
-			i++;
-		else
+		path = ft_strjoin(tmp[i], "/");
+		path = ft_strjoin(path, cmd);
+		if (access(path, F_OK | X_OK) == 0)
+		{
+			i = 0;
+			while (tmp[i])
+			{
+				free(tmp[i]);
+				i++;
+			}
 			return (path);
+		}
+		free(path);
+		i++;
+	}
+	i = 0;
+	while (tmp[i])
+	{
+		free(tmp[i]);
+		i++;
 	}
 	return (NULL);
 }
@@ -71,23 +85,39 @@ void	exec_cmd_ex(t_shell *shell, char **args)
 	int		pid;
 	int		status;
 
-	//if user provides abs or rel path no need to search
-	path = get_ex_path(args[0]);
-	if (!path)
-		ft_printf("no such command");
-	pid = fork();
-	if (pid == 0) //if child
+	if (ft_strchr(args[0], '/'))
 	{
-		printf("caca");
-		if (execve(args[0], args, shell->my_environ) == -1)
-			exit(EXIT_FAILURE);
+		path = ft_strdup(args[0]);
+		if (access(path, F_OK | X_OK) == -1)
+		{
+			free(path);
+			printf("no such file or dir\n");
+			return ;
+		}
+	}
+	else
+	{
+		path = get_ex_path(args[0]);
+		if (!path)
+		{
+			printf("no such command\n");
+			return ;
+		}
+	}
+	pid = fork();
+	if (pid == 0)
+	{
+		execve(path, args, shell->my_environ);
+		printf("execve fail");
+		free(path);
+		exit(EXIT_FAILURE);
 	}
 	else
 	{
 		waitpid(pid,&status, 0);
-		// if (ft_strncmp(args[0], "export", 6) == 0 && ft_strlen(args[0]) == 6)
-		// 	sync_my_environ(shell);
+		free(path);
 	}
+
 }
 
 void	execute(t_shell *shell, char **args)
