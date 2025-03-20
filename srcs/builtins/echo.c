@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 12:20:42 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/18 11:31:33 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/20 09:32:09 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,14 @@ void echo_cmd(char **args)
 		return ;
 	}
 	i = 1;
-	if (ft_strncmp(args[i],"-n",2) == 0)
+	if (ft_strncmp(args[i],"-n",2) == 0 && ft_strlen(args[i]) == 2)
 		i++;
 	while (args[i])
 	{
 		if (args[i][0] == '$')
-			printf("%s\n",echo_env_var(args[i]));
+			printf("%s",echo_env_var(args[i]));
 		else
-			("%s ", args[i]);
+			printf("%s ", args[i]);
 		i++;
 	}
 	if ((ft_strncmp(args[1],"-n",2) != 0))

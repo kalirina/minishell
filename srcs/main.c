@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/19 23:04:56 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/20 09:19:42 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	main(void)
 		add_history(rl_line_buffer);
 		//lexer(shell, rl_line_buffer);
 		//parser(shell);
-		args = ft_split(rl_line_buffer, ' '); //TO REPLACE WITH PARSING
+		args = ft_split(rl_line_buffer, ' '); //TO REPLACE WITH PARSER
 		execute(shell,args);
 		//free_all();
 	}
