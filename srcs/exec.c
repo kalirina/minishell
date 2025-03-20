@@ -6,23 +6,11 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/20 12:51:24 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/20 16:02:10 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-int	is_builtin(char **args)
-{
-	if ((ft_strncmp(args[0], "echo", 4) == 0 && ft_strlen(args[0]) == 4) ||
-		(ft_strncmp(args[0],"env", 3) == 0 && ft_strlen(args[0]) == 3) ||
-		(ft_strncmp(args[0],"pwd", 3) == 0 && ft_strlen(args[0]) == 3) ||
-		(ft_strncmp(args[0],"cd", 2) == 0 && ft_strlen(args[0]) == 2) ||
-		(ft_strncmp(args[0],"export", 6) == 0 && ft_strlen(args[0]) == 6) ||
-		(ft_strncmp(args[0],"exit", 4) == 0 && ft_strlen(args[0]) == 4))
-		return (1);
-	return (0);
-}
 
 void	exec_builtin(t_shell *shell,char **args)
 {
@@ -59,24 +47,40 @@ char	*get_ex_path(char *cmd)
 		path = ft_strjoin(path, cmd);
 		if (access(path, F_OK | X_OK) == 0)
 		{
-			i = 0;
-			while (tmp[i])
-			{
-				free(tmp[i]);
-				i++;
-			}
+			free_split(tmp);
 			return (path);
 		}
 		free(path);
 		i++;
 	}
-	i = 0;
-	while (tmp[i])
-	{
-		free(tmp[i]);
-		i++;
-	}
+	free_split(tmp);
 	return (NULL);
+}
+
+char	*get_path(char *cmd)
+{
+	char	*path;
+
+	if (ft_strchr(cmd, '/'))
+	{
+		path = ft_strdup(cmd);
+		if (access(path, F_OK | X_OK) == -1)
+		{
+			free(path);
+			printf("no such file or dir\n");
+			return (NULL);
+		}
+	}
+	else
+	{
+		path = get_ex_path(cmd);
+		if (!path)
+		{
+			printf("no such command\n");
+			return (NULL);
+		}
+	}
+	return (path);
 }
 
 void	exec_cmd_ex(t_shell *shell, char **args)
@@ -85,25 +89,7 @@ void	exec_cmd_ex(t_shell *shell, char **args)
 	int		pid;
 	int		status;
 
-	if (ft_strchr(args[0], '/'))
-	{
-		path = ft_strdup(args[0]);
-		if (access(path, F_OK | X_OK) == -1)
-		{
-			free(path);
-			printf("no such file or dir\n");
-			return ;
-		}
-	}
-	else
-	{
-		path = get_ex_path(args[0]);
-		if (!path)
-		{
-			printf("no such command\n");
-			return ;
-		}
-	}
+	path = get_path(args[0]);
 	pid = fork();
 	if (pid == 0)
 	{
