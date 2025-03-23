@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 20:44:35 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/20 17:55:57 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/23 21:11:11 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,23 @@
 
 void	export_no_arg(t_shell *shell)
 {
-	char	*var;
+	char	*line;
 	char	*val;
 	int		i;
 
 	i = 0;
 	while (shell->my_environ[i])
 	{
-		var = get_var(shell->my_environ[i]);
-		val = get_val(shell->my_environ);
+		line = ft_strdup(shell->my_environ[i]);
+		val = ft_strchr(line, '=');
 		if (val)
-			printf("declare -x %s=\"%s\"\n", var, val);
+		{
+			*val = '\0';
+			printf("declare -x %s=\"%s\"\n", line, val + 1);
+		}
 		else
-			printf("declare -x %s\n", var, val);
-		free(var);
-		free(val);
+			printf("declare -x %s\n", line);
+		free(line);
 		i++;
 	}
 }
@@ -36,30 +38,25 @@ void	export_no_arg(t_shell *shell)
 char	*get_var(char *arg)
 {
 	char	*var;
-	int		j;
+	char	*val;
 
-	j = 0;
-	while (arg[j] != '=')
-		j++;
-	var = malloc(sizeof(char) * (j + 1));
-	if (!var)
-		return ;
-	ft_strlcpy(var, arg, j + 1);
+	val = ft_strchr(arg, '=');
+	if (val)
+		var = ft_substr(arg, 0, val - arg);
+	else
+		var= ft_strdup(arg);
 	return (var);
 }
 
 char	*get_val(char *arg)
 {
 	char	*val;
-	int		j;
+	char	*sign;
 
-	j = 0;
-	k = 0;
-	while (arg[j] && arg[j] != '=')
-		j++;
-	if (!arg[j] || !arg[j + 1])
+	sign = ft_strchr(arg, '=');
+	if (!sign || !*(sign + 1))
 		return (NULL);
-	val = ft_strdup(arg + j + 1);
+	val = ft_strdup(sign + 1);
 	return (val);
 }
 
@@ -69,19 +66,24 @@ int	add_var(t_shell *shell, char *arg)
 	char	*val;
 	int		i;
 
+	i = 0;
 	var = get_var(arg);
 	val = get_val(arg);
-	if (!var || !val)
-	{
-		free(var);
-		free(val);
-		return ;
-	}
+	if (!var || !is_valid_var(var))
+		return (free(var), free(val), 0);
 	while (shell->my_environ[i])
 	{
-		if (ft_strncmp(shell->my_environ, var, ft_strlen(var)))
-			
+		if (ft_strncmp(shell->my_environ[i], var, ft_strlen(var)) == 0
+			&& (shell->my_environ[i][ft_strlen(var)] == '='
+			|| shell->my_environ[i][ft_strlen(var)] == '\0'))
+		{
+			update_env_var(shell, i, var, val);
+			return (free(var), free(val), 1);
+		}
+		i++;
 	}
+	add_new_env_var(shell, i, var, val);
+	return (free(var), free(val), 1);
 }
 
 void	export_cmd(t_shell *shell,char **args)
@@ -89,19 +91,21 @@ void	export_cmd(t_shell *shell,char **args)
 	int		i;
 
 	if (!args[1])
-	{
-		export_no_arg(shell);
-		return ;
-	}
+		return (export_no_arg(shell));
 	i = 1;
 	while (args[i])
 	{
 		if (!ft_strchr(args[i], '='))
-			i++;
+		{
+			if (!add_var(shell, args[i]))
+				printf("export: '%s': not a valid identifier\n", args[i]);
+		}
 		else
 		{
-			add_var(shell, args[i]);
-			i++;
+			if (!add_var(shell, args[i]))
+				printf("export: '%s': not a valid identifier\n", args[i]);
 		}
+		i++;
 	}
+	printf("My function\n");
 }

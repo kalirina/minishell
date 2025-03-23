@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/20 15:58:29 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/23 21:50:39 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,16 +79,23 @@ char	*ft_strndup(const char *s, size_t n);
 t_token	*add_token(t_token **head, t_token *new);
 
 void	init_environ(t_shell *shell);
-void	sync_my_environ(t_shell *shell);
+int		skip(char *line);
+int		slash(char *line);
 //execution
 void	execute(t_shell *shell, char **args);
 void	free_split(char **tab);
 int		is_builtin(char **args);
+int		is_valid_var(char *name);
 //builtins
 void	echo_cmd(char **args);
 void	env_cmd(t_shell *shell);
 void	pwd_cmd(void);
 void	cd_cmd(char **args);
 void	export_cmd(t_shell *shell,char **args);
+char	*get_var(char *arg);
+char	*get_val(char *arg);
+void	add_new_env_var(t_shell *shell, int i, char *var, char *val);
+void	update_env_var(t_shell *shell, int i, char *var, char *val);
+void	unset_cmd(t_shell *shell, char **args);
 
 #endif

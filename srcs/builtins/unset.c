@@ -6,55 +6,73 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 18:17:24 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/18 10:40:49 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/23 19:44:58 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	connect(char **environ, int j)
-{
-	while (environ[j])
-	{
-		environ[j] = environ[j+1];
-		j++;
-	}
-	environ[j] = NULL;
-}
-
 int	is_valid_var(char *name)
 {
-	if (*name == '\0' || !(*name == '_' || ft_isalpha(*name)))
+	int	i;
+
+	if (!name || !(*name == '_' || ft_isalpha(*name)))
 		return (0);
-	name++;
-	while (*name)
+	i = 1;
+	while (name[i])
 	{
-		if (!(*name == '_' || ft_isalpha(*name)))
+		if (!(ft_isalnum(name[i]) || name[i] == '_'))
 			return (0);
-		name++;
+		i++;
 	}
 	return (1);
 }
 
-void	unset_cmd(char **args)
+int	find_var_i(t_shell *shell, char *var)
 {
-	extern char	**environ;
-	int			i;
-	int			j;
+	int	i;
+	size_t	len;
 
+	i = 0;
+	len = ft_strlen(var);
+	while (shell->my_environ[i])
+	{
+		if (ft_strncmp(shell->my_environ[i], var, len) == 0 &&
+			(shell->my_environ[i][len] == '=' ||
+			shell->my_environ[i][len] == '\0'))
+			return (i);
+		i++;
+	}
+	return (-1);
+}
+
+void	remove_var(t_shell *shell, int i)
+{
+	free(shell->my_environ[i]);
+	while (shell->my_environ[i])
+	{
+		shell->my_environ[i] = shell->my_environ[i + 1];
+		i++;
+	}
+}
+
+void	unset_cmd(t_shell *shell, char **args)
+{
+	int	i;
+	int	index;
+
+	if (!args[1])
+		return ;
 	i = 1;
 	while (args[i])
 	{
 		if (!is_valid_var(args[i]))
-			printf("Error\n");
-		j = 0;
-		while (environ[j])
+			printf("unset: `%s': not a valid identifier\n", args[i]);
+		else
 		{
-			if (strncmp(environ[j], args[i], ft_strlen(args[i])) == 0 &&
-				environ[j][ft_strlen(args[i])] == '=')
-				connect(environ,j);
-			else
-				j++;
+			index = find_var_i(shell, args[i]);
+			if (index != -1)
+				remove_var(shell, index);
 		}
 		i++;
 	}
