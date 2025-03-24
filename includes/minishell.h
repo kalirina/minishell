@@ -22,6 +22,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <signal.h>
 
 # define MAX_TOKEN 100
 
@@ -50,22 +51,25 @@ typedef struct	s_token
 {
 	int				index;
 	char			*str;
+	struct s_token	*prev;
 	struct s_token	*next;
 } t_token;
 
-typedef struct	s_node
+typedef struct	s_command
 {
-	int				type;
-	char			**args;
-	struct s_node	*left;
-	struct s_node	*right;
-} t_node;
+	int					type;
+	char				**args;
+	char				*input;
+	char				*output;
+	bool				append;
+	struct s_command	*next;
+} t_command;
 
 typedef struct	s_shell
 {
-	t_token		*tokens;
-	t_node		*ast;
-	char		**my_environ;
+	t_token			*tokens;
+	t_command		*cmd;
+  char		    **my_environ;
 } t_shell;
 
 void	lexer(t_shell *shell, char *line);
@@ -77,6 +81,9 @@ bool	is_space(char str);
 char	*ft_strndup(const char *s, size_t n);
 
 t_token	*add_token(t_token **head, t_token *new);
+t_token	*get_last_token(t_token **head);
+
+void setup_signal_handlers();
 
 void	init_environ(t_shell *shell);
 int		skip(char *line);

@@ -15,23 +15,22 @@
 int	main(void)
 {
 	t_shell	*shell;
-	char	**args;
 
 	//check if argc > 1 ?
 	//init_shell(&shell);
-	shell = (t_shell *)malloc(sizeof(t_shell)); //to put in init_shell
-	init_environ(shell);
+	shell = (t_shell *)malloc(sizeof(t_shell));
+	setup_signal_handlers();
+  init_environ(shell);
 	while (1)
 	{
 		readline("minishell>");
 		add_history(rl_line_buffer);
 		if (!rl_line_buffer || skip(rl_line_buffer) || slash(rl_line_buffer))
 			continue ;
-		//lexer(shell, rl_line_buffer);
-		//parser(shell);
-		args = ft_split(rl_line_buffer, ' '); //TO REPLACE WITH PARSER
-		execute(shell,args);
-		free_split(args);
+    lexer(shell, rl_line_buffer);
+		parser(shell);
+		execute(shell, shell->cmd->args);
+		free_split(shell->cmd->args);
 	}
 	//free_all();
 	return (0);
