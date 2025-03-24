@@ -6,7 +6,16 @@ SRCS = srcs/main.c\
 		srcs/utils/parse_utils.c\
 		srcs/utils/list_utils.c\
 		srcs/parsing/parsing.c\
-		srcs/utils/signals.c
+		srcs/utils/signals.c\
+		srcs/builtins/cd.c\
+		srcs/builtins/echo.c\
+		srcs/builtins/env.c\
+		srcs/builtins/export.c\
+		srcs/builtins/pwd.c\
+		srcs/builtins/unset.c\
+		srcs/exec_utils.c\
+		srcs/exec.c\
+		srcs/utils.c
 
 OBJS = $(SRCS:.c=.o)
 LIBFT = libft/libft.a
