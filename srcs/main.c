@@ -6,41 +6,31 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/02/21 15:29:18 by enrmarti         ###   ########.fr       */
+
+/*   Updated: 2025/03/24 00:18:24 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-
-
-char	**ft_split(char const *s, char c);
-
+#include "../includes/minishell.h"
 
 int	main(void)
 {
-	char	**commands;
-	char	*rl;
-	int i;
+	t_shell	*shell;
 
+	//check if argc > 1 ?
+	//init_shell(&shell);
+	shell = (t_shell *)malloc(sizeof(t_shell));
+	setup_signal_handlers();
 	while (1)
 	{
-		i = 0;
 		readline("minishell>");
 		add_history(rl_line_buffer);
-		if (strcmp(rl_line_buffer, "q") == 0)
-		{
-			rl_clear_history();
-			free(rl_line_buffer);
+		if (ft_strncmp(rl_line_buffer, "exit", 4) == 0)
 			return (0);
-		}
-		parsing();
-		// ft_split, tree of params, building structures, 
-		
-		execution();
-		// forks, pipes, execve, builtins
+		lexer(shell, rl_line_buffer);
+		parser(shell);
+		//execution();
+		//free_all();
 	}
 	return (0);
 }
