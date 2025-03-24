@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 10:40:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/11 15:46:21 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/24 00:17:48 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,36 +38,37 @@ t_token	*add_token(t_token **head, t_token *new)
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new;
+	new->prev = tmp;
 	new->next = NULL;
-	index_tokens(*head);	
+	index_tokens(*head);
 	return (*head);
 }
 
-//	REMOVES A NODE OF THE LIST GIVEN ITS INDEX
-void	remove_node(t_token *head, int index) 
-{
-	t_token	*temp;
-	t_token	*prev;
- 
-	if (!head)
-		return ;
-	temp = head;
-	if (temp != NULL && temp->index == index)
-	{
-		head = temp->next;
-		free(temp);
-		return;
-	}
-	while (temp != NULL && temp->index != index)
-	{
-		prev = temp;
-		temp = temp->next;
-	}
-	if (temp == NULL)
-		return;
-	prev->next = temp->next;
-	free(temp);
-}
+// //	REMOVES A NODE OF THE LIST GIVEN ITS INDEX
+// void	remove_node(t_token *head, int index)
+// {
+// 	t_token	*temp;
+// 	t_token	*prev;
+
+// 	if (!head)
+// 		return ;
+// 	temp = head;
+// 	if (temp != NULL && temp->index == index)
+// 	{
+// 		head = temp->next;
+// 		free(temp);
+// 		return;
+// 	}
+// 	while (temp != NULL && temp->index != index)
+// 	{
+// 		prev = temp;
+// 		temp = temp->next;
+// 	}
+// 	if (temp == NULL)
+// 		return;
+// 	prev->next = temp->next;
+// 	free(temp);
+// }
 
 //	ADDS THE STRING AT THE END OF THE GIVEN TOKEN
 //	x = 0	with space				"hello"  + "world" = "hello world"
@@ -106,7 +107,7 @@ void	remove_node(t_token *head, int index)
 void	free_tokens(t_token *head)
 {
 	t_token	*tmp;
-	
+
 	while (head)
 	{
 		tmp = head;

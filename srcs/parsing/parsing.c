@@ -6,149 +6,165 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/13 09:21:46 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/24 16:56:37 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 
-t_node	*new_node(int type, char **args, t_node *left, t_node *right)
+t_command	*new_node(int type, char **args, char *input, char *output, bool append)
 {
-	t_node	*new;
+	t_command	*new;
 
-	new = malloc(sizeof(t_node));
+	new = malloc(sizeof(t_command));
 	if (!new)
 		return (NULL);
 	new->type = type;
 	new->args = args;
-	new->left = left;
-	new->right = right;
+	new->input = input;
+	new->output = output;
+	new->append = append;
+	new->next = NULL;
 	return (new);
 }
 
-t_node	*new_redirect_node(char *operator, char **filename, t_node *left, t_node *right)
+char	**get_args(t_token **tokens, int size)
 {
-	t_node	*new;
-	int		type;
+	char	**args;
+	int		i = 0;
 
-	new = malloc(sizeof(t_node));
-	if (!new)
+	args = malloc((size + 1) * sizeof(char *));
+	if (!args)
 		return (NULL);
-	if (ft_strncmp(operator, "<", 1) == 0)
-		type = INPUT;
-	else if (ft_strncmp(operator, ">", 1) == 0)
-		type = OUTPUT;
-	else if (ft_strncmp(operator, "<<", 2) == 0)
-		type = HEREDOC;
-	else if (ft_strncmp(operator, ">>", 2) == 0)
-		type = APPEND;
-	else
-		type = 0;
-	new->type = type;
-	new->args = filename;
-	new->left = left;
-	new->right = right;
-	return (new);
+	while (i < size)
+	{
+		args[i++] = (*tokens)->str;
+		*tokens = (*tokens)->next;
+	}
+	args[size] = NULL;
+	return (args);
 }
 
-t_node	*parse_cmd(t_token **tokens)
+char		*is_redirection(char *str)
 {
-	t_token 	*tmp;
+	if (ft_strncmp(str, ">>", 2) == 0)
+		return (">>");
+	if (ft_strncmp(str, ">", 1) == 0)
+		return (">");
+	if (ft_strncmp(str, "<<", 2) == 0)
+		return ("<<");
+	if (ft_strncmp(str, "<", 1) == 0)
+		return ("<");
+	return (NULL);
+}
+
+t_command	*handle_redirection(t_token	**tokens, char **args)
+{
+	char	*type;
+	char	*input;
+	char	*output;
+	bool	append;
+
+	append = false;
+	input = NULL;
+	output = NULL;
+	while (*tokens && ft_strncmp((*tokens)->str, "|", 1))
+	{
+		type = is_redirection((*tokens)->str);
+		if (!type)
+			break;
+		*tokens = (*tokens)->next;
+		if (!(*tokens))
+			break;
+		if (ft_strncmp(type, "<", 1) == 0)
+			input = (*tokens)->str;
+		else if (ft_strncmp(type, ">>", 2) == 0)
+		{
+			append = true;
+			printf("\n!!\n");
+			output = (*tokens)->str;
+		}
+		else if (ft_strncmp(type, ">", 1) == 0)
+			output = (*tokens)->str;
+		*tokens = (*tokens)->next;
+	}
+	return(new_node(CMD, args, input, output, append));
+}
+
+
+t_command	*parse_cmd(t_token **tokens)
+{
+	t_token		*tmp;
 	char		**args;
+	char		*redir;
 	int			count;
-	int			i;
 
 	tmp = *tokens;
+	redir = NULL;
 	count = 0;
-	while (tmp && ft_strncmp(tmp->str, "|", 1) != 0 && ft_strncmp(tmp->str, ">", 1) != 0
-			&& ft_strncmp(tmp->str, "<", 1) != 0 && ft_strncmp(tmp->str, "<<", 2) != 0
-			&& ft_strncmp(tmp->str, ">>", 2) != 0)
+	while (tmp && ft_strncmp(tmp->str, "|", 1))
 	{
+		redir = is_redirection(tmp->str);
+		if (redir != NULL)
+			break;
 		count++;
 		tmp = tmp->next;
 	}
 	if (count == 0)
 		return (NULL);
-	args = malloc((count + 1) * sizeof(char *));
-	if (!args)
-		return (NULL);
-	i = 0;
-	while (i < count)
+	if (redir == NULL)
 	{
-		args[i++] = (*tokens)->str;
-		*tokens = (*tokens)->next;
+		args = get_args(tokens, count);
+		return (new_node(CMD, args, NULL, NULL, false));
 	}
-	args[count] = NULL;
-	return (new_node(CMD, args, NULL, NULL));
+	args = get_args(tokens, count);
+	return (handle_redirection(tokens, args));
 }
 
-t_node	*parse_pipe(t_token **tokens)
+t_command	*parse_tokens(t_token **tokens)
 {
-	t_node *left;
-	t_node *right;
+	t_command	*first;
+	t_command	*current;
 
-	left = parse_cmd(tokens);
-	while (*tokens && ft_strncmp((*tokens)->str, "|", 1) == 0)
+	first = parse_cmd(tokens);
+	current = first;
+	while (*tokens)
 	{
-		*tokens = (*tokens)->next;
-		right = parse_cmd(tokens);
-		left = new_node(PIPE, NULL, left, right);
+		if (ft_strncmp((*tokens)->str, "|", 1) == 0)
+		{
+			*tokens = (*tokens)->next;
+			current->next = parse_cmd(tokens);
+			current = current->next;
+		}
+		else
+			break;
 	}
-	return (left);
+	return (first);
 }
 
-t_node	*parse_redirect(t_token **tokens)
+void	print_cmd(t_command *cmd)
 {
-	t_node	*left;
-	t_node	*redirect;
-	char	*operator;
-	char	**filename;
-
-	left = parse_pipe(tokens);
-	while (*tokens && (!ft_strncmp((*tokens)->str, ">", 1) || !ft_strncmp((*tokens)->str, "<", 1)
-			|| !ft_strncmp((*tokens)->str, ">>", 2) || !ft_strncmp((*tokens)->str, "<<", 2)))
+	printf("COMMAND\n type: %d \n input : %s - output : %s \n", cmd->type, cmd->input, cmd->output);
+	int i = 0;
+	printf("args: \n");
+	while (cmd->args[i])
 	{
-		operator = (*tokens)->str;
-		(*tokens) = (*tokens)->next;
-		if (!*tokens)
-			return (left);
-		filename = malloc(2 * sizeof(char *));
-		filename[0] = (*tokens)->str;
-		filename[1] = NULL;
-		*tokens = (*tokens)->next;
-		redirect = new_redirect_node(operator, filename, left, NULL);
-		left = redirect;
+		printf("[%d]\t%s\n", i, cmd->args[i]);
+		i++;
 	}
-	return (left);
+	printf("append: %d\n", cmd->append);
 }
 
-void print_ast(t_node *node, int depth) {
-    if (!node) return;
-    for (int i = 0; i < depth; i++) printf("  ");
-
-    if (node->type == CMD) {
-        printf("COMMAND: ");
-        for (int i = 0; node->args[i]; i++)
-            printf("%s ", node->args[i]);
-        printf("\n");
-    } else if (node->type == PIPE) {
-        printf("PIPE\n");
-    } else if ((node->type == INPUT) || (node->type == OUTPUT)
-	|| (node->type == APPEND) || (node->type == HEREDOC)) {
-        printf("REDIRECTION (%s)\n", node->args[0]);
-    }
-
-    print_ast(node->left, depth + 1);
-    print_ast(node->right, depth + 1);
-}
 
 void	parser(t_shell *shell)
 {
 	if (!shell->tokens)
 		return ;
-	shell->ast = parse_redirect(&shell->tokens);
-	if (!shell->ast)
+	shell->cmd = parse_tokens(&shell->tokens);
+	if (!shell->cmd)
 		return ;
-	print_ast(shell->ast, 1);
+	print_cmd(shell->cmd);
+	if (shell->cmd->next)
+		print_cmd(shell->cmd->next);
 }

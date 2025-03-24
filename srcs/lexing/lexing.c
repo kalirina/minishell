@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/13 09:01:49 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/20 12:25:17 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ t_token *next_token(char **ps)
 		(*ps)++;
 	t->str = ft_strndup(start, *ps - start);
 	t->next = NULL;
+	t->prev = NULL;
 	return (t);
 }
 

@@ -6,11 +6,12 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/13 09:01:29 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/24 00:18:24 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
 
 int	main(void)
 {
@@ -19,6 +20,7 @@ int	main(void)
 	//check if argc > 1 ?
 	//init_shell(&shell);
 	shell = (t_shell *)malloc(sizeof(t_shell));
+	setup_signal_handlers();
 	while (1)
 	{
 		readline("minishell>");
