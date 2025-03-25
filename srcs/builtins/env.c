@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 23:59:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/23 21:11:03 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/25 22:28:31 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,5 +71,4 @@ void	env_cmd(t_shell *shell)
 		printf("%s\n", shell->my_environ[i]);
 		i++;
 	}
-	printf("My function\n");
 }

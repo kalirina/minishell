@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 20:44:35 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/23 21:11:11 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/25 22:28:44 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,5 +107,4 @@ void	export_cmd(t_shell *shell,char **args)
 		}
 		i++;
 	}
-	printf("My function\n");
 }

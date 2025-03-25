@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 12:20:42 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/20 09:32:09 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/25 22:39:25 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,10 +48,12 @@ void echo_cmd(t_shell *shell, char **args)
 		if (args[i][0] == '$')
 			printf("%s",echo_env_var(shell, args[i]));
 		else
-			printf("%s ", args[i]);
+			printf("%s", args[i]);
+		if (args[i + 1])
+			printf(" ");
 		i++;
 	}
-	if ((ft_strncmp(args[1],"-n",2) != 0))
-		printf("\n");
-	printf("My function\n");
+	if (ft_strncmp(args[1],"-n",2) == 0 && ft_strlen(args[1]) == 2)
+		return ;
+	printf("\n");
 }

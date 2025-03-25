@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/24 19:15:10 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/25 20:31:11 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	init_shell(t_shell *shell)
 {
 	setup_signal_handlers();
-	init_environ(shell);	
+	init_environ(shell);
 }
 
 int	main(void)
