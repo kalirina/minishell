@@ -12,15 +12,20 @@
 
 #include "../includes/minishell.h"
 
+void	init_shell(t_shell *shell)
+{
+	setup_signal_handlers();
+	init_environ(shell);	
+}
+
 int	main(void)
 {
 	t_shell	*shell;
 
-	//check if argc > 1 ?
-	//init_shell(&shell);
 	shell = (t_shell *)malloc(sizeof(t_shell));
-	setup_signal_handlers();
-	init_environ(shell);
+	if (!shell)
+		perror("malloc");
+	init_shell(shell);
 	while (1)
 	{
 		readline("minishell>");
@@ -29,7 +34,7 @@ int	main(void)
 			continue ;
 		lexer(shell, rl_line_buffer);
 		parser(shell);
-		execute(shell, shell->cmd->args);
+		execute(shell);
 		free_split(shell->cmd->args);
 	}
 	//free_all();

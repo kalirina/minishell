@@ -89,12 +89,12 @@ void	init_environ(t_shell *shell);
 int		skip(char *line);
 int		slash(char *line);
 //execution
-void	execute(t_shell *shell, char **args);
+void	execute(t_shell *shell);
 void	free_split(char **tab);
 int		is_builtin(char **args);
 int		is_valid_var(char *name);
 //builtins
-void	echo_cmd(char **args);
+void	echo_cmd(t_shell *shell, char **args);
 void	env_cmd(t_shell *shell);
 void	pwd_cmd(void);
 void	cd_cmd(char **args);

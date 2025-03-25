@@ -13,9 +13,9 @@ SRCS = srcs/main.c\
 		srcs/builtins/export.c\
 		srcs/builtins/pwd.c\
 		srcs/builtins/unset.c\
-		srcs/exec_utils.c\
-		srcs/exec.c\
-		srcs/utils.c
+		srcs/execution/exec_utils.c\
+		srcs/execution/exec.c\
+		srcs/utils/input_utils.c
 
 OBJS = $(SRCS:.c=.o)
 LIBFT = libft/libft.a

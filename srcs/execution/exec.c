@@ -10,12 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "../../includes/minishell.h"
 
 void	exec_builtin(t_shell *shell,char **args)
 {
 	if (ft_strncmp(args[0], "echo", 4) == 0 && ft_strlen(args[0]) == 4)
-		echo_cmd(args);
+		echo_cmd(shell, args);
 	else if (ft_strncmp(args[0],"env", 3) == 0 && ft_strlen(args[0]) == 3)
 		env_cmd(shell);
 	else if (ft_strncmp(args[0],"pwd", 3) == 0 && ft_strlen(args[0]) == 3)
@@ -113,12 +113,12 @@ void	exec_cmd_ex(t_shell *shell, char **args)
 	}
 }
 
-void	execute(t_shell *shell, char **args)
+void	execute(t_shell *shell)
 {
-	if (is_builtin(args))
-		exec_builtin(shell,args);
+	if (is_builtin(shell->cmd->args))
+		exec_builtin(shell,shell->cmd->args);
 	// else if (redirection)
 	else
-		exec_cmd_ex(shell,args);
+		exec_cmd_ex(shell,shell->cmd->args);
 }
 

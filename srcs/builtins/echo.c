@@ -12,19 +12,18 @@
 
 #include "../../includes/minishell.h"
 
-char	*echo_env_var(char *name_var)
+char	*echo_env_var(t_shell *shell, char *var)
 {
-	extern char	**environ;
 	int			i;
 	char		*value;
 
 	i = 0;
-	name_var++;
-	while (environ[i])
+	var++;
+	while (shell->my_environ[i])
 	{
-		if (ft_strncmp(environ[i],name_var,ft_strlen(name_var)) == 0 &&
-			environ[i][ft_strlen(name_var)] == '=')
-			value = ft_strdup(environ[i] + ft_strlen(name_var) + 1);
+		if (ft_strncmp(shell->my_environ[i],var,ft_strlen(var)) == 0 &&
+			shell->my_environ[i][ft_strlen(var)] == '=')
+			value = ft_strdup(shell->my_environ[i] + ft_strlen(var) + 1);
 		i++;
 	}
 	if (!value)
@@ -32,7 +31,7 @@ char	*echo_env_var(char *name_var)
 	return (value);
 }
 
-void echo_cmd(char **args)
+void echo_cmd(t_shell *shell, char **args)
 {
 	int	i;
 
@@ -47,7 +46,7 @@ void echo_cmd(char **args)
 	while (args[i])
 	{
 		if (args[i][0] == '$')
-			printf("%s",echo_env_var(args[i]));
+			printf("%s",echo_env_var(shell, args[i]));
 		else
 			printf("%s ", args[i]);
 		i++;
