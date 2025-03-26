@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:58:25 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/20 10:05:14 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/26 16:06:09 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,6 +43,4 @@ void	cd_cmd(char **args)
 		return ;
 	if (chdir(path) == -1)
 		perror("cd");
-	//FOR CHECKS
-	printf("My function\n");
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 12:20:42 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/20 09:32:09 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/26 16:06:00 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,5 +54,4 @@ void echo_cmd(char **args)
 	}
 	if ((ft_strncmp(args[1],"-n",2) != 0))
 		printf("\n");
-	printf("My function\n");
 }

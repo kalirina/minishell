@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/17 18:17:24 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/23 19:44:58 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/26 16:06:31 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,5 +76,4 @@ void	unset_cmd(t_shell *shell, char **args)
 		}
 		i++;
 	}
-	printf("My function\n");
 }

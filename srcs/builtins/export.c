@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 20:44:35 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/23 21:11:11 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/26 16:06:20 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,5 +107,4 @@ void	export_cmd(t_shell *shell,char **args)
 		}
 		i++;
 	}
-	printf("My function\n");
 }

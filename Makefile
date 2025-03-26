@@ -3,7 +3,7 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 SRCS = srcs/main.c\
 		srcs/lexing/lexing.c\
-		srcs/utils/parse_utils.c\
+		srcs/parsing/parse_utils.c\
 		srcs/utils/list_utils.c\
 		srcs/parsing/parsing.c\
 		srcs/utils/signals.c\
@@ -13,12 +13,12 @@ SRCS = srcs/main.c\
 		srcs/builtins/export.c\
 		srcs/builtins/pwd.c\
 		srcs/builtins/unset.c\
-		srcs/exec_utils.c\
-		srcs/exec.c\
-		srcs/utils.c
+		srcs/exec/exec_utils.c\
+		srcs/exec/exec.c\
+		srcs/utils/main_utils.c
 
 OBJS = $(SRCS:.c=.o)
-LIBFT = libft/libft.a
+LIBFT = includes/libft/libft.a
 INCLUDES = -I include -I libft
 
 all: $(NAME)

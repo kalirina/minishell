@@ -3,17 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/23 21:50:39 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/26 14:48:40 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 #define MINISHELL_H
 
-#include "../srcs/libft/libft.h"
+#include "libft/libft.h"
 #include <stdlib.h>
 #include <unistd.h>
 #include <readline/readline.h>
@@ -49,9 +49,9 @@
 
 typedef struct	s_token
 {
-	int				index;
+	int				index;			//probably take out
 	char			*str;
-	struct s_token	*prev;
+	struct s_token	*prev;			//probably take out
 	struct s_token	*next;
 } t_token;
 

@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 10:40:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/24 00:17:48 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/26 16:03:38 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,37 +70,34 @@ t_token	*add_token(t_token **head, t_token *new)
 // 	free(temp);
 // }
 
-//	ADDS THE STRING AT THE END OF THE GIVEN TOKEN
-//	x = 0	with space				"hello"  + "world" = "hello world"
-//	x = 1	no space				        ""		  = "helloworld"
-// void	addstr_token(t_token *t, char *to_add, int x)
+// //	ADDS THE STRING AT THE END OF THE GIVEN TOKEN
+// void	addstr_token(t_token *t, char *to_add)
 // {
 // 	char	*new;
 // 	int		s1;
 // 	int		s2;
 // 	int		i;
+// 	int		j;
 
 // 	if (!t)
 // 		return;
 // 	s1 = ft_strlen(t->str);
 // 	s2 = ft_strlen(to_add);
 // 	i = 0;
-// 	if (x == 0)
+// 	new = (char *)malloc(sizeof(char) * (s1+s2) + 1);
+// 	if (!new)
+// 		return;
+// 	while (i < s1)
 // 	{
-// 		new = (char *)malloc(sizeof(char) * (s1+s2) + 2);
-// 		if (!new)
-// 			return;
-// 		while (i < s1)
-// 		{
-// 			new[i] = s1[i];
-// 			i++;
-// 		}
-// 		while(i < s1+s2)
-// 		{
-// 			new
-// 		}
-// 		new[i] = '\0';
+// 		new[i] = s1[i];
+// 		i++;
 // 	}
+// 	j = 0;
+// 	while(i < s1+s2)
+// 		new[i++] = s2[j++];
+// 	new[i] = '\0';
+// 	free(t->str);
+// 	t->str = new;
 // }
 
 //	FREES THE LIST OF TOKENS

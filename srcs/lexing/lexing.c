@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/24 19:20:02 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/26 16:28:00 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ int	find_type(char *pt)
 t_token *next_token(char **ps)
 {
 	t_token		*t;
+	char		quote;
 	char		*start;
 
 	*ps = skip_spaces(*ps);
@@ -45,14 +46,30 @@ t_token *next_token(char **ps)
 		return (NULL);
 	start = *ps;
 	while (**ps && !is_space(**ps))
-		(*ps)++;
+	{
+		if (**ps == '\'' || **ps == '"')
+		{
+			quote = **ps;
+			(*ps)++;
+			while (**ps && (**ps) != quote)
+				(*ps)++;
+			if (**ps == quote)
+				(*ps)++;
+			else
+			{
+				printf("minishell: unclosed quotes found");	
+				return (NULL);	// ALL TO FREE
+			}
+		}
+		else
+			(*ps)++;
+	}
 	t->str = ft_strndup(start, *ps - start);
 	t->next = NULL;
 	t->prev = NULL;
 	return (t);
 }
 
-// #include <stdio.h>
 //READS THE COMMAND AND DIVIDES IT IN TOKENS
 void	lexer(t_shell *shell, char *line)
 {
@@ -67,9 +84,4 @@ void	lexer(t_shell *shell, char *line)
 		new = next_token(&line);
 	}
 	shell->tokens = t;
-	// while (t)
-	// {
-	// 	printf("[%d] %s\n",t->index, t->str);
-	// 	t = t->next;
-	// }
 }
