@@ -6,13 +6,12 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 03:10:15 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/27 03:24:48 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/27 18:45:18 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-// Sorting
 static void	ft_swap(char **a, char **b)
 {
 	char	*temp;
@@ -22,7 +21,7 @@ static void	ft_swap(char **a, char **b)
 	*b = temp;
 }
 
-static void	sort_env_array(char **array, int count)
+void	sort_env_array(char **array, int count)
 {
 	int	i;
 	int	j;

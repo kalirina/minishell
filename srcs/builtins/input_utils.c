@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 21:09:21 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/27 03:25:49 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/27 14:21:59 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,23 +67,16 @@ int	print_error(char *cmd, char *arg, char *msg)
 	return (1);
 }
 
-static char	*cd_get_target(t_shell *shell, char **args)
+char	*cd_get_oldpwd_target(t_shell *shell)
 {
-	char	*target_path;
+	char	*env_val;
 
-	if (args[1] == NULL || ft_strncmp(args[1], "~", 2) == 0)
-	{
-		target_path = cd_get_home_target(shell);
-	}
-	else if (ft_strncmp(args[1], "-", 2) == 0)
-	{
-		target_path = cd_get_oldpwd_target(shell);
-	}
-	else
-	{
-		target_path = ft_strdup(args[1]);
-		if (!target_path)
-			perror("minishell: cd: ft_strdup failed");
-	}
-	return (target_path);
+	env_val = get_env_var_value(shell->my_environ, "OLDPWD");
+	if (!env_val)
+		return (print_error("cd", NULL, "OLDPWD not set"), NULL);
+	if (*env_val == '\0')
+		return (free(env_val), print_error("cd", NULL, "OLDPWD not set"), NULL);
+	ft_putstr_fd(env_val, 1);
+	ft_putchar_fd('\n', 1);
+	return (env_val);
 }

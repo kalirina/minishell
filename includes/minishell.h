@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/27 03:30:18 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/27 20:02:45 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 # include <signal.h>
 # include <string.h>
 # include <errno.h>
+# include <limits.h>
 
 # define MAX_TOKEN 100
 
@@ -99,15 +100,22 @@ char	*get_var(char *arg);
 char	*get_val(char *arg);
 void	add_new_env_var(t_shell *shell, int i, char *var, char *val);
 void	update_env_var(t_shell *shell, int i, char *var, char *val);
+char	*cd_get_oldpwd_target(t_shell *shell);
+char	*cd_get_home_target(t_shell *shell);
+void	sort_env_array(char **array, int count);
+void	cleanup_shell(t_shell *shell);
+void	cleanup_command_line(t_shell *shell, char *line_buffer);
 //execution
 void	execute(t_shell *shell);
 void	free_split(char **tab);
 int		is_builtin(char **args);
 int		is_valid_var(char *name);
+int		check_builtin_name(const char *arg0, const char *builtin_name);
 //builtins
 int		echo_cmd(t_shell *shell);
 int		env_cmd(t_shell *shell);
 int		pwd_cmd(void);
+int		exit_cmd(t_shell *shell, char **args);
 int		cd_cmd(t_shell *shell);
 int		export_cmd(t_shell *shell, char **args);
 int		unset_cmd(t_shell *shell, char **args);
