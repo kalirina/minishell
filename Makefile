@@ -4,7 +4,7 @@ CFLAGS = -Wall -Wextra -Werror
 SRCS = srcs/main.c\
 		srcs/lexing/lexing.c\
 		srcs/lexing/lexing_utils.c\
-		srcs/parsing/expand.c\
+		srcs/lexing/expand.c\
 		srcs/parsing/parse_utils.c\
 		srcs/utils/list_utils.c\
 		srcs/parsing/parsing.c\

@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/27 13:43:54 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/27 17:03:01 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,7 +131,7 @@ t_command	*parse_tokens(t_token **tokens)
 	current = first;
 	while (*tokens)
 	{
-		if (ft_strncmp((*tokens)->str, "|", 1) == 0)
+		if (ft_strncmp((*tokens)->str, "|", 1) == 0)	//AGGIUNGERE CASO PER echo figlio|cat ditroia
 		{
 			*tokens = (*tokens)->next;
 			current->next = parse_cmd(tokens);

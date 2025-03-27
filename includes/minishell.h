@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/27 13:45:38 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/27 16:10:55 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ typedef struct	s_shell
 } t_shell;
 
 void	lexer(t_shell *shell, char *line);
+void	expand(t_shell	*shell);
 void	parser(t_shell *shell);
 
 //parsing utils

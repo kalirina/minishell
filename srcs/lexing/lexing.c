@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/27 13:20:13 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/27 16:11:09 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,9 +85,6 @@ void	lexer(t_shell *shell, char *line)
 		new = next_token(&line);
 	}
 	if (t != NULL)
-	{
 		clean_tokens(t);
-		expand(t);
-	}
 	shell->tokens = t;
 }
