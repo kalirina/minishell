@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/26 14:48:40 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/27 13:45:38 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,10 +49,9 @@
 
 typedef struct	s_token
 {
-	int				index;			//probably take out
 	char			*str;
-	struct s_token	*prev;			//probably take out
 	struct s_token	*next;
+	char			quotes;
 } t_token;
 
 typedef struct	s_command
@@ -69,7 +68,7 @@ typedef struct	s_shell
 {
 	t_token			*tokens;
 	t_command		*cmd;
-  char		    **my_environ;
+	char			**my_environ;
 } t_shell;
 
 void	lexer(t_shell *shell, char *line);
@@ -82,6 +81,7 @@ char	*ft_strndup(const char *s, size_t n);
 
 t_token	*add_token(t_token **head, t_token *new);
 t_token	*get_last_token(t_token **head);
+t_token	*clean_tokens(t_token *tokens);
 
 void setup_signal_handlers();
 

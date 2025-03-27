@@ -3,6 +3,8 @@ CC = cc
 CFLAGS = -Wall -Wextra -Werror
 SRCS = srcs/main.c\
 		srcs/lexing/lexing.c\
+		srcs/lexing/lexing_utils.c\
+		srcs/parsing/expand.c\
 		srcs/parsing/parse_utils.c\
 		srcs/utils/list_utils.c\
 		srcs/parsing/parsing.c\
@@ -27,14 +29,14 @@ $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -lreadline -o $(NAME)
 
 $(LIBFT):
-	@make -C libft
+	@make -C includes/libft
 
 clean:
 	rm -f $(OBJS)
-	@make -C libft clean
+	@make -C includes/libft clean
 
 fclean: clean
 	rm -f $(NAME)
-	@make -C libft fclean
+	@make -C includes/libft fclean
 
 re: fclean all

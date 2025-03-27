@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/24 19:15:10 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/27 13:44:12 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,15 @@ int	main(void)
 			continue ;
 		lexer(shell, rl_line_buffer);
 		parser(shell);
-		execute(shell, shell->cmd->args);
-		free_split(shell->cmd->args);
+		if (shell->cmd)
+		{
+			execute(shell, shell->cmd->args);
+			free_split(shell->cmd->args);
+			free(shell->tokens);
+			shell->tokens = NULL;
+			free(shell->cmd);
+			shell->cmd = NULL;
+		}
 	}
 	//free_all();
 	return (0);

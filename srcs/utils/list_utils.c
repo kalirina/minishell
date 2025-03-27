@@ -6,26 +6,12 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 10:40:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/26 16:03:38 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/27 11:09:14 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-//	INDEXES ALL THE TOKENS FROM 0 TO N
-void	index_tokens(t_token *head)
-{
-	int	i;
-
-	i = 0;
-	if (!head)
-		return ;
-	while (head)
-	{
-		head->index = i++;
-		head = head->next;
-	}
-}
 
 //	ADDS A TOKEN AT THE END OF THE LIST
 t_token	*add_token(t_token **head, t_token *new)
@@ -38,9 +24,7 @@ t_token	*add_token(t_token **head, t_token *new)
 	while (tmp->next)
 		tmp = tmp->next;
 	tmp->next = new;
-	new->prev = tmp;
 	new->next = NULL;
-	index_tokens(*head);
 	return (*head);
 }
 

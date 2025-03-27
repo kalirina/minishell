@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/24 19:19:20 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/27 13:43:54 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,28 +143,12 @@ t_command	*parse_tokens(t_token **tokens)
 	return (first);
 }
 
-// void	print_cmd(t_command *cmd)
-// {
-// 	printf("COMMAND\n type: %d \n input : %s - output : %s \n", cmd->type, cmd->input, cmd->output);
-// 	int i = 0;
-// 	printf("args: \n");
-// 	while (cmd->args[i])
-// 	{
-// 		printf("[%d]\t%s\n", i, cmd->args[i]);
-// 		i++;
-// 	}
-// 	printf("append: %d\n", cmd->append);
-// }
-
-
 void	parser(t_shell *shell)
 {
 	if (!shell->tokens)
 		return ;
+	expand(shell);
 	shell->cmd = parse_tokens(&shell->tokens);
 	if (!shell->cmd)
 		return ;
-//	print_cmd(shell->cmd);
-//	if (shell->cmd->next)
-//		print_cmd(shell->cmd->next);
 }

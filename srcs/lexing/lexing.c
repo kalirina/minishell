@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/26 16:28:00 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/27 13:20:13 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,8 +57,9 @@ t_token *next_token(char **ps)
 				(*ps)++;
 			else
 			{
-				printf("minishell: unclosed quotes found");	
-				return (NULL);	// ALL TO FREE
+				printf("minishell: unclosed quotes found\n");
+				free(t);
+				return (NULL);
 			}
 		}
 		else
@@ -66,7 +67,7 @@ t_token *next_token(char **ps)
 	}
 	t->str = ft_strndup(start, *ps - start);
 	t->next = NULL;
-	t->prev = NULL;
+	t->quotes = 0;
 	return (t);
 }
 
@@ -82,6 +83,11 @@ void	lexer(t_shell *shell, char *line)
 	{
 		t = add_token(&t, new);
 		new = next_token(&line);
+	}
+	if (t != NULL)
+	{
+		clean_tokens(t);
+		expand(t);
 	}
 	shell->tokens = t;
 }
