@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/24 19:17:52 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/27 01:50:00 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,27 @@
 void	exec_builtin(t_shell *shell,char **args)
 {
 	if (ft_strncmp(args[0], "echo", 4) == 0 && ft_strlen(args[0]) == 4)
-		echo_cmd(shell, args);
+	{
+		echo_cmd(shell);
+		shell->exit_status = 0;
+	}
 	else if (ft_strncmp(args[0],"env", 3) == 0 && ft_strlen(args[0]) == 3)
+	{
 		env_cmd(shell);
+		shell->exit_status = 0;
+	}
 	else if (ft_strncmp(args[0],"pwd", 3) == 0 && ft_strlen(args[0]) == 3)
+	{
 		pwd_cmd();
+		shell->exit_status = 0;
+	}
 	else if (ft_strncmp(args[0],"cd", 2) == 0 && ft_strlen(args[0]) == 2)
-		cd_cmd(args);
+	{
+		if (cd_cmd(shell) == -1) // Assume cd_cmd returns -1 on failure
+			shell->exit_status = 1; // Non-zero for failure
+		else
+			shell->exit_status = 0;
+	}
 	else if (ft_strncmp(args[0],"export", 6) == 0 && ft_strlen(args[0]) == 6)
 		export_cmd(shell,args);
 	else if (ft_strncmp(args[0],"unset", 5) == 0 && ft_strlen(args[0]) == 5)
@@ -93,7 +107,10 @@ void	exec_cmd_ex(t_shell *shell, char **args)
 
 	path = get_path(args[0]);
 	if (!path)
+	{
+		shell->exit_status = 127;
 		return ;
+	}
 	pid = fork();
 	if (pid == 0)
 	{
@@ -104,12 +121,17 @@ void	exec_cmd_ex(t_shell *shell, char **args)
 	else if (pid > 0)
 	{
 		waitpid(pid,&status, 0);
+		if (WIFEXITED(status))
+			shell->exit_status = WEXITSTATUS(status);
+		else
+			shell->exit_status = 1;
 		free(path);
 	}
 	else
 	{
 		perror("fork");
 		free(path);
+		shell->exit_status = 1;
 	}
 }
 

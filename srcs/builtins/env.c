@@ -6,69 +6,72 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 23:59:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/25 22:28:31 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/27 03:09:04 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	update_env_var(t_shell *shell, int i, char *var, char *val)
+static int	copy_environ_vars(t_shell *shell, char **environ, int count)
 {
-	char	*new;
+	int	i;
 
-	free(shell->my_environ[i]);
-	if (val)
-		new = ft_strjoin(ft_strjoin(var, "="), val);
-	else
-		new = ft_strdup(var);
-	shell->my_environ[i] = new;
-}
-
-void	add_new_env_var(t_shell *shell, int i, char *var, char *val)
-{
-	char	**new_environ;
-	char	*new_var;
-
-	new_environ = ft_calloc(i + 2, sizeof(char *));
-	ft_memcpy(new_environ, shell->my_environ, i * sizeof(char *));
-	if (val)
-		new_var = ft_strjoin(ft_strjoin(var, "="), val);
-	else
-		new_var = ft_strdup(var);
-	new_environ[i] = new_var;
-	new_environ[i + 1] = NULL;
-	free(shell->my_environ);
-	shell->my_environ = new_environ;
+	i = 0;
+	while (i < count)
+	{
+		shell->my_environ[i] = ft_strdup(environ[i]);
+		if (!shell->my_environ[i])
+		{
+			perror("minishell: init_environ: ft_strdup failed");
+			while (--i >= 0)
+				free(shell->my_environ[i]);
+			return (1);
+		}
+		i++;
+	}
+	shell->my_environ[i] = NULL;
+	return (0);
 }
 
 void	init_environ(t_shell *shell)
 {
 	extern char	**environ;
 	int			i;
+	int			count;
 
 	i = 0;
-	while (environ[i])
+	count = 0;
+	while (environ && environ[i])
 		i++;
-	shell->my_environ = malloc(sizeof(char *) * (i+1));
+	count = i;
+	shell->my_environ = malloc(sizeof(char *) * (count + 1));
 	if (!shell->my_environ)
-		return ;
-	i = 0;
-	while (environ[i])
 	{
-		shell->my_environ[i] = ft_strdup(environ[i]);
-		i++;
+		perror("minishell: init_environ: malloc failed");
+		exit(EXIT_FAILURE);
 	}
-	shell->my_environ[i] = NULL;
+	if (copy_environ_vars(shell, environ, count) != 0)
+	{
+		free(shell->my_environ);
+		exit(EXIT_FAILURE);
+	}
 }
 
-void	env_cmd(t_shell *shell)
+int	env_cmd(t_shell *shell)
 {
-	int			i;
+	int	i;
 
-	i = 0;
-	while (shell->my_environ[i])
+	if (shell->cmd->args[1])
 	{
-		printf("%s\n", shell->my_environ[i]);
+		print_error("env", shell->cmd->args[1], "No such file or directory");
+		return (127);
+	}
+	i = 0;
+	while (shell->my_environ && shell->my_environ[i])
+	{
+		if (ft_strchr(shell->my_environ[i], '='))
+			printf("%s\n", shell->my_environ[i]);
 		i++;
 	}
+	return (0);
 }
