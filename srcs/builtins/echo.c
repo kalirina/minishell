@@ -6,53 +6,48 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 12:20:42 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/20 09:32:09 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/03/27 00:11:55 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	*echo_env_var(char *name_var)
-{
-	extern char	**environ;
-	int			i;
-	char		*value;
-
-	i = 0;
-	name_var++;
-	while (environ[i])
-	{
-		if (ft_strncmp(environ[i],name_var,ft_strlen(name_var)) == 0 &&
-			environ[i][ft_strlen(name_var)] == '=')
-			value = ft_strdup(environ[i] + ft_strlen(name_var) + 1);
-		i++;
-	}
-	if (!value)
-		value = "\n";
-	return (value);
-}
-
-void echo_cmd(char **args)
+int	is_valid_n_flag(char *arg)
 {
 	int	i;
 
-	if (args[1] == NULL)
+	if (!arg || arg[0] != '-' || arg[1] != 'n')
+		return (0);
+	i = 2;
+	while (arg[i])
 	{
-		printf("\n");
-		return ;
+		if (arg[i] != 'n')
+			return (0);
+		i++;
 	}
+	return (1);
+}
+
+int	echo_cmd(t_shell *shell)
+{
+	int	i;
+	int	newline;
+
 	i = 1;
-	if (ft_strncmp(args[i],"-n",2) == 0 && ft_strlen(args[i]) == 2)
-		i++;
-	while (args[i])
+	newline = 1;
+	while (shell->cmd->args[i] && is_valid_n_flag(shell->cmd->args[i]))
 	{
-		if (args[i][0] == '$')
-			printf("%s",echo_env_var(args[i]));
-		else
-			printf("%s ", args[i]);
+		newline = 0;
 		i++;
 	}
-	if ((ft_strncmp(args[1],"-n",2) != 0))
-		printf("\n");
-	printf("My function\n");
+	while (shell->cmd->args[i])
+	{
+		ft_putstr_fd(shell->cmd->args[i], 1);
+		if (shell->cmd->args[i + 1])
+			ft_putchar_fd(' ', 1);
+		i++;
+	}
+	if (newline)
+		ft_putchar_fd('\n', 1);
+	return (0);
 }
