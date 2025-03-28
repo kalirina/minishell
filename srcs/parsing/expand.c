@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 13:20:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/28 17:45:32 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/28 20:25:49 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ char	*handle_variable(t_shell *shell, char *arg)
 
 	len = 1;
 	// Handle $? -> exit status
-	// if (arg[1] == '?')
-	// 	return (ft_itoa(shell->exit_status));
+	if (arg[1] == '?')
+		return (ft_itoa(shell->exit_status));
 	// Handle $ -> literal $
 	if (arg[1] == '\0')
 		return (ft_strdup("$"));
@@ -133,7 +133,7 @@ void	expand(t_shell *shell)
 				free(current->str);
 				free(extended);
 				current->str = new_value;
-				printf("current->str %s\n", current->str);
+				// printf("current->str %s\n", current->str);
 				tmp = ft_strchr(current->str, '$');
 			}
 		}

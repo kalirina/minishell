@@ -11,16 +11,16 @@ SRCS = srcs/main.c\
 		srcs/utils/signals.c\
 		srcs/builtins/cd.c\
 		srcs/builtins/echo.c\
-		srcs/builtins/env_utils\
-		srcs/builtins/export_utils\
-		srcs/builtins/input_utils\
+		srcs/builtins/env_utils.c\
+		srcs/builtins/export_utils.c\
+		srcs/builtins/input_utils.c\
 		srcs/builtins/exit.c\
 		srcs/builtins/env.c\
 		srcs/builtins/export.c\
 		srcs/builtins/pwd.c\
 		srcs/builtins/unset.c\
 		srcs/execution/exec_utils.c\
-		srcs/execution/exec.c\
+		srcs/execution/exec.c
 
 OBJS = $(SRCS:.c=.o)
 LIBFT = srcs/libft/libft.a

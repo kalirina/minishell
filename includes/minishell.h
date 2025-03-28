@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/28 18:17:36 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/28 20:20:44 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@
 # include <string.h>
 # include <errno.h>
 # include <limits.h>
+# include <fcntl.h>
 
 typedef struct s_token
 {
@@ -74,7 +75,8 @@ t_token	*clean_tokens(t_token *tokens);
 
 //test
 void	print_tokens(t_token *t);
-
+int		setup_input_redirections(t_command *cmd);
+int		setup_output_redirections(t_command *cmd);
 void	setup_signal_handlers(void);
 //utils
 void	init_environ(t_shell *shell);

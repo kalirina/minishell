@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/28 18:44:53 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/28 20:14:07 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -187,7 +187,7 @@ void	execute(t_shell *shell)
         }
 
         if (status == 0) { // Execute external command if redirections were successful
-            exec_cmd_ex(shell, shell->cmd->args);
+            exec_ext_cmd(shell, shell->cmd->args);
         }
 
        if (restore_needed) { //Restore stdout/stdin if needed
