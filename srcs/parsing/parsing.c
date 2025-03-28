@@ -6,25 +6,23 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/27 17:03:01 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/28 16:43:35 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
 
-t_command	*new_node(int type, char **args, char *input, char *output, bool append)
+t_command	*new_node(char **args)
 {
 	t_command	*new;
 
 	new = malloc(sizeof(t_command));
 	if (!new)
 		return (NULL);
-	new->type = type;
 	new->args = args;
-	new->input = input;
-	new->output = output;
-	new->append = append;
+	new->input = NULL;
+	new->output = NULL;
 	new->next = NULL;
 	return (new);
 }
@@ -46,6 +44,8 @@ char	**get_args(t_token **tokens, int size)
 	return (args);
 }
 
+
+
 char		*is_redirection(char *str)
 {
 	if (ft_strncmp(str, ">>", 2) == 0)
@@ -59,67 +59,140 @@ char		*is_redirection(char *str)
 	return (NULL);
 }
 
-t_command	*handle_redirection(t_token	**tokens, char **args)
-{
-	char	*type;
-	char	*input;
-	char	*output;
-	bool	append;
+// t_command *handle_redirection(t_command *cmd, t_token **tokens)
+// {
+// 	char *type;
 
-	append = false;
-	input = NULL;
-	output = NULL;
-	while (*tokens && ft_strncmp((*tokens)->str, "|", 1))
+// 	while (*tokens)
+// 	{
+// 		type = is_redirection((*tokens)->str);
+// 		if (!type)
+// 			break;
+// 		*tokens = (*tokens)->next;
+// 		if (!(*tokens))
+// 		{
+// 			// Handle missing filename after redirection operator
+// 			return (cmd);
+// 		}
+// 		if (ft_strncmp(type, "<", 1) == 0)
+// 		{
+// 			if (!add_redirection(&cmd->input, (*tokens)->str, false))
+// 				return (free_command(cmd), NULL);
+// 		}
+// 		else if (ft_strncmp(type, ">>", 2) == 0)
+// 		{
+// 			if (!add_redirection(&cmd->output, (*tokens)->str, true))
+// 				return (free_command(cmd), NULL);
+// 		}
+// 		else if (ft_strncmp(type, ">", 1) == 0)
+// 		{
+// 			if (!add_redirection(&cmd->output, (*tokens)->str, false))
+// 				return (free_command(cmd), NULL);
+// 		}
+// 		*tokens = (*tokens)->next;
+// 	}
+// 	return (cmd);
+// }
+
+// t_command	*parse_cmd(t_token **tokens)
+// {
+// 	t_command	*cmd;
+// 	t_token		*tmp;
+// 	char		**args;
+// 	int			count;
+
+// 	tmp = *tokens;
+// 	count = 0;
+// 	while (tmp && ft_strncmp(tmp->str, "|", 1))
+// 	{
+// 		if (is_redirection(tmp->str) != NULL)
+// 		{
+// 			tmp = tmp->next;
+// 			if (tmp == NULL)
+// 			{
+// 				printf("minishell : syntax error missing filename\n");
+// 				return (NULL);
+// 			}
+// 			tmp = tmp->next;
+// 		}
+// 		else
+// 		{
+// 			count++;
+// 			tmp = tmp->next;
+// 		}
+// 	}
+// 	args = get_args(tokens, count);
+// 	cmd = new_node(args);
+// 	if (*tokens && is_redirection((*tokens)->str))
+// 		cmd = handle_redirection(cmd, tokens);
+// 	return (cmd);
+// }
+
+t_command *handle_redirection(t_command *cmd, t_token **tokens)
+{
+	char *type;
+	t_token *next_token;
+
+	while (*tokens)
 	{
 		type = is_redirection((*tokens)->str);
 		if (!type)
 			break;
+		next_token = (*tokens)->next;
+		if (next_token == NULL || is_redirection(next_token->str) != NULL
+			|| (next_token && ft_strncmp(next_token->str, "|", 1) == 0))
+		{
+			fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
+			free_command(cmd);
+			return NULL;
+		}
 		*tokens = (*tokens)->next;
 		if (!(*tokens))
-			break;
+			return (cmd);
 		if (ft_strncmp(type, "<", 1) == 0)
-			input = (*tokens)->str;
+		{
+			if (!add_redirection(&cmd->input, (*tokens)->str, false))
+				return (free_command(cmd), NULL);
+		}
 		else if (ft_strncmp(type, ">>", 2) == 0)
 		{
-			append = true;
-			printf("\n!!\n");
-			output = (*tokens)->str;
+			if (!add_redirection(&cmd->output, (*tokens)->str, true))
+				return (free_command(cmd), NULL);
 		}
 		else if (ft_strncmp(type, ">", 1) == 0)
-			output = (*tokens)->str;
+		{
+			if (!add_redirection(&cmd->output, (*tokens)->str, false))
+				return (free_command(cmd), NULL);
+		}
 		*tokens = (*tokens)->next;
 	}
-	return(new_node(CMD, args, input, output, append));
+	return (cmd);
 }
 
-
-t_command	*parse_cmd(t_token **tokens)
+t_command *parse_cmd(t_token **tokens)
 {
+	t_command	*cmd;
 	t_token		*tmp;
-	char		**args;
-	char		*redir;
+	char 		**args;
 	int			count;
 
-	tmp = *tokens;
-	redir = NULL;
 	count = 0;
-	while (tmp && ft_strncmp(tmp->str, "|", 1))
+	tmp = *tokens;
+	while (tmp && ft_strncmp(tmp->str, "|", 1) && is_redirection(tmp->str) == NULL)
 	{
-		redir = is_redirection(tmp->str);
-		if (redir != NULL)
+		if (is_redirection(tmp->str) != NULL)
 			break;
-		count++;
-		tmp = tmp->next;
-	}
-	if (count == 0)
-		return (NULL);
-	if (redir == NULL)
-	{
-		args = get_args(tokens, count);
-		return (new_node(CMD, args, NULL, NULL, false));
+		else
+		{
+			count++;
+			tmp = tmp->next;
+		}
 	}
 	args = get_args(tokens, count);
-	return (handle_redirection(tokens, args));
+	cmd = new_node(args);
+	if (*tokens && is_redirection((*tokens)->str))
+		cmd = handle_redirection(cmd, tokens);
+	return (cmd);
 }
 
 t_command	*parse_tokens(t_token **tokens)

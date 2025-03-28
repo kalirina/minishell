@@ -6,11 +6,16 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/27 16:11:09 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/28 17:41:51 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+static int is_redirection_char(char c)
+{
+	return (c == '>' || c == '<' || c == '|');
+}
 
 int	find_type(char *pt)
 {
@@ -32,44 +37,110 @@ int	find_type(char *pt)
 		return (1);
 }
 
-//RETURNS THE NEXT TOKEN FOUND IN THE STRING
-t_token *next_token(char **ps)
-{
-	t_token		*t;
-	char		quote;
-	char		*start;
+// t_token *next_token(char **ps)
+// {
+//     t_token *t;
+//     char quote;
+//     char *start;
 
-	*ps = skip_spaces(*ps);
-	if (!**ps)
-		return (NULL);
-	if (!(t = malloc(sizeof(t_token))))
-		return (NULL);
-	start = *ps;
-	while (**ps && !is_space(**ps))
-	{
-		if (**ps == '\'' || **ps == '"')
-		{
-			quote = **ps;
-			(*ps)++;
-			while (**ps && (**ps) != quote)
-				(*ps)++;
-			if (**ps == quote)
-				(*ps)++;
-			else
-			{
-				printf("minishell: unclosed quotes found\n");
-				free(t);
-				return (NULL);
-			}
-		}
-		else
-			(*ps)++;
-	}
-	t->str = ft_strndup(start, *ps - start);
-	t->next = NULL;
-	t->quotes = 0;
-	return (t);
+// 	*ps = skip_spaces(*ps);
+// 	if (!**ps)
+// 		return (NULL);
+// 	start = *ps;
+// 	t = NULL;
+// 	if (is_redirection_char(**ps)) {
+// 		if ((**ps == '>' && *(*ps + 1) == '>') || (**ps == '<' && *(*ps + 1) == '<'))
+// 		{
+// 			t = create_token(ft_strndup(*ps, 2));
+// 			*ps += 2;
+// 		}
+// 		else
+// 		{
+// 			t = create_token(ft_strndup(*ps, 1));
+// 			(*ps)++;
+// 		}
+// 		return (t);
+// 	}
+// 	else
+// 	{
+// 		while (**ps && !is_space(**ps) && !is_redirection_char(**ps)) {
+// 			if (**ps == '\'' || **ps == '"') {
+// 				quote = **ps;
+// 				(*ps)++;
+// 				while (**ps && (**ps) != quote)
+// 					(*ps)++;
+// 				if (**ps == quote)
+// 					(*ps)++;
+// 				else
+// 				{
+// 					printf("minishell: unclosed quotes found\n");
+// 					return NULL; //Return NULL because of unclosed quotes
+// 				}
+// 			}
+// 			else
+// 				(*ps)++;
+// 		}
+// 		if (*ps > start)
+// 			t = create_token(ft_strndup(start, *ps - start));
+// 		else
+// 			return NULL;
+// 	}
+
+// 	return t;
+// }
+
+//test
+t_token *next_token(char **ps) {
+    t_token *t;
+    char quote;
+    char *start;
+
+    *ps = skip_spaces(*ps);
+    if (!**ps)
+        return (NULL);
+
+    start = *ps;
+    t = NULL; // Initialize t to NULL
+
+    if (is_redirection_char(**ps)) {
+        // Handle redirection operators
+        if ((**ps == '>' && *(*ps + 1) == '>') || (**ps == '<' && *(*ps + 1) == '<')) {
+            // Handle ">>" and "<<"
+            t = create_token(ft_strndup(*ps, 2));
+            *ps += 2;
+        } else {
+            // Handle ">", "<", and "|"
+            t = create_token(ft_strndup(*ps, 1));
+            (*ps)++;
+        }
+        return t; // Return the redirection token
+    } else {
+        // Handle regular words and quoted strings
+        while (**ps && !is_space(**ps) && !is_redirection_char(**ps)) {
+            if (**ps == '\'' || **ps == '"') {
+                quote = **ps;
+                (*ps)++;
+                while (**ps && (**ps) != quote)
+                    (*ps)++;
+                if (**ps == quote)
+                    (*ps)++;
+                else {
+                    fprintf(stderr, "minishell: unclosed quotes found\n");
+                    return NULL; //Return NULL because of unclosed quotes
+                }
+            } else {
+                (*ps)++;
+            }
+        }
+        if (*ps > start)
+          t = create_token(ft_strndup(start, *ps - start));
+        else
+          return NULL;
+    }
+
+    return t;
 }
+
 
 //READS THE COMMAND AND DIVIDES IT IN TOKENS
 void	lexer(t_shell *shell, char *line)
@@ -87,4 +158,5 @@ void	lexer(t_shell *shell, char *line)
 	if (t != NULL)
 		clean_tokens(t);
 	shell->tokens = t;
+	//print_tokens(t);
 }

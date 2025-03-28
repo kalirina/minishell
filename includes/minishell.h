@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/27 16:10:55 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/28 18:00:46 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 #include "libft/libft.h"
 #include <stdlib.h>
 #include <unistd.h>
+#include <fcntl.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <stdbool.h>
@@ -54,13 +55,16 @@ typedef struct	s_token
 	char			quotes;
 } t_token;
 
-typedef struct	s_command
-{
-	int					type;
+typedef struct s_redirection {
+	char					*file;
+	bool					append;
+	struct s_redirection	*next;
+} t_redirection;
+
+typedef struct s_command {
 	char				**args;
-	char				*input;
-	char				*output;
-	bool				append;
+	t_redirection		*input;
+	t_redirection		*output;
 	struct s_command	*next;
 } t_command;
 
@@ -79,10 +83,17 @@ void	parser(t_shell *shell);
 char	*skip_spaces(char *str);
 bool	is_space(char str);
 char	*ft_strndup(const char *s, size_t n);
+t_redirection *add_redirection(t_redirection **head, char *file, bool append);
+void	free_command(t_command *cmd);
 
+
+t_token	*create_token(char *str);
 t_token	*add_token(t_token **head, t_token *new);
 t_token	*get_last_token(t_token **head);
 t_token	*clean_tokens(t_token *tokens);
+
+//test
+void	print_tokens(t_token *t);
 
 void setup_signal_handlers();
 
@@ -90,7 +101,7 @@ void	init_environ(t_shell *shell);
 int		skip(char *line);
 int		slash(char *line);
 //execution
-void	execute(t_shell *shell, char **args);
+void	execute(t_shell *shell, t_command *cmd);
 void	free_split(char **tab);
 int		is_builtin(char **args);
 int		is_valid_var(char *name);

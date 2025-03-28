@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 13:20:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/27 16:37:47 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/28 17:45:32 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ char	*echo_env_val(t_shell *shell, char *var)
 
 char	*handle_variable(t_shell *shell, char *arg)
 {
+	pid_t	pid;
 	char	*var_name;
 	char	*value;
 	int		len;
@@ -53,6 +54,12 @@ char	*handle_variable(t_shell *shell, char *arg)
 	// Handle $=HOME -> literal $=HOME
 	if (arg[1] == '=')
 		return (ft_strdup(arg));
+	// Handle $$
+	if (arg[1] == '$')
+	{
+		pid = getpid();
+		return (ft_itoa(pid));
+	}
 	// Handle regular variables ($VAR_NAME)
 	while (ft_isalnum(arg[len]) || arg[len] == '_')
 		len++;
@@ -81,35 +88,29 @@ char	*new_extended_value(char *orig, char *extended, char *start)
 {
 	char	*res;
 	char	*var_name;
+	char	*end_of_var;
 	int		len;
 	int		i;
 	int		j;
 
-	var_name = extract_var_name(start);	
-	len = ft_strlen(orig) - ft_strlen(var_name) + ft_strlen(extended);
+	var_name = extract_var_name(start);
+	end_of_var = start + ft_strlen(var_name) + 1;
+	len = ft_strlen(orig) - (ft_strlen(var_name) + 1) + ft_strlen(extended);
 	res = malloc(sizeof(char) * len + 1);
 	if (!res)
-		return (NULL);
+		return (free(var_name), NULL);
 	i = 0;
 	while (orig < start)
-	{
-		res[i++] = *orig;
-		orig++;	
-	}
+		res[i++] = *orig++;
 	j = 0;
 	while (extended[j])
 		res[i++] = extended[j++];
-	orig += ft_strlen(var_name) + 1;
-	while (*orig)
-	{
-		res[i++] = *orig;
-		orig++;
-	}
+	while (*end_of_var)
+		res[i++] = *end_of_var++;
 	res[i] = '\0';
 	free(var_name);
 	return (res);
 }
-
 
 void	expand(t_shell *shell)
 {
@@ -117,7 +118,7 @@ void	expand(t_shell *shell)
 	char	*tmp;
 	char	*extended;
 	char	*new_value;
-	
+
 	tmp = NULL;
 	current = shell->tokens;
 	while (current)
@@ -132,6 +133,7 @@ void	expand(t_shell *shell)
 				free(current->str);
 				free(extended);
 				current->str = new_value;
+				printf("current->str %s\n", current->str);
 				tmp = ft_strchr(current->str, '$');
 			}
 		}

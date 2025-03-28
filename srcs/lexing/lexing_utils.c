@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 14:45:01 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/27 11:59:50 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/27 23:41:01 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,4 +95,18 @@ t_token	*clean_tokens(t_token *tokens)
 		tokens = tokens->next;
 	}
 	return (start);
+}
+
+
+t_token	*create_token(char *str)
+{
+	t_token *t;
+
+	t = malloc(sizeof(t_token));
+	if (!t)
+		return (NULL);
+	t->str = str;
+	t->next = NULL;
+	t->quotes = 0;
+	return (t);
 }
