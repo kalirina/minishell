@@ -6,24 +6,21 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 22:55:41 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/26 16:06:26 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/28 18:22:28 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	pwd_cmd(void)
+int	pwd_cmd(void)
 {
-	char *buf;
+	char	*buf;
+	char	actual_buf[4097];
 
-	buf = malloc(sizeof(char) * 1024);
-	if (!buf)
-		return ;
-	if (!getcwd(buf, 1024))
-	{
-		free(buf);
-		return ;
-	}
-	printf("%s\n", buf);
-	free(buf);
+	buf = actual_buf;
+	if (getcwd(buf, 4097) == NULL)
+		return (perror("minishell: pwd"), 1);
+	ft_putstr_fd(buf, 1);
+	ft_putchar_fd('\n', 1);
+	return (0);
 }

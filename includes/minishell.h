@@ -6,49 +6,28 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/28 18:00:46 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/28 18:17:36 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
-#define MINISHELL_H
+# define MINISHELL_H
 
-#include "libft/libft.h"
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <stdbool.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <signal.h>
+# include "../srcs/libft/libft.h"
+# include <stdlib.h>
+# include <unistd.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <stdbool.h>
+# include <sys/stat.h>
+# include <sys/types.h>
+# include <sys/wait.h>
+# include <signal.h>
+# include <string.h>
+# include <errno.h>
+# include <limits.h>
 
-# define MAX_TOKEN 100
-
-# define CMD 1			// commands and args
-//# define VAR 2			// $var
-# define PIPE 3			// |
-# define INPUT 4		// <
-# define OUTPUT 5		// >
-# define APPEND 6		// >>
-# define HEREDOC 7		// <<
-//# define SEMICOLON 8	// ;
-//# define S_QUOTE 9		// '
-//# define D_QUOTE 10		// "
-
-// typedef enum e_node
-// {
-// 	WORD,
-// 	PIPE,			//|
-// 	OUT, 			//>
-// 	D_OUT,	 		//>>
-// 	IN,				//<
-// 	HEREDOC, 		//<<
-// } t_node_type;
-
-typedef struct	s_token
+typedef struct s_token
 {
 	char			*str;
 	struct s_token	*next;
@@ -66,14 +45,15 @@ typedef struct s_command {
 	t_redirection		*input;
 	t_redirection		*output;
 	struct s_command	*next;
-} t_command;
+}	t_command;
 
-typedef struct	s_shell
+typedef struct s_shell
 {
-	t_token			*tokens;
-	t_command		*cmd;
-	char			**my_environ;
-} t_shell;
+	t_token				*tokens;
+	t_command			*cmd;
+	char				**my_environ;
+	int					exit_status;
+}	t_shell;
 
 void	lexer(t_shell *shell, char *line);
 void	expand(t_shell	*shell);
@@ -95,26 +75,39 @@ t_token	*clean_tokens(t_token *tokens);
 //test
 void	print_tokens(t_token *t);
 
-void setup_signal_handlers();
-
+void	setup_signal_handlers(void);
+//utils
 void	init_environ(t_shell *shell);
 int		skip(char *line);
 int		slash(char *line);
-//execution
-void	execute(t_shell *shell, t_command *cmd);
-void	free_split(char **tab);
-int		is_builtin(char **args);
-int		is_valid_var(char *name);
-//builtins
-void	echo_cmd(char **args);
-void	env_cmd(t_shell *shell);
-void	pwd_cmd(void);
-void	cd_cmd(char **args);
-void	export_cmd(t_shell *shell,char **args);
+
+int		print_error(char *cmd, char *arg, char *msg);
+char	*get_env_var_value(char **my_environ, const char *var_name);
+int		find_env_var_index(char **my_environ, const char *var);
+int		set_env_var(t_shell *shell, char *var, char *val);
+
 char	*get_var(char *arg);
 char	*get_val(char *arg);
 void	add_new_env_var(t_shell *shell, int i, char *var, char *val);
 void	update_env_var(t_shell *shell, int i, char *var, char *val);
-void	unset_cmd(t_shell *shell, char **args);
+char	*cd_get_oldpwd_target(t_shell *shell);
+char	*cd_get_home_target(t_shell *shell);
+void	sort_env_array(char **array, int count);
+void	cleanup_shell(t_shell *shell);
+void	cleanup_command_line(t_shell *shell, char *line_buffer);
+//execution
+void	execute(t_shell *shell);
+void	free_split(char **tab);
+int		is_builtin(char **args);
+int		is_valid_var(char *name);
+int		check_builtin_name(const char *arg0, const char *builtin_name);
+//builtins
+int		echo_cmd(t_shell *shell);
+int		env_cmd(t_shell *shell);
+int		pwd_cmd(void);
+int		exit_cmd(t_shell *shell, char **args);
+int		cd_cmd(t_shell *shell);
+int		export_cmd(t_shell *shell, char **args);
+int		unset_cmd(t_shell *shell, char **args);
 
 #endif

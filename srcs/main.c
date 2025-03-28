@@ -6,85 +6,73 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/28 17:40:10 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/03/28 18:59:46 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-void	print_tokens(t_token *t)
+void	init_shell(t_shell *shell)
 {
-	int	i = 0;
-
-	printf("Tokens:\n");
-	while (t)
-	{
-		printf("\t[%d]%s     quotes: %c\n", i, t->str, t->quotes);
-		t = t->next;
-		i++;
-	}
-	printf("\n\n");
+	setup_signal_handlers();
+	init_environ(shell);
+	shell->exit_status = 0;
+	shell->cmd = NULL;
 }
 
-void	print_red(t_redirection	*red)
+void	cleanup_command_line(t_shell *shell, char *line_buffer)
 {
-	while (red)
-	{
-		printf("\t\t%s,  append:%d\n", red->file, red->append);
-		red = red->next;
-	}
+	free(line_buffer);
+	// Free the structure(s) created by the parser for this line
+	// This function depends heavily on how your parser allocates memory.
+	// It might involve freeing a list of t_cmd, including args, redirs etc.
+	// free_parsed_command_structure(shell->cmd); //IMPLEMENT + free_split(shell->cmd->args);
+	shell->cmd = NULL;
 }
 
-void	print_cmd(t_command *cmd)
+void	cleanup_shell(t_shell *shell)
 {
-	int	i = 0;
-
-	while (cmd)
-	{
-		printf("Command:\n");
-		printf("\tArgs:\n");
-		i = 0;
-		while (cmd->args[i])
-		{
-			printf("\t\t[%d]%s\n", i, cmd->args[i]);
-			i++;
-		}
-		printf("\tInput:\n");
-		print_red(cmd->input);
-		printf("\tOutput:\n");
-		print_red(cmd->output);
-		cmd = cmd->next;
-	}
-}
-
-void	debug(t_shell	*shell)
-{
-	//print_tokens(shell->tokens);
-	print_cmd(shell->cmd);
+	if (!shell)
+		return;
+	free_split(shell->my_environ);
+	clear_history();
+	free(shell);
 }
 
 
 int	main(void)
 {
 	t_shell	*shell;
+	char	*line_buffer;
+	int		last_status;
 
-	//check if argc > 1 ?
-	//init_shell(&shell);
 	shell = (t_shell *)malloc(sizeof(t_shell));
-	setup_signal_handlers();
-	init_environ(shell);
+	if (!shell)
+		perror("malloc");
+	init_shell(shell);
 	while (1)
 	{
-		readline("minishell>");
-		add_history(rl_line_buffer);
-		if (!rl_line_buffer || skip(rl_line_buffer) || slash(rl_line_buffer))
+		line_buffer = readline("minishell>");
+		if (!line_buffer) // (Ctrl+D)
+		{
+			ft_putstr_fd("exit\n", STDOUT_FILENO);
+			break ;
+		}
+		if (line_buffer[0] != '\0')
+			add_history(rl_line_buffer);
+		if (line_buffer[0] == '\0' || skip(rl_line_buffer)
+			|| slash(rl_line_buffer))
+		{
+			free(line_buffer);
 			continue ;
+		}
+		// if (lexer(shell, line_buffer) == 0 && parser(shell) == 0)//!!!!!would be easier to controll the succes of the process if it was int
+		// 	execute(shell);
 		lexer(shell, rl_line_buffer);
 		parser(shell);
-		//debug(shell);
 		if (shell->cmd)
 		{
-			execute(shell, shell->cmd);
+			execute(shell);
 			free_split(shell->cmd->args);
 			free(shell->tokens);
 			shell->tokens = NULL;
@@ -92,6 +80,7 @@ int	main(void)
 			shell->cmd = NULL;
 		}
 	}
-	//free_all();
-	return (0);
+	cleanup_shell(shell);
+	last_status = shell->exit_status;
+	return (last_status);
 }
