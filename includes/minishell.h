@@ -87,6 +87,7 @@ int		print_error(char *cmd, char *arg, char *msg);
 char	*get_env_var_value(char **my_environ, const char *var_name);
 int		find_env_var_index(char **my_environ, const char *var);
 int		set_env_var(t_shell *shell, char *var, char *val);
+void	handle_post_cmd_signal(t_shell *shell);
 
 char	*get_var(char *arg);
 char	*get_val(char *arg);

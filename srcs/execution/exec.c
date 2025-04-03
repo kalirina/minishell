@@ -12,6 +12,8 @@
 
 #include "../../includes/minishell.h"
 
+int g_signal_received;
+
 static int	execute_builtin_cmd(t_shell *shell, char **args)
 {
 	int	status;
@@ -37,11 +39,13 @@ static int	execute_builtin_cmd(t_shell *shell, char **args)
 static char *check_path_entry(const char *dir, const char *cmd, char **paths)
 {
 	char	*full_path;
+	char	*tmp;
 
-	full_path = ft_strjoin(dir, "/");
-	if (!full_path)
+	tmp = ft_strjoin(dir, "/");
+	if (!tmp)
 		return (perror("minishell: malloc failed"), NULL);
-	full_path = ft_strjoin(full_path, cmd);
+	full_path = ft_strjoin(tmp, cmd);
+	free(tmp);
 	if (!full_path)
 		return (perror("minishell: malloc failed"), NULL);
 	if (access(full_path, X_OK) == 0)
@@ -111,7 +115,7 @@ char	*get_exec_path(t_shell *shell, char *cmd)
 void	exec_ext_cmd(t_shell *shell, char **args)
 {
 	char	*path;
-	int		pid;
+	pid_t	pid;
 	int		status;
 
 	path = get_exec_path(shell, args[0]);
@@ -129,6 +133,8 @@ void	exec_ext_cmd(t_shell *shell, char **args)
 	}
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		execve(path, args, shell->my_environ);
 		print_error(args[0], NULL, strerror(errno));
 		free(path);
@@ -156,47 +162,53 @@ void	execute(t_shell *shell)
     int status = 0;
     bool restore_needed = false; // Flag to indicate if we need to restore stdout/stdin
 
-    if (saved_stdin == -1 || saved_stdout == -1) {
-        perror("dup");
-        return; // Or handle the error in a more appropriate way
-    }
-
-    if (shell->cmd == NULL || shell->cmd->args == NULL) {
-        close(saved_stdin);
-        close(saved_stdout);
-        return;
-    }
-
+	if (!shell->cmd || !shell->cmd->args || !shell->cmd->args[0])
+	{
+		if (saved_stdin != -1) 
+			close(saved_stdin);
+		if (saved_stdout != -1)
+			close(saved_stdout);
+		return ;
+	}
 	if (is_builtin(shell->cmd->args))
+	{
+		g_signal_received = 0;
 		shell->exit_status = execute_builtin_cmd(shell, shell->cmd->args);
-	else {
-        // Set up input redirections
-        if (shell->cmd->input) {
-            if (setup_input_redirections(shell->cmd) == -1) {
-                status = 1;
-                restore_needed = true;
-            }
-        }
+		if (g_signal_received == SIGINT)
+			shell->exit_status = 1;
+	}
+	else
+		exec_ext_cmd(shell, shell->cmd->args);
 
-        // Set up output redirections
-        if (status == 0 && shell->cmd->output) {  // Only proceed if input redirections were successful
-            if (setup_output_redirections(shell->cmd) == -1) {
-                status = 1;
-                restore_needed = true;
-            }
-        }
+	//ENRICO
+	if (saved_stdin == -1 || saved_stdout == -1) {
+		perror("dup");
+		if (saved_stdin != -1) close(saved_stdin);
+		if (saved_stdout != -1) close(saved_stdout);
+		return; // Or handle the error in a more appropriate way
+	}
 
-        if (status == 0) { // Execute external command if redirections were successful
-            exec_ext_cmd(shell, shell->cmd->args);
+    // Set up input redirections
+    if (shell->cmd->input) {
+        if (setup_input_redirections(shell->cmd) == -1) {
+            status = 1;
+            restore_needed = true;
         }
-
-       if (restore_needed) { //Restore stdout/stdin if needed
-
-            dup2(saved_stdin, STDIN_FILENO);  // Restore original stdin
-            dup2(saved_stdout, STDOUT_FILENO); // Restore original stdout
-        }
-        close(saved_stdin);
-        close(saved_stdout);
     }
+	// Set up output redirections
+    if (status == 0 && shell->cmd->output) {  // Only proceed if input redirections were successful
+        if (setup_output_redirections(shell->cmd) == -1) {
+            status = 1;
+            restore_needed = true;
+        }
+    }
+	// if (status == 0) // Execute external command if redirections were successful
+    //     exec_ext_cmd(shell, shell->cmd->args);
+	if (restore_needed) { //Restore stdout/stdin if needed
+        dup2(saved_stdin, STDIN_FILENO);  // Restore original stdin
+        dup2(saved_stdout, STDOUT_FILENO); // Restore original stdout
+    }
+    close(saved_stdin);
+    close(saved_stdout);
 }
 

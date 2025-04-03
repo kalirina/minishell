@@ -12,6 +12,8 @@
 
 #include "../includes/minishell.h"
 
+int	g_signal_received;
+
 void	init_shell(t_shell *shell)
 {
 	setup_signal_handlers();
@@ -23,10 +25,8 @@ void	init_shell(t_shell *shell)
 void	cleanup_command_line(t_shell *shell, char *line_buffer)
 {
 	free(line_buffer);
-	// Free the structure(s) created by the parser for this line
-	// This function depends heavily on how your parser allocates memory.
-	// It might involve freeing a list of t_cmd, including args, redirs etc.
-	// free_parsed_command_structure(shell->cmd); //IMPLEMENT + free_split(shell->cmd->args);
+	//IMPLEMENT
+	//free_parsed_command_structure(shell->cmd);
 	shell->cmd = NULL;
 }
 
@@ -35,7 +35,7 @@ void	cleanup_shell(t_shell *shell)
 	if (!shell)
 		return;
 	free_split(shell->my_environ);
-	clear_history();
+	rl_clear_history();
 	free(shell);
 }
 
@@ -106,7 +106,9 @@ int	main(void)
 	init_shell(shell);
 	while (1)
 	{
+		g_signal_received = 0;
 		line_buffer = readline("minishell>");
+		handle_post_cmd_signal(shell);
 		if (!line_buffer) // (Ctrl+D)
 		{
 			ft_putstr_fd("exit\n", STDOUT_FILENO);
@@ -120,8 +122,13 @@ int	main(void)
 			free(line_buffer);
 			continue ;
 		}
-		// if (lexer(shell, line_buffer) == 0 && parser(shell) == 0)//!!!!!would be easier to controll the succes of the process if it was int
-		// 	execute(shell);
+		//CHANGE TO THIS
+		// if (lexer(shell, line_buffer) == 0 && parser(shell) == 0)
+		// {
+		// 	if (shell->cmd)
+		// 		execute(shell);
+		// 		...
+		// }
 		lexer(shell, rl_line_buffer);
 		parser(shell);
 		if (shell->cmd)
@@ -133,8 +140,9 @@ int	main(void)
 			free(shell->cmd);
 			shell->cmd = NULL;
 		}
+		free(line_buffer);
 	}
-	cleanup_shell(shell);
 	last_status = shell->exit_status;
+	cleanup_shell(shell);
 	return (last_status);
 }
