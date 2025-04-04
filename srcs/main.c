@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/04 15:38:15 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/04 17:12:29 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,8 +60,7 @@ void	init_shell(t_shell *shell)
 void	cleanup_command_line(t_shell *shell, char *line_buffer)
 {
 	free(line_buffer);
-	//IMPLEMENT
-	//free_parsed_command_structure(shell->cmd);
+	free_command(shell->cmd);
 	shell->cmd = NULL;
 }
 
@@ -87,9 +86,12 @@ int	main(void)
 	init_shell(shell);
 	while (1)
 	{
+		if (g_signal_received == SIGINT)
+			shell->exit_status = 130;
+		else if (g_signal_received == SIGQUIT)
+			shell->exit_status = 131;
 		g_signal_received = 0;
 		line_buffer = readline("minishell>");
-		handle_post_cmd_signal(shell);
 		if (!line_buffer) // (Ctrl+D)
 		{
 			ft_putstr_fd("exit\n", STDOUT_FILENO);

@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/04 14:04:28 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/04 17:10:59 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,7 +171,6 @@ int setup_input_redirections(t_command *cmd)
     return 0; //Success
 }
 
-
 int	setup_output_redirections(t_command *cmd)
 {
 	t_redirection	*output_redir;
@@ -319,21 +318,16 @@ void	execute_cmd(t_shell	*shell)
 	int saved_stdin;
 	int saved_stdout;
 	int status;
-  
+
 	status = 0;
 	saved_stdin = dup(STDIN_FILENO);
 	saved_stdout = dup(STDOUT_FILENO);
-
-
-	//ENRICO
 	if (saved_stdin == -1 || saved_stdout == -1) {
 		perror("dup");
 		if (saved_stdin != -1) close(saved_stdin);
 		if (saved_stdout != -1) close(saved_stdout);
 		return; // Or handle the error in a more appropriate way
 	}
-  
-  
 	current_cmd = shell->cmd;
 	if (current_cmd->input)
 	{
@@ -346,11 +340,13 @@ void	execute_cmd(t_shell	*shell)
 			status = 1;
 	}
 	if (is_builtin(current_cmd->args))
-  {
-    g_signal_received = 0;
+	{
+    	g_signal_received = 0;
 		shell->exit_status = execute_builtin_cmd(shell, shell->cmd->args);
 		if (g_signal_received == SIGINT)
 			shell->exit_status = 1;
+		else if (g_signal_received == SIGQUIT)
+			shell->exit_status = 131;
   }
 	else
 		exec_ext_cmd(shell, current_cmd->args);
