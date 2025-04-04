@@ -6,13 +6,11 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/28 20:14:07 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:04:28 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-int g_signal_received;
 
 static int	execute_builtin_cmd(t_shell *shell, char **args)
 {
@@ -164,7 +162,7 @@ void	execute(t_shell *shell)
 
 	if (!shell->cmd || !shell->cmd->args || !shell->cmd->args[0])
 	{
-		if (saved_stdin != -1) 
+		if (saved_stdin != -1)
 			close(saved_stdin);
 		if (saved_stdout != -1)
 			close(saved_stdout);

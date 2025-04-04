@@ -6,13 +6,11 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/28 20:18:13 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:15:10 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-int	g_signal_received;
 
 void	init_shell(t_shell *shell)
 {

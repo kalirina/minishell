@@ -6,13 +6,14 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/28 20:20:44 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:11:18 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <signal.h>
 # include "../srcs/libft/libft.h"
 # include <stdlib.h>
 # include <unistd.h>
@@ -22,11 +23,12 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
-# include <signal.h>
 # include <string.h>
 # include <errno.h>
 # include <limits.h>
 # include <fcntl.h>
+
+extern volatile sig_atomic_t	g_signal_received;
 
 typedef struct s_token
 {
