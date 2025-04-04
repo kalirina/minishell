@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/04 15:34:51 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/04 16:56:11 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,8 @@ void	setup_signal_handlers(void);
 void	init_environ(t_shell *shell);
 int		skip(char *line);
 int		slash(char *line);
+char	*new_strjoin(char const *s1, char const *s2);
+
 
 int		print_error(char *cmd, char *arg, char *msg);
 char	*get_env_var_value(char **my_environ, const char *var_name);

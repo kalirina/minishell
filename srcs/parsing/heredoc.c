@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 16:55:29 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/03 19:39:31 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/04 17:00:52 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ char *get_heredoc_input(const char *delimiter)
 {
 	char	*line;
 	char	*result;
-	char	*tmp;
 	int		delimiter_length;
 
 	result = NULL;
@@ -31,14 +30,8 @@ char *get_heredoc_input(const char *delimiter)
 			free(line);
 			break;
 		}
-		tmp = result;
-		result = ft_strjoin(result, line);
-		if (tmp)
-			free(tmp);
-		tmp = result;
-		result = ft_strjoin(result, "\n");
-		if (tmp)
-			free(tmp);
+		result = new_strjoin(result, line);
+		result = new_strjoin(result, "\n");
 		free(line);
 	}
 	return (result);

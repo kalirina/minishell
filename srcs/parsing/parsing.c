@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/03 19:33:12 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/04 17:01:32 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,7 @@ t_command *handle_redirection(t_command *cmd, t_token **tokens)
 	char		*type;
 	t_token		*next_token;
 
+	
 	while (*tokens)
 	{
 		type = is_redirection((*tokens)->str);
@@ -120,7 +121,7 @@ t_command *handle_redirection(t_command *cmd, t_token **tokens)
 				return (free_command(cmd), NULL);
 			*tokens = (*tokens)->next;
 		}
-		if (ft_strncmp(type, "<", 1) == 0)
+		else if (ft_strncmp(type, "<", 1) == 0)
 		{
 			if (!add_redirection(&cmd->input, (*tokens)->next->str, false, false))
 				return (free_command(cmd), NULL);
@@ -154,13 +155,8 @@ t_command *parse_cmd(t_token **tokens)
 	tmp = *tokens;
 	while (tmp && ft_strncmp(tmp->str, "|", 1) && is_redirection(tmp->str) == NULL)
 	{
-		if (is_redirection(tmp->str) != NULL)
-			break;
-		else
-		{
-			count++;
-			tmp = tmp->next;
-		}
+		count++;
+		tmp = tmp->next;
 	}
 	args = get_args(tokens, count);
 	if (args)

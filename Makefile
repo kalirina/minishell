@@ -11,6 +11,7 @@ SRCS = srcs/main.c\
 		srcs/parsing/heredoc.c\
 		srcs/utils/list_utils.c\
 		srcs/utils/signals.c\
+		srcs/utils/safe_utils.c\
 		srcs/builtins/cd.c\
 		srcs/builtins/echo.c\
 		srcs/builtins/env_utils.c\
