@@ -6,12 +6,11 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/28 16:43:35 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/03 19:33:12 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
 
 t_command	*new_node(char **args)
 {
@@ -35,7 +34,7 @@ char	**get_args(t_token **tokens, int size)
 	args = malloc((size + 1) * sizeof(char *));
 	if (!args)
 		return (NULL);
-	while (i < size)
+	while (i < size && *tokens)
 	{
 		args[i++] = (*tokens)->str;
 		*tokens = (*tokens)->next;
@@ -43,8 +42,6 @@ char	**get_args(t_token **tokens, int size)
 	args[size] = NULL;
 	return (args);
 }
-
-
 
 char		*is_redirection(char *str)
 {
@@ -59,21 +56,28 @@ char		*is_redirection(char *str)
 	return (NULL);
 }
 
+
 // t_command *handle_redirection(t_command *cmd, t_token **tokens)
 // {
 // 	char *type;
+// 	t_token *next_token;
 
 // 	while (*tokens)
 // 	{
 // 		type = is_redirection((*tokens)->str);
 // 		if (!type)
 // 			break;
+// 		next_token = (*tokens)->next;
+// 		if (next_token == NULL || is_redirection(next_token->str) != NULL
+// 			|| (next_token && ft_strncmp(next_token->str, "|", 1) == 0))
+// 		{
+// 			fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
+// 			free_command(cmd);
+// 			return NULL;
+// 		}
 // 		*tokens = (*tokens)->next;
 // 		if (!(*tokens))
-// 		{
-// 			// Handle missing filename after redirection operator
 // 			return (cmd);
-// 		}
 // 		if (ft_strncmp(type, "<", 1) == 0)
 // 		{
 // 			if (!add_redirection(&cmd->input, (*tokens)->str, false))
@@ -94,44 +98,10 @@ char		*is_redirection(char *str)
 // 	return (cmd);
 // }
 
-// t_command	*parse_cmd(t_token **tokens)
-// {
-// 	t_command	*cmd;
-// 	t_token		*tmp;
-// 	char		**args;
-// 	int			count;
-
-// 	tmp = *tokens;
-// 	count = 0;
-// 	while (tmp && ft_strncmp(tmp->str, "|", 1))
-// 	{
-// 		if (is_redirection(tmp->str) != NULL)
-// 		{
-// 			tmp = tmp->next;
-// 			if (tmp == NULL)
-// 			{
-// 				printf("minishell : syntax error missing filename\n");
-// 				return (NULL);
-// 			}
-// 			tmp = tmp->next;
-// 		}
-// 		else
-// 		{
-// 			count++;
-// 			tmp = tmp->next;
-// 		}
-// 	}
-// 	args = get_args(tokens, count);
-// 	cmd = new_node(args);
-// 	if (*tokens && is_redirection((*tokens)->str))
-// 		cmd = handle_redirection(cmd, tokens);
-// 	return (cmd);
-// }
-
 t_command *handle_redirection(t_command *cmd, t_token **tokens)
 {
-	char *type;
-	t_token *next_token;
+	char		*type;
+	t_token		*next_token;
 
 	while (*tokens)
 	{
@@ -139,30 +109,34 @@ t_command *handle_redirection(t_command *cmd, t_token **tokens)
 		if (!type)
 			break;
 		next_token = (*tokens)->next;
-		if (next_token == NULL || is_redirection(next_token->str) != NULL
-			|| (next_token && ft_strncmp(next_token->str, "|", 1) == 0))
+		if (next_token == NULL)
 		{
-			fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
-			free_command(cmd);
-			return NULL;
+			printf("minishell: syntax error near unexpected token `%s'\n", (*tokens)->str);
+			return (free_command(cmd), NULL);
 		}
-		*tokens = (*tokens)->next;
-		if (!(*tokens))
-			return (cmd);
+		else if (ft_strncmp(type, "<<", 2) == 0)
+		{
+			if (!add_redirection(&cmd->input, (*tokens)->next->str, false, true))
+				return (free_command(cmd), NULL);
+			*tokens = (*tokens)->next;
+		}
 		if (ft_strncmp(type, "<", 1) == 0)
 		{
-			if (!add_redirection(&cmd->input, (*tokens)->str, false))
+			if (!add_redirection(&cmd->input, (*tokens)->next->str, false, false))
 				return (free_command(cmd), NULL);
+			*tokens = (*tokens)->next;
 		}
 		else if (ft_strncmp(type, ">>", 2) == 0)
 		{
-			if (!add_redirection(&cmd->output, (*tokens)->str, true))
+			if (!add_redirection(&cmd->output, (*tokens)->next->str, true, false))
 				return (free_command(cmd), NULL);
+			*tokens = (*tokens)->next;
 		}
 		else if (ft_strncmp(type, ">", 1) == 0)
 		{
-			if (!add_redirection(&cmd->output, (*tokens)->str, false))
+			if (!add_redirection(&cmd->output, (*tokens)->next->str, false, false))
 				return (free_command(cmd), NULL);
+			*tokens = (*tokens)->next;
 		}
 		*tokens = (*tokens)->next;
 	}
@@ -173,7 +147,7 @@ t_command *parse_cmd(t_token **tokens)
 {
 	t_command	*cmd;
 	t_token		*tmp;
-	char 		**args;
+	char		**args;
 	int			count;
 
 	count = 0;
@@ -189,7 +163,8 @@ t_command *parse_cmd(t_token **tokens)
 		}
 	}
 	args = get_args(tokens, count);
-	cmd = new_node(args);
+	if (args)
+		cmd = new_node(args);
 	if (*tokens && is_redirection((*tokens)->str))
 		cmd = handle_redirection(cmd, tokens);
 	return (cmd);
@@ -204,9 +179,11 @@ t_command	*parse_tokens(t_token **tokens)
 	current = first;
 	while (*tokens)
 	{
-		if (ft_strncmp((*tokens)->str, "|", 1) == 0)	//AGGIUNGERE CASO PER echo figlio|cat ditroia
+		if (ft_strncmp((*tokens)->str, "|", 1) == 0)
 		{
 			*tokens = (*tokens)->next;
+			if (!first || !(*tokens) || ft_strncmp((*tokens)->str, "|", 1) == 0)
+				return (printf("minishell: syntax error near unexpected token '|'\n"), NULL);
 			current->next = parse_cmd(tokens);
 			current = current->next;
 		}

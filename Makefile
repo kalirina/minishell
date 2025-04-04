@@ -2,18 +2,20 @@ NAME = minishell
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 SRCS = srcs/main.c\
+		srcs/debug.c\
 		srcs/parsing/lexing.c\
 		srcs/parsing/lexing_utils.c\
 		srcs/parsing/parse_utils.c\
 		srcs/parsing/parsing.c\
 		srcs/parsing/expand.c\
+		srcs/parsing/heredoc.c\
 		srcs/utils/list_utils.c\
 		srcs/utils/signals.c\
 		srcs/builtins/cd.c\
 		srcs/builtins/echo.c\
-		srcs/builtins/env_utils\
-		srcs/builtins/export_utils\
-		srcs/builtins/input_utils\
+		srcs/builtins/env_utils.c\
+		srcs/builtins/export_utils.c\
+		srcs/builtins/input_utils.c\
 		srcs/builtins/exit.c\
 		srcs/builtins/env.c\
 		srcs/builtins/export.c\

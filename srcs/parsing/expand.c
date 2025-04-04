@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 13:20:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/28 17:45:32 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/02 10:44:34 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@ char	*handle_variable(t_shell *shell, char *arg)
 
 	len = 1;
 	// Handle $? -> exit status
-	// if (arg[1] == '?')
-	// 	return (ft_itoa(shell->exit_status));
+	if (arg[1] == '?')
+		return (ft_itoa(shell->exit_status));
 	// Handle $ -> literal $
 	if (arg[1] == '\0')
 		return (ft_strdup("$"));
@@ -53,7 +53,7 @@ char	*handle_variable(t_shell *shell, char *arg)
 		return (ft_substr(arg, 2, ft_strlen(arg) - 2));
 	// Handle $=HOME -> literal $=HOME
 	if (arg[1] == '=')
-		return (ft_strdup(arg));
+		return (ft_strdup("$"));
 	// Handle $$
 	if (arg[1] == '$')
 	{
@@ -77,6 +77,11 @@ char	*extract_var_name(char *arg)
 	char	*var_name;
 	int		len;
 
+	if (arg[1] == '$' || arg[1] == '?')
+	{
+		var_name = ft_substr(arg, 1, 1);
+		return (var_name);
+	}
 	len = 1;
 	while (ft_isalnum(arg[len]) || arg[len] == '_')
 		len++;
@@ -112,31 +117,75 @@ char	*new_extended_value(char *orig, char *extended, char *start)
 	return (res);
 }
 
-void	expand(t_shell *shell)
-{
-	t_token	*current;
-	char	*tmp;
-	char	*extended;
-	char	*new_value;
+// void	expand(t_shell *shell)
+// {
+// 	t_token	*current;
+// 	char	*tmp;
+// 	char	*extended;
+// 	char	*new_value;
+// 	char	*last_expansion;
 
-	tmp = NULL;
-	current = shell->tokens;
-	while (current)
-	{
-		if (current->quotes == '"' || current->quotes == 0)
-		{
-			tmp = ft_strchr(current->str, '$');
-			while (tmp != NULL)
-			{
-				extended = handle_variable(shell, tmp);
-				new_value = new_extended_value(current->str, extended, tmp);
-				free(current->str);
-				free(extended);
-				current->str = new_value;
-				printf("current->str %s\n", current->str);
-				tmp = ft_strchr(current->str, '$');
-			}
-		}
-		current = current->next;
-	}
+// 	tmp = NULL;
+// 	current = shell->tokens;
+// 	while (current)
+// 	{
+// 		last_expansion = NULL;
+// 		if (current->quotes == '"' || current->quotes == 0)
+// 		{
+// 			tmp = ft_strchr(current->str, '$');
+// 			while (tmp != NULL)
+// 			{
+// 				extended = handle_variable(shell, tmp);
+// 				new_value = new_extended_value(current->str, extended, tmp);
+// 				free(current->str);
+// 				free(extended);
+// 				current->str = new_value;
+// 				printf("new value : %s\n", new_value);
+// 				tmp = ft_strchr(current->str, '$');
+// 				if (tmp + 1 && tmp)
+// 			}
+// 		}
+// 		current = current->next;
+// 	}
+// }
+
+
+void    expand(t_shell *shell)
+{
+    t_token    *current;
+    char    *tmp;
+    char    *extended;
+    char    *new_value;
+    char    *last_expansion_end;
+
+    current = shell->tokens;
+    while (current)
+    {
+        last_expansion_end = NULL; // Initialize
+        if (current->quotes == '"' || current->quotes == 0)
+        {
+            tmp = ft_strchr(current->str, '$');
+            while (tmp != NULL)
+            {
+                // Only expand if this $ is *after* the last expansion
+                if (!last_expansion_end || tmp > last_expansion_end)
+                {
+                    extended = handle_variable(shell, tmp);
+                    new_value = new_extended_value(current->str, extended, tmp);
+                    free(current->str);
+                    free(extended);
+                    current->str = new_value;
+
+                    // Update last_expansion_end
+                    last_expansion_end = tmp + ft_strlen(new_value); //this line must be reviewd
+                    tmp = ft_strchr(current->str, '$');
+                }
+                else
+                {
+                    tmp = ft_strchr(tmp + 1, '$');
+                }
+            }
+        }
+        current = current->next;
+    }
 }

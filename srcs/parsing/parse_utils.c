@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 17:13:27 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/28 00:31:55 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/03 18:17:08 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ char	*skip_spaces(char *str)
 	return (str);
 }
 
-t_redirection *add_redirection(t_redirection **head, char *file, bool append)
+t_redirection *add_redirection(t_redirection **head, char *file, bool append, bool heredoc)
 {
 	t_redirection	*new_redir;
 	t_redirection	*current;
@@ -56,6 +56,7 @@ t_redirection *add_redirection(t_redirection **head, char *file, bool append)
 		return (NULL);
 	new_redir->file = ft_strdup(file);
 	new_redir->append = append;
+	new_redir->heredoc = heredoc;
 	new_redir->next = NULL;
 	if (*head == NULL)
 		*head = new_redir;
@@ -69,38 +70,4 @@ t_redirection *add_redirection(t_redirection **head, char *file, bool append)
 		current->next = new_redir;
 	}
 	return (new_redir);
-}
-
-void	free_redirection_list(t_redirection *head)
-{
-	t_redirection *current;
-	t_redirection *next;
-
-	current = head;
-	while (current != NULL)
-	{
-		next = current->next;
-		free(current->file);
-		free(current);
-		current = next;
-	}
-}
-
-void	free_command(t_command *cmd)
-{
-	int	i;
-
-	if (!cmd)
-		return;
-
-    if (cmd->args)
-	{
-		i = 0;
-		while (cmd->args[i] != NULL)
-			free(cmd->args[i++]);
-		free(cmd->args);
-	}
-	free_redirection_list(cmd->input);
-	free_redirection_list(cmd->output);
-	free(cmd);
 }
