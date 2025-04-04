@@ -22,7 +22,7 @@ SRCS = srcs/main.c\
 		srcs/builtins/pwd.c\
 		srcs/builtins/unset.c\
 		srcs/execution/exec_utils.c\
-		srcs/execution/exec.c\
+		srcs/execution/exec.c
 
 OBJS = $(SRCS:.c=.o)
 LIBFT = srcs/libft/libft.a

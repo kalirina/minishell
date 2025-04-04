@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/03 19:59:37 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:04:28 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,11 +37,13 @@ static int	execute_builtin_cmd(t_shell *shell, char **args)
 static char *check_path_entry(const char *dir, const char *cmd, char **paths)
 {
 	char	*full_path;
+	char	*tmp;
 
-	full_path = ft_strjoin(dir, "/");
-	if (!full_path)
+	tmp = ft_strjoin(dir, "/");
+	if (!tmp)
 		return (perror("minishell: malloc failed"), NULL);
-	full_path = ft_strjoin(full_path, cmd);
+	full_path = ft_strjoin(tmp, cmd);
+	free(tmp);
 	if (!full_path)
 		return (perror("minishell: malloc failed"), NULL);
 	if (access(full_path, X_OK) == 0)
@@ -202,7 +204,7 @@ int	setup_output_redirections(t_command *cmd)
 void	exec_ext_cmd(t_shell *shell, char **args)
 {
 	char	*path;
-	int		pid;
+	pid_t	pid;
 	int		status;
 
 	path = get_exec_path(shell, args[0]);
@@ -220,6 +222,8 @@ void	exec_ext_cmd(t_shell *shell, char **args)
 	}
 	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_DFL);
 		execve(path, args, shell->my_environ);
 		print_error(args[0], NULL, strerror(errno));
 		free(path);
@@ -315,15 +319,21 @@ void	execute_cmd(t_shell	*shell)
 	int saved_stdin;
 	int saved_stdout;
 	int status;
-
+  
 	status = 0;
 	saved_stdin = dup(STDIN_FILENO);
 	saved_stdout = dup(STDOUT_FILENO);
-	if (saved_stdin == -1 || saved_stdout == -1)
-	{
+
+
+	//ENRICO
+	if (saved_stdin == -1 || saved_stdout == -1) {
 		perror("dup");
-		return ;
+		if (saved_stdin != -1) close(saved_stdin);
+		if (saved_stdout != -1) close(saved_stdout);
+		return; // Or handle the error in a more appropriate way
 	}
+  
+  
 	current_cmd = shell->cmd;
 	if (current_cmd->input)
 	{
@@ -336,7 +346,12 @@ void	execute_cmd(t_shell	*shell)
 			status = 1;
 	}
 	if (is_builtin(current_cmd->args))
-		shell->exit_status = execute_builtin_cmd(shell, current_cmd->args);
+  {
+    g_signal_received = 0;
+		shell->exit_status = execute_builtin_cmd(shell, shell->cmd->args);
+		if (g_signal_received == SIGINT)
+			shell->exit_status = 1;
+  }
 	else
 		exec_ext_cmd(shell, current_cmd->args);
 	dup2(saved_stdin, STDIN_FILENO);

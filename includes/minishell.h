@@ -3,16 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/03 18:16:34 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/04 14:11:18 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <signal.h>
 # include "../srcs/libft/libft.h"
 # include <stdlib.h>
 # include <unistd.h>
@@ -22,11 +23,13 @@
 # include <sys/stat.h>
 # include <sys/types.h>
 # include <sys/wait.h>
-# include <signal.h>
 # include <string.h>
 # include <errno.h>
 # include <fcntl.h>
 # include <limits.h>
+# include <fcntl.h>
+
+extern volatile sig_atomic_t	g_signal_received;
 
 typedef struct s_token
 {
@@ -76,6 +79,9 @@ t_token	*clean_tokens(t_token *tokens);
 
 //test
 void	print_tokens(t_token *t);
+int		setup_input_redirections(t_command *cmd);
+int		setup_output_redirections(t_command *cmd);
+
 void	print_command(t_command *c);
 
 void	setup_signal_handlers(void);
@@ -88,6 +94,7 @@ int		print_error(char *cmd, char *arg, char *msg);
 char	*get_env_var_value(char **my_environ, const char *var_name);
 int		find_env_var_index(char **my_environ, const char *var);
 int		set_env_var(t_shell *shell, char *var, char *val);
+void	handle_post_cmd_signal(t_shell *shell);
 
 char	*get_var(char *arg);
 char	*get_val(char *arg);
