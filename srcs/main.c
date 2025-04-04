@@ -6,11 +6,48 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/28 18:59:46 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/03 19:03:23 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
+
+void    free_command(t_command *cmd)
+{
+    int        i;
+    t_redirection *current;
+    t_redirection *next;
+
+    if (!cmd)
+        return ;
+    if (cmd->args)
+    {
+        i = 0;
+        while (cmd->args[i] != NULL)
+        {
+            free(cmd->args[i]);
+            i++;
+        }
+        free(cmd->args);
+    }
+    current = cmd->input;
+    while (current != NULL)
+    {
+        next = current->next;
+        free(current->file);
+        free(current);
+        current = next;
+    }
+    current = cmd->output;
+    while (current != NULL)
+    {
+        next = current->next;
+        free(current->file);
+        free(current);
+        current = next;
+    }
+    free(cmd);
+}
 
 void	init_shell(t_shell *shell)
 {
@@ -66,17 +103,15 @@ int	main(void)
 			free(line_buffer);
 			continue ;
 		}
-		// if (lexer(shell, line_buffer) == 0 && parser(shell) == 0)//!!!!!would be easier to controll the succes of the process if it was int
-		// 	execute(shell);
 		lexer(shell, rl_line_buffer);
+		//print_tokens(shell->tokens);
 		parser(shell);
+		//print_command(shell->cmd);
 		if (shell->cmd)
 		{
 			execute(shell);
-			free_split(shell->cmd->args);
-			free(shell->tokens);
+			free_command(shell->cmd);
 			shell->tokens = NULL;
-			free(shell->cmd);
 			shell->cmd = NULL;
 		}
 	}
