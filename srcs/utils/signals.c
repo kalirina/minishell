@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/04 15:11:21 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/04 15:35:44 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ void	handle_post_cmd_signal(t_shell *shell)
 {
 	if (g_signal_received == SIGINT)
 	{
-		handle_sigint();
+		handle_sigint(g_signal_received);
 		g_signal_received = 0;
 		shell->exit_status = 1;
 	}

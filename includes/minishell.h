@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/04 14:11:18 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/04 15:34:51 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ int		setup_output_redirections(t_command *cmd);
 
 void	print_command(t_command *c);
 
+//signals
+void	handle_sigint(int signo);
 void	setup_signal_handlers(void);
 //utils
 void	init_environ(t_shell *shell);

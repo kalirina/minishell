@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/04 14:15:10 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/04 15:38:15 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,60 +74,6 @@ void	cleanup_shell(t_shell *shell)
 	free(shell);
 }
 
-int setup_input_redirections(t_command *cmd)
-{
-	t_redirection *input_redir = cmd->input;
-	int fd;
-
-	while (input_redir != NULL) {
-		fd = open(input_redir->file, O_RDONLY);
-		if (fd == -1) {
-			perror("open (input)");
-			return -1;  // Indicate error
-		}
-
-		if (dup2(fd, STDIN_FILENO) == -1) {
-			perror("dup2 (input)");
-			close(fd);
-			return -1;
-		}
-
-		close(fd);  // Close the original file descriptor
-		input_redir = input_redir->next;
-	}
-	return 0; //Success
-}
-
-int setup_output_redirections(t_command *cmd) {
-	t_redirection *output_redir = cmd->output;
-	int fd;
-	int flags;
-
-	while (output_redir != NULL) {
-		flags = O_WRONLY | O_CREAT;
-		if (output_redir->append) {
-			flags |= O_APPEND;
-		} else {
-			flags |= O_TRUNC;
-		}
-
-		fd = open(output_redir->file, flags, 0644);
-		if (fd == -1) {
-			perror("open (output)");
-			return -1;
-		}
-
-		if (dup2(fd, STDOUT_FILENO) == -1) {
-			perror("dup2 (output)");
-			close(fd);
-			return -1;
-		}
-
-		close(fd);
-		output_redir = output_redir->next;
-	}
-	return 0;
-}
 
 int	main(void)
 {
