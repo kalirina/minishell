@@ -12,6 +12,43 @@
 
 #include "../includes/minishell.h"
 
+void    free_command(t_command *cmd)
+{
+    int        i;
+    t_redirection *current;
+    t_redirection *next;
+
+    if (!cmd)
+        return ;
+    if (cmd->args)
+    {
+        i = 0;
+        while (cmd->args[i] != NULL)
+        {
+            free(cmd->args[i]);
+            i++;
+        }
+        free(cmd->args);
+    }
+    current = cmd->input;
+    while (current != NULL)
+    {
+        next = current->next;
+        free(current->file);
+        free(current);
+        current = next;
+    }
+    current = cmd->output;
+    while (current != NULL)
+    {
+        next = current->next;
+        free(current->file);
+        free(current);
+        current = next;
+    }
+    free(cmd);
+}
+
 void	init_shell(t_shell *shell)
 {
 	setup_signal_handlers();
@@ -128,14 +165,14 @@ int	main(void)
 		// 		...
 		// }
 		lexer(shell, rl_line_buffer);
+		//print_tokens(shell->tokens);
 		parser(shell);
+		//print_command(shell->cmd);
 		if (shell->cmd)
 		{
 			execute(shell);
-			free_split(shell->cmd->args);
-			free(shell->tokens);
+			free_command(shell->cmd);
 			shell->tokens = NULL;
-			free(shell->cmd);
 			shell->cmd = NULL;
 		}
 		free(line_buffer);

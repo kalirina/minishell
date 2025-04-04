@@ -25,6 +25,7 @@
 # include <sys/wait.h>
 # include <string.h>
 # include <errno.h>
+# include <fcntl.h>
 # include <limits.h>
 # include <fcntl.h>
 
@@ -40,6 +41,7 @@ typedef struct s_token
 typedef struct s_redirection {
 	char					*file;
 	bool					append;
+	bool					heredoc;
 	struct s_redirection	*next;
 } t_redirection;
 
@@ -64,11 +66,11 @@ void	parser(t_shell *shell);
 
 //parsing utils
 char	*skip_spaces(char *str);
-bool	is_space(char str);
 char	*ft_strndup(const char *s, size_t n);
-t_redirection *add_redirection(t_redirection **head, char *file, bool append);
+char	*get_heredoc_input(const char *delimiter);
+bool	is_space(char str);
 void	free_command(t_command *cmd);
-
+t_redirection *add_redirection(t_redirection **head, char *file, bool append, bool heredoc);
 
 t_token	*create_token(char *str);
 t_token	*add_token(t_token **head, t_token *new);
@@ -79,6 +81,9 @@ t_token	*clean_tokens(t_token *tokens);
 void	print_tokens(t_token *t);
 int		setup_input_redirections(t_command *cmd);
 int		setup_output_redirections(t_command *cmd);
+
+void	print_command(t_command *c);
+
 void	setup_signal_handlers(void);
 //utils
 void	init_environ(t_shell *shell);

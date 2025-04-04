@@ -110,6 +110,97 @@ char	*get_exec_path(t_shell *shell, char *cmd)
 	return (path);
 }
 
+// int	setup_input_redirections(t_command *cmd)
+// {
+// 	t_redirection	*input_redir;
+// 	int				fd;
+
+// 	input_redir = cmd->input;
+// 	while (input_redir != NULL)
+// 	{
+// 		fd = open(input_redir->file, O_RDONLY);
+// 		if (fd == -1)
+// 			return (perror("open (input)"), -1);
+// 		if (dup2(fd, STDIN_FILENO) == -1)
+// 		{
+// 			close(fd);
+// 			return (perror("dup2 (input)"), -1);
+// 		}
+// 		close(fd);
+// 		input_redir = input_redir->next;
+// 	}
+// 	return (0);
+// }
+
+int setup_input_redirections(t_command *cmd)
+{
+	t_redirection *input_redir;
+	int fd;
+	char *heredoc_content;
+
+	input_redir = cmd->input;
+	while (input_redir != NULL)
+	{
+		if (input_redir->heredoc)
+		{
+			heredoc_content = get_heredoc_input(input_redir->file);
+			if (heredoc_content == NULL)
+				return (-1);
+			fd = open(".temp_heredoc", O_CREAT | O_TRUNC | O_WRONLY, 0600);
+			if (fd == -1)
+				return (perror("open (input)"), -1);
+			write(fd, heredoc_content, strlen(heredoc_content));
+			close(fd);
+			free(heredoc_content);
+			fd = open(".temp_heredoc", O_RDONLY);
+			unlink(".temp_heredoc");
+		}
+		else
+			fd = open(input_redir->file, O_RDONLY);
+		if (fd == -1)
+			return (perror("open (input)"), -1);
+		if (dup2(fd, STDIN_FILENO) == -1) {
+            perror("dup2 (input)");
+            close(fd);
+            return -1;
+        }
+
+        close(fd);  // Close the original file descriptor
+        input_redir = input_redir->next;
+    }
+    return 0; //Success
+}
+
+
+int	setup_output_redirections(t_command *cmd)
+{
+	t_redirection	*output_redir;
+	int				fd;
+	int				flags;
+
+	output_redir = cmd->output;
+	while (output_redir != NULL)
+	{
+		flags = O_WRONLY | O_CREAT;
+		if (output_redir->append)
+			flags |= O_APPEND;
+		else
+			flags |= O_TRUNC;
+		fd = open(output_redir->file, flags, 0644);
+		if (fd == -1)
+			return (perror("open (output)"), -1);
+		if (dup2(fd, STDOUT_FILENO) == -1)
+		{
+			perror("dup2 (output)");
+			close(fd);
+			return (-1);
+		}
+		close(fd);
+		output_redir = output_redir->next;
+	}
+	return (0);
+}
+
 void	exec_ext_cmd(t_shell *shell, char **args)
 {
 	char	*path;
@@ -153,30 +244,86 @@ void	exec_ext_cmd(t_shell *shell, char **args)
 	}
 }
 
-void	execute(t_shell *shell)
+void execute_pipeline(t_shell *shell, int num_commands)
 {
-	int saved_stdin = dup(STDIN_FILENO);   // Save original stdin
-    int saved_stdout = dup(STDOUT_FILENO); // Save original stdout
-    int status = 0;
-    bool restore_needed = false; // Flag to indicate if we need to restore stdout/stdin
+	t_command	*current_cmd;
+	pid_t		pids[num_commands];
+	int			pipefds[num_commands - 1][2];
+	int			i;
+	int			j;
 
-	if (!shell->cmd || !shell->cmd->args || !shell->cmd->args[0])
+	current_cmd = shell->cmd;
+	i = 0;
+	while (i < num_commands - 1)
 	{
-		if (saved_stdin != -1)
-			close(saved_stdin);
-		if (saved_stdout != -1)
-			close(saved_stdout);
-		return ;
+		if (pipe(pipefds[i++]) == -1)
+		{
+			perror("pipe");
+			exit(EXIT_FAILURE);
+		}
 	}
-	if (is_builtin(shell->cmd->args))
+	i = 0;
+	while (i < num_commands)
 	{
-		g_signal_received = 0;
-		shell->exit_status = execute_builtin_cmd(shell, shell->cmd->args);
-		if (g_signal_received == SIGINT)
-			shell->exit_status = 1;
+		pids[i] = fork();
+		if (pids[i] == -1)
+		{
+			perror("fork");
+			exit(EXIT_FAILURE);
+		}
+		if (pids[i] == 0)
+		{
+			if (i > 0)
+				dup2(pipefds[i - 1][0], STDIN_FILENO);
+			if (i < num_commands - 1)
+				dup2(pipefds[i][1], STDOUT_FILENO);
+			j = 0;
+			while (j < num_commands - 1)
+			{
+				close(pipefds[j][0]);
+				close(pipefds[j++][1]);
+			}
+			if (setup_input_redirections(current_cmd))
+				exit(EXIT_FAILURE);
+			if (setup_output_redirections(current_cmd))
+				exit(EXIT_FAILURE);
+			if (is_builtin(current_cmd->args))
+				exit(execute_builtin_cmd(shell, current_cmd->args));
+			else
+			{
+				char *path = get_exec_path(shell, current_cmd->args[0]);
+				if (!path)
+					exit(127);
+				execve(path, current_cmd->args, shell->my_environ);
+				perror("execve");
+				exit(EXIT_FAILURE);
+			}
+		}
+		current_cmd = current_cmd->next;
+		i++;
 	}
-	else
-		exec_ext_cmd(shell, shell->cmd->args);
+	i = 0;
+	while (i < num_commands - 1)
+	{
+		close(pipefds[i][0]);
+		close(pipefds[i++][1]);
+	}
+	i = 0;
+	while (i < num_commands)
+		waitpid(pids[i++], NULL, 0);
+}
+
+void	execute_cmd(t_shell	*shell)
+{
+	t_command	*current_cmd;
+	int saved_stdin;
+	int saved_stdout;
+	int status;
+  
+	status = 0;
+	saved_stdin = dup(STDIN_FILENO);
+	saved_stdout = dup(STDOUT_FILENO);
+
 
 	//ENRICO
 	if (saved_stdin == -1 || saved_stdout == -1) {
@@ -185,28 +332,50 @@ void	execute(t_shell *shell)
 		if (saved_stdout != -1) close(saved_stdout);
 		return; // Or handle the error in a more appropriate way
 	}
-
-    // Set up input redirections
-    if (shell->cmd->input) {
-        if (setup_input_redirections(shell->cmd) == -1) {
-            status = 1;
-            restore_needed = true;
-        }
-    }
-	// Set up output redirections
-    if (status == 0 && shell->cmd->output) {  // Only proceed if input redirections were successful
-        if (setup_output_redirections(shell->cmd) == -1) {
-            status = 1;
-            restore_needed = true;
-        }
-    }
-	// if (status == 0) // Execute external command if redirections were successful
-    //     exec_ext_cmd(shell, shell->cmd->args);
-	if (restore_needed) { //Restore stdout/stdin if needed
-        dup2(saved_stdin, STDIN_FILENO);  // Restore original stdin
-        dup2(saved_stdout, STDOUT_FILENO); // Restore original stdout
-    }
-    close(saved_stdin);
-    close(saved_stdout);
+  
+  
+	current_cmd = shell->cmd;
+	if (current_cmd->input)
+	{
+		if (setup_input_redirections(current_cmd) == -1)
+			status = 1;
+	}
+	if (status == 0 && current_cmd->output)
+	{
+		if (setup_output_redirections(current_cmd) == -1)
+			status = 1;
+	}
+	if (is_builtin(current_cmd->args))
+  {
+    g_signal_received = 0;
+		shell->exit_status = execute_builtin_cmd(shell, shell->cmd->args);
+		if (g_signal_received == SIGINT)
+			shell->exit_status = 1;
+  }
+	else
+		exec_ext_cmd(shell, current_cmd->args);
+	dup2(saved_stdin, STDIN_FILENO);
+	dup2(saved_stdout, STDOUT_FILENO);
+	close(saved_stdin);
+	close(saved_stdout);
 }
 
+void    execute(t_shell *shell)
+{
+	t_command *current_cmd;
+	int num_commands;
+
+	if (shell->cmd == NULL || shell->cmd->args == NULL)
+		return ;
+	num_commands = 0;
+	current_cmd = shell->cmd;
+	while (current_cmd != NULL)
+	{
+		num_commands++;
+		current_cmd = current_cmd->next;
+	}
+	if (num_commands > 1)
+		execute_pipeline(shell, num_commands);
+	else
+		execute_cmd(shell);
+}
