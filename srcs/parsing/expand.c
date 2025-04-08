@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 13:20:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/28 20:25:49 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/08 15:37:27 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,34 +42,26 @@ char	*handle_variable(t_shell *shell, char *arg)
 	int		len;
 
 	len = 1;
-	// Handle $? -> exit status
 	if (arg[1] == '?')
 		return (ft_itoa(shell->exit_status));
-	// Handle $ -> literal $
-	if (arg[1] == '\0')
+	if (arg[1] == '\0' || arg[1] == '=' || arg[1] == ' ')
 		return (ft_strdup("$"));
-	// Handle $9HOME -> HOME (skip one digit after $)
 	if (ft_isdigit(arg[1]))
 		return (ft_substr(arg, 2, ft_strlen(arg) - 2));
-	// Handle $=HOME -> literal $=HOME
-	if (arg[1] == '=')
-		return (ft_strdup("$"));
-	// Handle $$
 	if (arg[1] == '$')
 	{
 		pid = getpid();
 		return (ft_itoa(pid));
 	}
-	// Handle regular variables ($VAR_NAME)
 	while (ft_isalnum(arg[len]) || arg[len] == '_')
 		len++;
-	var_name = ft_substr(arg, 1, len - 1); // Extract variable name
-	value = echo_env_val(shell, var_name); // Get variable value from environment
+	var_name = ft_substr(arg, 1, len - 1);
+	value = echo_env_val(shell, var_name);
 	free(var_name);
 	if (!value)
-		return (ft_strdup("")); // Return empty string if variable not found
+		return (ft_strdup(""));
 
-	return (value); // Return expanded value
+	return (value);
 }
 
 char	*extract_var_name(char *arg)
@@ -117,39 +109,6 @@ char	*new_extended_value(char *orig, char *extended, char *start)
 	return (res);
 }
 
-// void	expand(t_shell *shell)
-// {
-// 	t_token	*current;
-// 	char	*tmp;
-// 	char	*extended;
-// 	char	*new_value;
-// 	char	*last_expansion;
-
-// 	tmp = NULL;
-// 	current = shell->tokens;
-// 	while (current)
-// 	{
-// 		last_expansion = NULL;
-// 		if (current->quotes == '"' || current->quotes == 0)
-// 		{
-// 			tmp = ft_strchr(current->str, '$');
-// 			while (tmp != NULL)
-// 			{
-// 				extended = handle_variable(shell, tmp);
-// 				new_value = new_extended_value(current->str, extended, tmp);
-// 				free(current->str);
-// 				free(extended);
-// 				current->str = new_value;
-// 				printf("new value : %s\n", new_value);
-// 				tmp = ft_strchr(current->str, '$');
-// 				if (tmp + 1 && tmp)
-// 			}
-// 		}
-// 		current = current->next;
-// 	}
-// }
-
-
 void    expand(t_shell *shell)
 {
     t_token    *current;
@@ -161,7 +120,7 @@ void    expand(t_shell *shell)
     current = shell->tokens;
     while (current)
     {
-        last_expansion_end = NULL; // Initialize
+        last_expansion_end = NULL;
         if (current->quotes == '"' || current->quotes == 0)
         {
             tmp = ft_strchr(current->str, '$');

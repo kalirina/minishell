@@ -3,10 +3,10 @@
 void	print_tokens(t_token *t)
 {
 	int	i  = 0;
-	printf("Tokens:\n\n");
+	printf("\nTOKENS:\n");
 	while (t)
 	{
-		printf("[%d]{%d}%s\n", i, t->quotes, t->str);
+		printf("[%d]{%c}%s\n", i, t->quotes, t->str);
 		i++;
 		t = t->next;
 	}
@@ -14,6 +14,8 @@ void	print_tokens(t_token *t)
 
 void	print_red(t_redirection *r)
 {
+	if (!r)
+		printf("\n");
 	while (r)
 	{
 		printf("file:%s\n", r->file);
@@ -25,17 +27,23 @@ void	print_red(t_redirection *r)
 void	print_command(t_command *c)
 {
 	int i;
-	printf("COMMANDS:\n\n");
+	printf("\n\nCOMMANDS STRUCTURES:\n\n");
 	while (c)
 	{
 		i = 0;
-		printf("\t\tARGS\n");
+		printf("-----------------------\n\n");
+		printf("\tARGS\n");
 		while (c->args[i])
-			printf("%s\n", c->args[i++]);
-		printf("\t\tINPUT\n");
+		{
+			printf("[%d]%s\n", i, c->args[i]);
+			i++;
+		}
+		printf("\n");
+		printf("\tINPUT\n");
 		print_red(c->input);
-		printf("\t\tOUTPUT\n");
+		printf("\tOUTPUT\n");
 		print_red(c->output);
 		c = c->next;
 	}
+	printf("-----------------------\n");
 }
