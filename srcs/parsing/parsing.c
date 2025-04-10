@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/04 17:01:32 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/10 14:17:29 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,8 +193,8 @@ void	parser(t_shell *shell)
 {
 	if (!shell->tokens)
 		return ;
-	expand(shell);
-	shell->cmd = parse_tokens(&shell->tokens);
+	if (expand(shell) == 0)
+		shell->cmd = parse_tokens(&shell->tokens);
 	if (!shell->cmd)
 		return ;
 }

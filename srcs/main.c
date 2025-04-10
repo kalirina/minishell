@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/08 14:38:20 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/10 10:43:40 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,11 +110,13 @@ int	main(void)
 		// 		execute(shell);
 		// 		...
 		// }
-		lexer(shell, rl_line_buffer);
-		//printf("`\nFINAL TOKENS::\n");
-		//print_tokens(shell->tokens);
-		parser(shell);
-		//print_command(shell->cmd);
+		if (lexer(shell, rl_line_buffer) == 0)
+		{
+			printf("\nTOKENS:\n");
+			print_tokens(shell->tokens);
+			parser(shell);
+			print_command(shell->cmd);
+		}
 		if (shell->cmd)
 		{
 			execute(shell);

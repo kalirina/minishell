@@ -5,13 +5,14 @@ SRCS = srcs/main.c\
 		srcs/debug.c\
 		srcs/parsing/lexing.c\
 		srcs/parsing/lexing_utils.c\
-		srcs/parsing/parse_utils.c\
 		srcs/parsing/parsing.c\
+		srcs/parsing/parse_utils.c\
 		srcs/parsing/expand.c\
+		srcs/parsing/expand_utils.c\
 		srcs/parsing/heredoc.c\
+		srcs/parsing/syntax.c\
 		srcs/utils/list_utils.c\
 		srcs/utils/signals.c\
-		srcs/utils/safe_utils.c\
 		srcs/builtins/cd.c\
 		srcs/builtins/echo.c\
 		srcs/builtins/env_utils.c\

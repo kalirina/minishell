@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/04 16:56:11 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/10 14:17:56 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,19 +38,31 @@ typedef struct s_token
 	char			quotes;
 } t_token;
 
-typedef struct s_redirection {
+typedef struct s_redirection
+{
 	char					*file;
 	bool					append;
 	bool					heredoc;
 	struct s_redirection	*next;
 } t_redirection;
 
-typedef struct s_command {
+typedef struct s_command
+{
 	char				**args;
 	t_redirection		*input;
 	t_redirection		*output;
 	struct s_command	*next;
 }	t_command;
+
+typedef struct s_expansion
+{
+	char	*token;
+	char	*res;
+	bool	in_single_quote;
+	bool	in_double_quote;
+	int		i;
+	int		len;
+} t_expansion;
 
 typedef struct s_shell
 {
@@ -60,17 +72,23 @@ typedef struct s_shell
 	int					exit_status;
 }	t_shell;
 
-void	lexer(t_shell *shell, char *line);
-void	expand(t_shell	*shell);
+int		lexer(t_shell *shell, char *line);
+int	expand(t_shell	*shell);
 void	parser(t_shell *shell);
 
 //parsing utils
+t_redirection *add_redirection(t_redirection **head, char *file, bool append, bool heredoc);
 char	*skip_spaces(char *str);
+char	*append_char(char *str, char c);
 char	*ft_strndup(const char *s, size_t n);
 char	*get_heredoc_input(const char *delimiter);
+char	*echo_env_val(t_shell *shell, char *var);
 bool	is_space(char str);
+bool	syntax_check(t_token *t);
 void	free_command(t_command *cmd);
-t_redirection *add_redirection(t_redirection **head, char *file, bool append, bool heredoc);
+int		is_redirection_char(char c);
+t_expansion	*init_expansion(char *token);
+
 
 t_token	*create_token(char *str);
 t_token	*add_token(t_token **head, t_token *new);
@@ -91,7 +109,7 @@ void	setup_signal_handlers(void);
 void	init_environ(t_shell *shell);
 int		skip(char *line);
 int		slash(char *line);
-char	*new_strjoin(char const *s1, char const *s2);
+char	*new_strjoin(char *s1, char *s2);
 
 
 int		print_error(char *cmd, char *arg, char *msg);
