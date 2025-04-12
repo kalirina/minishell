@@ -6,10 +6,9 @@ SRCS = srcs/main.c\
 		srcs/parsing/lexing.c\
 		srcs/parsing/lexing_utils.c\
 		srcs/parsing/parsing.c\
-		srcs/parsing/parse_utils.c\
+		srcs/parsing/parsing_utils.c\
 		srcs/parsing/expand.c\
 		srcs/parsing/expand_utils.c\
-		srcs/parsing/heredoc.c\
 		srcs/parsing/syntax.c\
 		srcs/utils/list_utils.c\
 		srcs/utils/signals.c\
@@ -23,6 +22,7 @@ SRCS = srcs/main.c\
 		srcs/builtins/export.c\
 		srcs/builtins/pwd.c\
 		srcs/builtins/unset.c\
+		srcs/execution/heredoc.c\
 		srcs/execution/exec_utils.c\
 		srcs/execution/exec.c
 

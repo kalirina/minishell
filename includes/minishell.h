@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/10 14:17:56 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/12 22:45:57 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ typedef struct s_shell
 }	t_shell;
 
 int		lexer(t_shell *shell, char *line);
-int	expand(t_shell	*shell);
-void	parser(t_shell *shell);
+int		expand(t_shell	*shell);
+int		parser(t_shell *shell);
 
 //parsing utils
 t_redirection *add_redirection(t_redirection **head, char *file, bool append, bool heredoc);
@@ -93,9 +93,10 @@ t_expansion	*init_expansion(char *token);
 t_token	*create_token(char *str);
 t_token	*add_token(t_token **head, t_token *new);
 t_token	*get_last_token(t_token **head);
-t_token	*clean_tokens(t_token *tokens);
+void	clean_tokens(t_shell *shell);
 
 //test
+void	perform_quote_removal(t_shell *shell);
 void	print_tokens(t_token *t);
 int		setup_input_redirections(t_command *cmd);
 int		setup_output_redirections(t_command *cmd);

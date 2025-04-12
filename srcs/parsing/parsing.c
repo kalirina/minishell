@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/10 14:17:29 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/12 23:44:46 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,66 +56,23 @@ char		*is_redirection(char *str)
 	return (NULL);
 }
 
-
-// t_command *handle_redirection(t_command *cmd, t_token **tokens)
-// {
-// 	char *type;
-// 	t_token *next_token;
-
-// 	while (*tokens)
-// 	{
-// 		type = is_redirection((*tokens)->str);
-// 		if (!type)
-// 			break;
-// 		next_token = (*tokens)->next;
-// 		if (next_token == NULL || is_redirection(next_token->str) != NULL
-// 			|| (next_token && ft_strncmp(next_token->str, "|", 1) == 0))
-// 		{
-// 			fprintf(stderr, "minishell: syntax error near unexpected token `newline'\n");
-// 			free_command(cmd);
-// 			return NULL;
-// 		}
-// 		*tokens = (*tokens)->next;
-// 		if (!(*tokens))
-// 			return (cmd);
-// 		if (ft_strncmp(type, "<", 1) == 0)
-// 		{
-// 			if (!add_redirection(&cmd->input, (*tokens)->str, false))
-// 				return (free_command(cmd), NULL);
-// 		}
-// 		else if (ft_strncmp(type, ">>", 2) == 0)
-// 		{
-// 			if (!add_redirection(&cmd->output, (*tokens)->str, true))
-// 				return (free_command(cmd), NULL);
-// 		}
-// 		else if (ft_strncmp(type, ">", 1) == 0)
-// 		{
-// 			if (!add_redirection(&cmd->output, (*tokens)->str, false))
-// 				return (free_command(cmd), NULL);
-// 		}
-// 		*tokens = (*tokens)->next;
-// 	}
-// 	return (cmd);
-// }
-
 t_command *handle_redirection(t_command *cmd, t_token **tokens)
 {
 	char		*type;
-	t_token		*next_token;
+	// t_token		*next_token;
 
-	
 	while (*tokens)
 	{
 		type = is_redirection((*tokens)->str);
-		if (!type)
-			break;
-		next_token = (*tokens)->next;
-		if (next_token == NULL)
-		{
-			printf("minishell: syntax error near unexpected token `%s'\n", (*tokens)->str);
-			return (free_command(cmd), NULL);
-		}
-		else if (ft_strncmp(type, "<<", 2) == 0)
+		// if (!type)
+		// 	break;
+		// next_token = (*tokens)->next;
+		// if (next_token == NULL)
+		// {
+		// 	printf("minishell: syntax error near unexpected token `%s'\n", (*tokens)->str);
+		// 	return (free_command(cmd), NULL);
+		// }
+		if (ft_strncmp(type, "<<", 2) == 0)
 		{
 			if (!add_redirection(&cmd->input, (*tokens)->next->str, false, true))
 				return (free_command(cmd), NULL);
@@ -189,12 +146,25 @@ t_command	*parse_tokens(t_token **tokens)
 	return (first);
 }
 
-void	parser(t_shell *shell)
+int	parser(t_shell *shell)
 {
 	if (!shell->tokens)
-		return ;
+		return (-1);
 	if (expand(shell) == 0)
+	{
+		// printf("\nAFTER EXPANSION\n");
+		// print_tokens(shell->tokens);
+		perform_quote_removal(shell);
+		// printf("\nAFTER CLEANING\n");
+		// print_tokens(shell->tokens);
 		shell->cmd = parse_tokens(&shell->tokens);
+	}
 	if (!shell->cmd)
-		return ;
+		return (-1);
+	if (ft_strlen(shell->cmd->args[0]) == 0)
+	{
+		printf("minishell: : command not found\n");
+		return (-1);
+	}
+	return (0);
 }
