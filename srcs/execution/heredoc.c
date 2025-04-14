@@ -6,13 +6,13 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 16:55:29 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/04 17:00:52 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:30:08 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char *get_heredoc_input(const char *delimiter)
+char	*get_heredoc_input(const char *delimiter)
 {
 	char	*line;
 	char	*result;
@@ -24,11 +24,12 @@ char *get_heredoc_input(const char *delimiter)
 	{
 		line = readline("> ");
 		if (!line)
-			break;
-		if (line && strncmp(line, delimiter, delimiter_length) == 0 && ft_strlen(line) == delimiter_length)
+			break ;
+		if (line && strncmp(line, delimiter, delimiter_length) == 0
+			&& ft_strlen(line) == delimiter_length)
 		{
 			free(line);
-			break;
+			break ;
 		}
 		result = new_strjoin(result, line);
 		result = new_strjoin(result, "\n");

@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:02:12 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/10 14:40:03 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:04:27 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,11 @@ t_expansion	*init_expansion(char *token)
 	exp = malloc(sizeof(t_expansion));
 	if (!exp)
 		return (NULL);
-	exp->in_single_quote = false; 
+	exp->in_single_quote = false;
 	exp->in_double_quote = false;
 	exp->i = 0;
 	exp->len = ft_strlen(token);
-	exp->token = token; 
+	exp->token = token;
 	exp->res = ft_strdup("");
 	return (exp);
 }
@@ -75,8 +75,13 @@ char	*append_char(char *str, char c)
 }
 
 //JUST TO MAKE STRNJOIN SHORTER 
-char	*util_strnjoin(char *ptr, char *s1, char *s2, int i, int j)
+char	*util_strnjoin(char *ptr, char *s1, char *s2)
 {
+	int	i;
+	int	j;
+
+	i = 0;
+	j = 0;
 	while (s1[i])
 	{
 		ptr[i] = s1[i];
@@ -97,8 +102,6 @@ char	*new_strjoin(char *s1, char *s2)
 {
 	char	*ptr;
 	int		len;
-	int		i;
-	int		j;
 
 	if (!s1 && !s2)
 		return (NULL);
@@ -106,13 +109,11 @@ char	*new_strjoin(char *s1, char *s2)
 		return ((char *)s2);
 	if (!s2)
 		return ((char *)s1);
-	i = 0;
-	j = 0;
 	len = ft_strlen(s1) + ft_strlen(s2) + 1;
 	ptr = (char *)malloc(sizeof(char) * len);
 	if (!ptr || !s1 || !s2)
 		return (0);
-	ptr = util_strnjoin(ptr, s1, s2, i, j);
+	ptr = util_strnjoin(ptr, s1, s2);
 	free(s1);
 	return (ptr);
 }

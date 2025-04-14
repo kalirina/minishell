@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 23:59:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/03 16:42:50 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:30:29 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,6 @@ void	init_environ(t_shell *shell)
 		free(shell->my_environ);
 		exit(EXIT_FAILURE);
 	}
-
 }
 
 int	env_cmd(t_shell *shell)

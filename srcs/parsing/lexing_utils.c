@@ -6,70 +6,39 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 14:45:01 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/12 20:45:52 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/14 20:26:40 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	*process_quotes(char *quoted_str, char *final_str, int *i, int len, bool *in_squotes, bool *in_dquotes)
+typedef struct s_quoteremoval
 {
-	char	c;
-
-	while (*i < len)
-	{
-		c = quoted_str[*i];
-		if (c == '\'' && !*in_dquotes)
-		{
-			*in_squotes = !*in_squotes;
-			(*i)++;
-		}
-		else if (c == '"' && !*in_squotes)
-		{
-			*in_dquotes = !*in_dquotes;
-			(*i)++;
-		}
-		else
-		{
-			final_str = append_char(final_str, c);
-			(*i)++;
-		}
-	}
-	return (final_str);
-}
-
-void	perform_quote_removal(t_shell *shell)
-{
-	t_token	*current;
-	char	*quoted_str;
-	char	*final_str;
+	char	*res;
+	char	*orig;
 	int		i;
-	int		len;
 	bool	in_squotes;
 	bool	in_dquotes;
+}	t_removal;
 
-	current = shell->tokens;
-	while (current)
-	{
-		quoted_str = current->str;
-		if (quoted_str)
-		{
-			final_str = ft_strdup("");
-			i = 0;
-			len = ft_strlen(quoted_str);
-			in_squotes = false;
-			in_dquotes = false;
-			final_str = process_quotes(quoted_str, final_str, &i, len, &in_squotes, &in_dquotes);
-			free(quoted_str);
-			current->str = final_str;
-		}
-		current = current->next;
-	}
+t_removal	*init_rem(char *orig)
+{
+	t_removal	*t;
+
+	t = malloc(sizeof(t_removal));
+	if (!t)
+		return (NULL);
+	t->orig = orig;
+	t->i = 0;
+	t->res = ft_strdup("");
+	t->in_dquotes = false;
+	t->in_squotes = false;
+	return (t);
 }
 
 t_token	*create_token(char *str)
 {
-	t_token *t;
+	t_token	*t;
 
 	t = malloc(sizeof(t_token));
 	if (!t)
@@ -78,4 +47,51 @@ t_token	*create_token(char *str)
 	t->next = NULL;
 	t->quotes = 0;
 	return (t);
+}
+
+void	process_quotes(t_removal *rem)
+{
+	char	c;
+	int		len;
+
+	len = ft_strlen(rem->orig);
+	while (rem->i < len)
+	{
+		c = rem->orig[rem->i];
+		if (c == '\'' && !rem->in_dquotes)
+		{
+			rem->in_squotes = !rem->in_squotes;
+			rem->i++;
+		}
+		else if (c == '"' && !rem->in_squotes)
+		{
+			rem->in_dquotes = !rem->in_dquotes;
+			rem->i++;
+		}
+		else
+		{
+			rem->res = append_char(rem->res, c);
+			rem->i++;
+		}
+	}
+}
+
+void	perform_quote_removal(t_shell *shell)
+{
+	t_token		*current;
+	t_removal	*rem;
+
+	current = shell->tokens;
+	while (current)
+	{
+		if (current->str)
+		{
+			rem = init_rem(current->str);
+			process_quotes(rem);
+			current->str = rem->res;
+			free(rem->orig);
+			free(rem);
+		}
+		current = current->next;
+	}
 }

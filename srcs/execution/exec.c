@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/04 14:04:28 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/14 19:18:58 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,28 +110,6 @@ char	*get_exec_path(t_shell *shell, char *cmd)
 	return (path);
 }
 
-// int	setup_input_redirections(t_command *cmd)
-// {
-// 	t_redirection	*input_redir;
-// 	int				fd;
-
-// 	input_redir = cmd->input;
-// 	while (input_redir != NULL)
-// 	{
-// 		fd = open(input_redir->file, O_RDONLY);
-// 		if (fd == -1)
-// 			return (perror("open (input)"), -1);
-// 		if (dup2(fd, STDIN_FILENO) == -1)
-// 		{
-// 			close(fd);
-// 			return (perror("dup2 (input)"), -1);
-// 		}
-// 		close(fd);
-// 		input_redir = input_redir->next;
-// 	}
-// 	return (0);
-// }
-
 int setup_input_redirections(t_command *cmd)
 {
 	t_redirection *input_redir;
@@ -164,11 +142,10 @@ int setup_input_redirections(t_command *cmd)
             close(fd);
             return -1;
         }
-
-        close(fd);  // Close the original file descriptor
+        close(fd);
         input_redir = input_redir->next;
     }
-    return 0; //Success
+    return 0;
 }
 
 
@@ -333,7 +310,6 @@ void	execute_cmd(t_shell	*shell)
 		return; // Or handle the error in a more appropriate way
 	}
   
-  
 	current_cmd = shell->cmd;
 	if (current_cmd->input)
 	{
@@ -346,12 +322,12 @@ void	execute_cmd(t_shell	*shell)
 			status = 1;
 	}
 	if (is_builtin(current_cmd->args))
-  {
-    g_signal_received = 0;
+	{
+	g_signal_received = 0;
 		shell->exit_status = execute_builtin_cmd(shell, shell->cmd->args);
 		if (g_signal_received == SIGINT)
 			shell->exit_status = 1;
-  }
+	}
 	else
 		exec_ext_cmd(shell, current_cmd->args);
 	dup2(saved_stdin, STDIN_FILENO);
@@ -364,7 +340,7 @@ void    execute(t_shell *shell)
 {
 	t_command *current_cmd;
 	int num_commands;
-
+	
 	if (shell->cmd == NULL || shell->cmd->args == NULL)
 		return ;
 	num_commands = 0;
