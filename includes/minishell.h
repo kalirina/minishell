@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/04 15:34:51 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/14 16:31:13 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,6 @@
 # include <fcntl.h>
 # include <limits.h>
 # include <fcntl.h>
-
-extern volatile sig_atomic_t	g_signal_received;
 
 typedef struct s_token
 {
@@ -58,12 +56,19 @@ typedef struct s_shell
 	t_command			*cmd;
 	char				**my_environ;
 	int					exit_status;
+	char				*line_buffer;
+	int					nb_pipe;
+	int					nb_cmd;
+	int					i;
+	int					pipefd[2];
 }	t_shell;
 
+extern int	g_pid;
+
+//parsing
 void	lexer(t_shell *shell, char *line);
 void	expand(t_shell	*shell);
 void	parser(t_shell *shell);
-
 //parsing utils
 char	*skip_spaces(char *str);
 char	*ft_strndup(const char *s, size_t n);
@@ -71,47 +76,49 @@ char	*get_heredoc_input(const char *delimiter);
 bool	is_space(char str);
 void	free_command(t_command *cmd);
 t_redirection *add_redirection(t_redirection **head, char *file, bool append, bool heredoc);
-
 t_token	*create_token(char *str);
 t_token	*add_token(t_token **head, t_token *new);
 t_token	*get_last_token(t_token **head);
 t_token	*clean_tokens(t_token *tokens);
-
 //test
 void	print_tokens(t_token *t);
 int		setup_input_redirections(t_command *cmd);
 int		setup_output_redirections(t_command *cmd);
-
 void	print_command(t_command *c);
-
 //signals
 void	handle_sigint(int signo);
-void	setup_signal_handlers(void);
+void	handle_sigquit(int signo);
 //utils
 void	init_environ(t_shell *shell);
+int		init_shell(t_shell **shell);
 int		skip(char *line);
 int		slash(char *line);
-
+void	cleanup_command_line(t_shell *shell);
+void	cleanup_shell(t_shell *shell);
+void	free_command(t_command *cmd);
+void	check_line(t_shell *shell, int *exit_status);
 int		print_error(char *cmd, char *arg, char *msg);
+//environment
 char	*get_env_var_value(char **my_environ, const char *var_name);
 int		find_env_var_index(char **my_environ, const char *var);
 int		set_env_var(t_shell *shell, char *var, char *val);
-void	handle_post_cmd_signal(t_shell *shell);
-
 char	*get_var(char *arg);
 char	*get_val(char *arg);
-void	add_new_env_var(t_shell *shell, int i, char *var, char *val);
-void	update_env_var(t_shell *shell, int i, char *var, char *val);
 char	*cd_get_oldpwd_target(t_shell *shell);
 char	*cd_get_home_target(t_shell *shell);
 void	sort_env_array(char **array, int count);
-void	cleanup_shell(t_shell *shell);
-void	cleanup_command_line(t_shell *shell, char *line_buffer);
+int		is_valid_var(char *name);
 //execution
 void	execute(t_shell *shell);
+void	execute_pipeline(t_shell *shell, int num_commands);
+void	execute_cmd(t_shell	*shell);
+int		execute_builtin_cmd(t_shell *shell, char **args);
+void	exec_ext_cmd(t_shell *shell, char **args);
 void	free_split(char **tab);
 int		is_builtin(char **args);
-int		is_valid_var(char *name);
+char	*get_exec_path(t_shell *shell, char *cmd);
+char	*find_cmd_in_path(t_shell *shell, char *cmd);
+char	*check_path_entry(const char *dir, const char *cmd, char **paths);
 int		check_builtin_name(const char *arg0, const char *builtin_name);
 //builtins
 int		echo_cmd(t_shell *shell);
