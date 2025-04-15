@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 16:55:29 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/14 20:30:08 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/15 13:34:44 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,6 @@ char	*get_heredoc_input(const char *delimiter)
 		}
 		result = new_strjoin(result, line);
 		result = new_strjoin(result, "\n");
-		free(line);
 	}
 	return (result);
 }

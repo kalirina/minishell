@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/14 20:29:06 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/15 17:21:43 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,6 +64,17 @@ typedef struct s_expansion
 	int		len;
 } t_expansion;
 
+typedef struct s_executer
+{
+	t_command	*cmds;
+	int			saved_stdin;
+	int			saved_stdout;
+	int			n_commands;
+	int			pipe_in_fd;
+	int			pipe_out_fd;
+	bool		pipe;
+} t_executer;
+
 typedef struct s_shell
 {
 	t_token				*tokens;
@@ -86,7 +97,7 @@ char	*echo_env_val(t_shell *shell, char *var);
 bool	is_space(char str);
 bool	syntax_check(t_token *t);
 bool	check_quotes_inquotes(t_expansion *exp);
-bool	check_quotes_inquotes(t_expansion *exp);
+bool	check_dollar_quotes(t_expansion *exp);
 void	free_command(t_command *cmd);
 int		is_redirection_char(char c);
 t_expansion	*init_expansion(char *token);
@@ -137,6 +148,13 @@ void	free_split(char **tab);
 int		is_builtin(char **args);
 int		is_valid_var(char *name);
 int		check_builtin_name(const char *arg0, const char *builtin_name);
+
+void		init_redir(t_command *current);
+t_executer	*init_executer(t_command *cmds);
+int			count_commands(t_command *cmd);
+int			setup_input_redirections(t_command *cmd);
+int			setup_output_redirections(t_command *cmd);
+
 //builtins
 int		echo_cmd(t_shell *shell);
 int		env_cmd(t_shell *shell);

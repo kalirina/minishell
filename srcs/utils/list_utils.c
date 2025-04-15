@@ -6,13 +6,12 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 10:40:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/14 20:29:29 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/15 14:25:12 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-//	ADDS A TOKEN AT THE END OF THE LIST
 t_token	*add_token(t_token **head, t_token *new)
 {
 	t_token	*tmp;
@@ -27,7 +26,6 @@ t_token	*add_token(t_token **head, t_token *new)
 	return (*head);
 }
 
-//	FREES THE LIST OF TOKENS
 void	free_tokens(t_token *head)
 {
 	t_token	*tmp;
@@ -66,4 +64,17 @@ char	*is_redirection(char *str)
 	if (ft_strncmp(str, "<", 1) == 0)
 		return ("<");
 	return (NULL);
+}
+
+int		count_commands(t_command *cmd)
+{
+	int	count;
+
+	count = 0;
+	while (cmd)
+	{
+		count++;
+		cmd = cmd->next;
+	}
+	return (count);
 }
