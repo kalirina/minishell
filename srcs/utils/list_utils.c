@@ -3,15 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   list_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 10:40:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/17 18:48:14 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/09 23:22:36 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+//	ADDS A TOKEN AT THE END OF THE LIST
 t_token	*add_token(t_token **head, t_token *new)
 {
 	t_token	*tmp;
@@ -26,6 +27,7 @@ t_token	*add_token(t_token **head, t_token *new)
 	return (*head);
 }
 
+//	FREES THE LIST OF TOKENS
 void	free_tokens(t_token *head)
 {
 	t_token	*tmp;
@@ -77,4 +79,19 @@ int	count_commands(t_command *cmd)
 		cmd = cmd->next;
 	}
 	return (count);
+} 
+ 
+void	free_split(char **tab)
+{
+	int	i;
+
+	i = 0;
+	if (!tab)
+		return ;
+	while (tab[i])
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
 }
