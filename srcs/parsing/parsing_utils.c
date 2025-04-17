@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse_utils.c                                      :+:      :+:    :+:   */
+/*   parsing_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 17:13:27 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/03 18:17:08 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/17 16:46:12 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ char	*skip_spaces(char *str)
 	return (str);
 }
 
-t_redirection *add_redirection(t_redirection **head, char *file, bool append, bool heredoc)
+t_redirection	*add_redirection(t_redirection **head, char *file,
+				bool append, bool heredoc)
 {
 	t_redirection	*new_redir;
 	t_redirection	*current;
@@ -64,9 +65,7 @@ t_redirection *add_redirection(t_redirection **head, char *file, bool append, bo
 	{
 		current = *head;
 		while (current->next != NULL)
-		{
 			current = current->next;
-		}
 		current->next = new_redir;
 	}
 	return (new_redir);

@@ -3,26 +3,26 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/04 14:04:28 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/17 18:50:26 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	execute_builtin_cmd(t_shell *shell, char **args)
+int	execute_builtin_cmd(t_shell *shell, char **args)
 {
 	int	status;
 
 	status = 1;
 	if (check_builtin_name(args[0], "echo"))
-		status = echo_cmd(shell);
+		status = echo_cmd(args);
 	else if (check_builtin_name(args[0], "cd"))
 		status = cd_cmd(shell);
 	else if (check_builtin_name(args[0], "pwd"))
-		status = pwd_cmd();
+		status = pwd_cmd(args);
 	else if (check_builtin_name(args[0], "export"))
 		status = export_cmd(shell, args);
 	else if (check_builtin_name(args[0], "unset"))
@@ -34,7 +34,7 @@ static int	execute_builtin_cmd(t_shell *shell, char **args)
 	return (status);
 }
 
-static char *check_path_entry(const char *dir, const char *cmd, char **paths)
+char	*check_path_entry(const char *dir, const char *cmd, char **paths)
 {
 	char	*full_path;
 	char	*tmp;
@@ -59,8 +59,7 @@ char	*find_cmd_in_path(t_shell *shell, char *cmd)
 	char	**paths;
 	int		i;
 
-
-	path_env = get_env_var_value(shell->my_environ, "PATH");;
+	path_env = get_env_var_value(shell->my_environ, "PATH");
 	if (!path_env)
 		return (NULL);
 	if (*path_env == '\0')
@@ -110,6 +109,18 @@ char	*get_exec_path(t_shell *shell, char *cmd)
 	return (path);
 }
 
+void	child_ext_cmd(t_shell *shell, char **args, char *path)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	execve(path, args, shell->my_environ);
+	print_error(args[0], NULL, strerror(errno));
+	free(path);
+	if (errno == EACCES)
+		exit(126);
+	exit(127);
+}
+
 void	exec_ext_cmd(t_shell *shell, char **args)
 {
 	char	*path;
@@ -130,19 +141,10 @@ void	exec_ext_cmd(t_shell *shell, char **args)
 		shell->exit_status = 1;
 	}
 	if (pid == 0)
-	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
-		execve(path, args, shell->my_environ);
-		print_error(args[0], NULL, strerror(errno));
-		free(path);
-		if (errno == EACCES)
-			exit(126);
-		exit(127);
-	}
+		child_ext_cmd(shell, args, path);
 	else
 	{
-		waitpid(pid,&status, 0);
+		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
 			shell->exit_status = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
@@ -153,138 +155,42 @@ void	exec_ext_cmd(t_shell *shell, char **args)
 	}
 }
 
-void execute_pipeline(t_shell *shell, int num_commands)
+//EXECUTES A SINGLE COMMAND
+void	execute_cmd(t_shell	*shell, t_executer *ex)
 {
-	t_command	*current_cmd;
-	pid_t		pids[num_commands];
-	int			pipefds[num_commands - 1][2];
-	int			i;
-	int			j;
+	t_command	*current;
+	int			status;
 
-	current_cmd = shell->cmd;
-	i = 0;
-	while (i < num_commands - 1)
-	{
-		if (pipe(pipefds[i++]) == -1)
-		{
-			perror("pipe");
-			exit(EXIT_FAILURE);
-		}
-	}
-	i = 0;
-	while (i < num_commands)
-	{
-		pids[i] = fork();
-		if (pids[i] == -1)
-		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		}
-		if (pids[i] == 0)
-		{
-			if (i > 0)
-				dup2(pipefds[i - 1][0], STDIN_FILENO);
-			if (i < num_commands - 1)
-				dup2(pipefds[i][1], STDOUT_FILENO);
-			j = 0;
-			while (j < num_commands - 1)
-			{
-				close(pipefds[j][0]);
-				close(pipefds[j++][1]);
-			}
-			if (setup_input_redirections(current_cmd))
-				exit(EXIT_FAILURE);
-			if (setup_output_redirections(current_cmd))
-				exit(EXIT_FAILURE);
-			if (is_builtin(current_cmd->args))
-				exit(execute_builtin_cmd(shell, current_cmd->args));
-			else
-			{
-				char *path = get_exec_path(shell, current_cmd->args[0]);
-				if (!path)
-					exit(127);
-				execve(path, current_cmd->args, shell->my_environ);
-				perror("execve");
-				exit(EXIT_FAILURE);
-			}
-		}
-		current_cmd = current_cmd->next;
-		i++;
-	}
-	i = 0;
-	while (i < num_commands - 1)
-	{
-		close(pipefds[i][0]);
-		close(pipefds[i++][1]);
-	}
-	i = 0;
-	while (i < num_commands)
-		waitpid(pids[i++], NULL, 0);
-}
-
-void	execute_cmd(t_shell	*shell)
-{
-	t_command	*current_cmd;
-	int saved_stdin;
-	int saved_stdout;
-	int status;
-  
 	status = 0;
-	saved_stdin = dup(STDIN_FILENO);
-	saved_stdout = dup(STDOUT_FILENO);
-
-
-	//ENRICO
-	if (saved_stdin == -1 || saved_stdout == -1) {
-		perror("dup");
-		if (saved_stdin != -1) close(saved_stdin);
-		if (saved_stdout != -1) close(saved_stdout);
-		return; // Or handle the error in a more appropriate way
-	}
-  
-  
-	current_cmd = shell->cmd;
-	if (current_cmd->input)
+	current = shell->cmd;
+	if (init_redir(current) == -1)
 	{
-		if (setup_input_redirections(current_cmd) == -1)
-			status = 1;
+		reset_stdinout(ex);
+		return ;
 	}
-	if (status == 0 && current_cmd->output)
+	if (is_builtin(current->args))
 	{
-		if (setup_output_redirections(current_cmd) == -1)
-			status = 1;
-	}
-	if (is_builtin(current_cmd->args))
-  {
-    g_signal_received = 0;
+		g_signal_received = 0;
 		shell->exit_status = execute_builtin_cmd(shell, shell->cmd->args);
 		if (g_signal_received == SIGINT)
 			shell->exit_status = 1;
-  }
+	}
 	else
-		exec_ext_cmd(shell, current_cmd->args);
-	dup2(saved_stdin, STDIN_FILENO);
-	dup2(saved_stdout, STDOUT_FILENO);
-	close(saved_stdin);
-	close(saved_stdout);
+		exec_ext_cmd(shell, current->args);
+	reset_stdinout(ex);
 }
 
-void    execute(t_shell *shell)
+void	execute(t_shell *shell)
 {
-	t_command *current_cmd;
-	int num_commands;
+	t_executer	*ex;
 
-	if (shell->cmd == NULL || shell->cmd->args == NULL)
+	if (shell->cmd == NULL)
 		return ;
-	num_commands = 0;
-	current_cmd = shell->cmd;
-	while (current_cmd != NULL)
-	{
-		num_commands++;
-		current_cmd = current_cmd->next;
-	}
-	if (num_commands > 1)
-		execute_pipeline(shell, num_commands);
+	ex = init_executer(shell->cmd);
+	if (!ex)
+		return ;
+	if (ex->n_cmds > 1)
+		execute_pipeline(shell, ex);
 	else
-		execute_cmd(shell);
+		execute_cmd(shell, ex);
 }

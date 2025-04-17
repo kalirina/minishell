@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/20 15:55:52 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/01 07:26:05 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/17 18:48:36 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,17 +43,31 @@ int	is_builtin(char **args)
 	return (0);
 }
 
-void	free_split(char **tab)
+//INITIALISE THE t_executer STRUCT
+t_executer	*init_executer(t_command *cmds)
 {
-	int	i;
+	t_executer	*ex;
 
-	i = 0;
-	if (!tab)
-		return ;
-	while (tab[i])
+	ex = malloc(sizeof(t_executer));
+	if (!ex)
+		return (NULL);
+	ex->cmds = cmds;
+	ex->n_cmds = count_commands(cmds);
+	ex->saved_stdin = dup(STDIN_FILENO);
+	ex->saved_stdout = dup(STDOUT_FILENO);
+	if (ex->saved_stdin == -1 || ex->saved_stdout == -1)
 	{
-		free(tab[i]);
-		i++;
+		perror("Error exec: saved dup");
+		if (ex->saved_stdin != -1)
+			close(ex->saved_stdin);
+		if (ex->saved_stdout != -1)
+			close(ex->saved_stdout);
+		free(ex);
+		return (NULL);
 	}
-	free(tab);
+	if (ex->n_cmds > 1)
+		ex->pipe = init_pipes(ex->n_cmds);
+	else
+		ex->pipe = NULL;
+	return (ex);
 }

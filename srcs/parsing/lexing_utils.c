@@ -6,107 +6,91 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 14:45:01 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/03/27 23:41:01 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/17 11:21:18 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char	*remove_delimiter_quotes(t_token *tokens, int len)
+typedef struct s_quoteremoval
 {
 	char	*res;
+	char	*orig;
 	int		i;
+	bool	in_squotes;
+	bool	in_dquotes;
+}	t_removal;
 
-	i = 0;
-	res = malloc(sizeof(char) * len - 1);
-	if (!res)
-		return (NULL);
-	while (i < len - 2)
-	{
-		res[i] = tokens->str[i + 1];
-		i++;
-	}
-	res[i] = '\0';
-	free(tokens->str);
-	return (res);
-}
-
-char	*remove_extra_quotes(t_token *tokens, int len)
+t_removal	*init_rem(char *orig)
 {
-	char 	*res;
-	int		i;
-	int		j;
-	int		in_quote;
-	char	quote_type;
+	t_removal	*t;
 
-	in_quote = 0;
-	quote_type = 0;
-	res = (char *)malloc(len + 1);
-	if (!res)
+	t = malloc(sizeof(t_removal));
+	if (!t)
 		return (NULL);
-	i = 0;
-	j = 0;
-	while (tokens->str[i])
-	{
-		if (tokens->str[i] == '\'' || tokens->str[i] == '"')
-		{
-			if (in_quote && tokens->str[i] == quote_type)
-			{
-				in_quote = 0;
-				quote_type = 0;
-			}
-			else if (!in_quote)
-			{
-				in_quote = 1;
-				quote_type = tokens->str[i];
-			}
-		}
-		else
-		{
-			res[j++] = tokens->str[i];
-		}
-		i++;
-	}
-	res[j] = '\0';
-	free(tokens->str);
-	return (res);
+	t->orig = orig;
+	t->i = 0;
+	t->res = ft_strdup("");
+	t->in_dquotes = false;
+	t->in_squotes = false;
+	return (t);
 }
-
-t_token	*clean_tokens(t_token *tokens)
-{
-	t_token	*start;
-	int		len;
-
-	if (!tokens)
-		return (NULL);
-	start = tokens;
-	while (tokens)
-	{
-		len = ft_strlen(tokens->str);
-		if (((tokens->str[0] == '\'' && tokens->str[len - 1]  == '\'')
-			|| (tokens->str[0] == '"' && tokens->str[len - 1]  == '"'))
-			&& len > 2)
-		{
-			tokens->quotes = tokens->str[0];
-			tokens->str = remove_delimiter_quotes(tokens, len);
-		}
-		else
-			tokens->str = remove_extra_quotes(tokens, len);
-		tokens = tokens->next;
-	}
-	return (start);
-}
-
 
 t_token	*create_token(char *str)
 {
-	t_token *t;
+	t_token	*t;
 
 	t = malloc(sizeof(t_token));
 	if (!t)
 		return (NULL);
 	t->str = str;
 	t->next = NULL;
-	t->quotes = 0;
 	return (t);
+}
+
+void	process_quotes(t_removal *rem)
+{
+	char	c;
+	int		len;
+
+	len = ft_strlen(rem->orig);
+	while (rem->i < len)
+	{
+		c = rem->orig[rem->i];
+		if (c == '\'' && !rem->in_dquotes)
+		{
+			rem->in_squotes = !rem->in_squotes;
+			rem->i++;
+		}
+		else if (c == '"' && !rem->in_squotes)
+		{
+			rem->in_dquotes = !rem->in_dquotes;
+			rem->i++;
+		}
+		else
+		{
+			rem->res = append_char(rem->res, c);
+			rem->i++;
+		}
+	}
+}
+
+void	perform_quote_removal(t_shell *shell)
+{
+	t_token		*current;
+	t_removal	*rem;
+
+	current = shell->tokens;
+	while (current)
+	{
+		if (current->str)
+		{
+			rem = init_rem(current->str);
+			process_quotes(rem);
+			current->str = rem->res;
+			free(rem->orig);
+			free(rem);
+		}
+		current = current->next;
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/14 12:20:42 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/28 18:21:49 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/17 15:52:51 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,22 +28,22 @@ int	is_valid_n_flag(char *arg)
 	return (1);
 }
 
-int	echo_cmd(t_shell *shell)
+int	echo_cmd(char **args)
 {
 	int	i;
 	int	newline;
 
 	i = 1;
 	newline = 1;
-	while (shell->cmd->args[i] && is_valid_n_flag(shell->cmd->args[i]))
+	while (args[i] && is_valid_n_flag(args[i]))
 	{
 		newline = 0;
 		i++;
 	}
-	while (shell->cmd->args[i])
+	while (args[i])
 	{
-		ft_putstr_fd(shell->cmd->args[i], 1);
-		if (shell->cmd->args[i + 1])
+		ft_putstr_fd(args[i], 1);
+		if (args[i + 1])
 			ft_putchar_fd(' ', 1);
 		i++;
 	}
