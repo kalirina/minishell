@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/14 20:29:15 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/17 18:48:24 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,6 +23,7 @@ char	**get_args(t_token **tokens, int size)
 		args[0] = ft_strdup("  ");
 		args[1] = NULL;
 		return (args);
+		// return (NULL);
 	}
 	args = malloc((size + 1) * sizeof(char *));
 	if (!args)
@@ -70,7 +71,6 @@ t_command	*parse_cmd(t_token **tokens)
 {
 	t_command	*cmd;
 	t_token		*tmp;
-	char		**args;
 	int			count;
 
 	count = 0;
@@ -87,10 +87,12 @@ t_command	*parse_cmd(t_token **tokens)
 		count++;
 		tmp = tmp->next;
 	}
-	args = get_args(tokens, count);
-	cmd->args = args;
-	if (*tokens && is_redirection((*tokens)->str))
+	cmd->args = get_args(tokens, count);
+	while (*tokens && is_redirection((*tokens)->str))
+	{
 		cmd = handle_redirection(cmd, tokens, is_redirection((*tokens)->str));
+		*tokens = (*tokens)->next;
+	}
 	return (cmd);
 }
 

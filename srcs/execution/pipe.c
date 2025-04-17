@@ -6,105 +6,72 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 17:33:58 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/15 17:54:29 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/17 17:05:10 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	create_pipeline_pipes(t_executer *ex, int pipefds[][2])
+//RUNS THE COMMAND IN A CHILD PROCESS
+void	child_process(t_shell *shell, t_executer *ex, t_command *current, int i)
 {
-	int	i;
+	char	*path;
 
-	i = 0;
-	while (i < ex->n_commands - 1)
+	if (i > 0)
+		dup2(ex->pipe->fds[i - 1][0], STDIN_FILENO);
+	if (i < ex->n_cmds - 1)
+		dup2(ex->pipe->fds[i][1], STDOUT_FILENO);
+	close_all_pipes(ex->pipe, ex->n_cmds);
+	if (setup_input_redirections(current))
+		exit(EXIT_FAILURE);
+	if (setup_output_redirections(current))
+		exit(EXIT_FAILURE);
+	if (is_builtin(current->args))
+		exit(execute_builtin_cmd(shell, current->args));
+	else
 	{
-		if (pipe(pipefds[i]) == -1)
-			return (perror("error exec : pipe"), -1);
-		i++;
+		path = get_exec_path(shell, current->args[0]);
+		if (!path)
+			exit(127);
+		execve(path, current->args, shell->my_environ);
+		perror("Error exec: execve");
+		free(path);
+		exit(EXIT_FAILURE);
 	}
-	return (0);
 }
 
-void	execute_fork(t_shell *shell, pid_t pids[], int pipefds[][2])
+//FORKS THE PROCESS (ITS CALLED FOR EVERY CMD)
+void	execute_fork(t_shell *shell, t_executer *ex, t_command *current, int i)
 {
-	
+	t_pipe	*pipe;
+
+	pipe = ex->pipe;
+	pipe->pids[i] = fork();
+	if (pipe->pids[i] == -1)
+	{
+		(perror("Error exec: fork"), free_executer(ex, 1));
+		return ;
+	}
+	if (pipe->pids[i] == 0)
+		child_process(shell, ex, current, i);
 }
 
+//MAINLY HANDLES THE EXECUTION OF THE PIPELINE
 void	execute_pipeline(t_shell *shell, t_executer *ex)
 {
 	t_command	*current;
-	pid_t		pids[ex->n_commands];
-	int			pipefds[ex->n_commands - 1][2];
 	int			i;
-	int			j;
 
-	if (create_pipeline_pipes(ex, pipefds) == -1)
-		return ;
-	i = 0;
 	current = ex->cmds;
-	while (i < ex->n_commands)
+	i = 0;
+	while (i < ex->n_cmds)
 	{
-		pids[i] = fork();
-		if (pids[i] == -1)
-		{
-			perror("fork");
-			exit(EXIT_FAILURE);
-		}
-		if (pids[i] == 0)
-		{
-			if (i > 0)
-				dup2(pipefds[i - 1][0], STDIN_FILENO);
-			if (i < ex->n_commands - 1)
-				dup2(pipefds[i][1], STDOUT_FILENO);
-			j = 0;
-			while (j < ex->n_commands - 1)
-			{
-				close(pipefds[j][0]);
-				close(pipefds[j++][1]);
-			}
-			if (setup_input_redirections(current))
-				exit(EXIT_FAILURE);
-			if (setup_output_redirections(current))
-				exit(EXIT_FAILURE);
-			if (is_builtin(current->args))
-				exit(execute_builtin_cmd(shell, current->args));
-			else
-			{
-				char *path = get_exec_path(shell, current->args[0]);
-				if (!path)
-					exit(127);
-				execve(path, current->args, shell->my_environ);
-				perror("execve");
-				exit(EXIT_FAILURE);
-			}
-		}
+		execute_fork(shell, ex, current, i);
 		current = current->next;
 		i++;
 	}
+	close_all_pipes(ex->pipe, ex->n_cmds);
 	i = 0;
-	while (i < ex->n_commands - 1)
-	{
-		close(pipefds[i][0]);
-		close(pipefds[i++][1]);
-	}
-	i = 0;
-	while (i < ex->n_commands)
-		waitpid(pids[i++], NULL, 0);
-}
-
-// SETS THE STDIN AND STDOUT OF THE COMMAND TO THE CORRECT 
-// SPOT IN THE PIPELINE (CALLED ONLY IF ex->pipe == true)
-void	pipe_redir(t_executer *ex)
-{
-	if (ex->pipe_in_fd != -1)
-	{
-		dup2(ex->pipe_in_fd, STDIN_FILENO);
-		close(ex->pipe_in_fd);
-	}
-	if (ex->pipe_out_fd != -1)
-	{
-		dup2(ex->pipe_out_fd, STDOUT_FILENO);
-		close(ex->pipe_out_fd);
-	}
+	while (i < ex->n_cmds)
+		waitpid(ex->pipe->pids[i++], NULL, 0);
 }

@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 10:40:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/15 14:25:12 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/17 18:48:14 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ t_command	*new_node(void)
 	new = malloc(sizeof(t_command));
 	if (!new)
 		return (NULL);
-	(new->args = NULL);
+	new->args = NULL;
 	new->input = NULL;
 	new->output = NULL;
 	new->next = NULL;
@@ -66,7 +66,7 @@ char	*is_redirection(char *str)
 	return (NULL);
 }
 
-int		count_commands(t_command *cmd)
+int	count_commands(t_command *cmd)
 {
 	int	count;
 

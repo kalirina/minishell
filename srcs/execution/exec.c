@@ -6,23 +6,23 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/15 17:36:18 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/17 18:50:26 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	execute_builtin_cmd(t_shell *shell, char **args)
+int	execute_builtin_cmd(t_shell *shell, char **args)
 {
 	int	status;
 
 	status = 1;
 	if (check_builtin_name(args[0], "echo"))
-		status = echo_cmd(shell);
+		status = echo_cmd(args);
 	else if (check_builtin_name(args[0], "cd"))
 		status = cd_cmd(shell);
 	else if (check_builtin_name(args[0], "pwd"))
-		status = pwd_cmd();
+		status = pwd_cmd(args);
 	else if (check_builtin_name(args[0], "export"))
 		status = export_cmd(shell, args);
 	else if (check_builtin_name(args[0], "unset"))
@@ -34,7 +34,7 @@ static int	execute_builtin_cmd(t_shell *shell, char **args)
 	return (status);
 }
 
-static char *check_path_entry(const char *dir, const char *cmd, char **paths)
+char	*check_path_entry(const char *dir, const char *cmd, char **paths)
 {
 	char	*full_path;
 	char	*tmp;
@@ -59,8 +59,7 @@ char	*find_cmd_in_path(t_shell *shell, char *cmd)
 	char	**paths;
 	int		i;
 
-
-	path_env = get_env_var_value(shell->my_environ, "PATH");;
+	path_env = get_env_var_value(shell->my_environ, "PATH");
 	if (!path_env)
 		return (NULL);
 	if (*path_env == '\0')
@@ -110,6 +109,17 @@ char	*get_exec_path(t_shell *shell, char *cmd)
 	return (path);
 }
 
+void	child_ext_cmd(t_shell *shell, char **args, char *path)
+{
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	execve(path, args, shell->my_environ);
+	print_error(args[0], NULL, strerror(errno));
+	free(path);
+	if (errno == EACCES)
+		exit(126);
+	exit(127);
+}
 
 void	exec_ext_cmd(t_shell *shell, char **args)
 {
@@ -131,19 +141,10 @@ void	exec_ext_cmd(t_shell *shell, char **args)
 		shell->exit_status = 1;
 	}
 	if (pid == 0)
-	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_DFL);
-		execve(path, args, shell->my_environ);
-		print_error(args[0], NULL, strerror(errno));
-		free(path);
-		if (errno == EACCES)
-			exit(126);
-		exit(127);
-	}
+		child_ext_cmd(shell, args, path);
 	else
 	{
-		waitpid(pid,&status, 0);
+		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
 			shell->exit_status = WEXITSTATUS(status);
 		else if (WIFSIGNALED(status))
@@ -154,8 +155,6 @@ void	exec_ext_cmd(t_shell *shell, char **args)
 	}
 }
 
-
-
 //EXECUTES A SINGLE COMMAND
 void	execute_cmd(t_shell	*shell, t_executer *ex)
 {
@@ -164,9 +163,11 @@ void	execute_cmd(t_shell	*shell, t_executer *ex)
 
 	status = 0;
 	current = shell->cmd;
-	if (ex->pipe)
-		pipe_redir(ex);
-	init_redir(current);
+	if (init_redir(current) == -1)
+	{
+		reset_stdinout(ex);
+		return ;
+	}
 	if (is_builtin(current->args))
 	{
 		g_signal_received = 0;
@@ -176,21 +177,19 @@ void	execute_cmd(t_shell	*shell, t_executer *ex)
 	}
 	else
 		exec_ext_cmd(shell, current->args);
-	dup2(ex->saved_stdin, STDIN_FILENO);
-	dup2(ex->saved_stdout, STDOUT_FILENO);
-	close(ex->saved_stdin);
-	close(ex->saved_stdout);
-	free(ex);
+	reset_stdinout(ex);
 }
 
-void    execute(t_shell *shell)
+void	execute(t_shell *shell)
 {
 	t_executer	*ex;
-	
+
 	if (shell->cmd == NULL)
 		return ;
 	ex = init_executer(shell->cmd);
-	if (ex->n_commands > 1)
+	if (!ex)
+		return ;
+	if (ex->n_cmds > 1)
 		execute_pipeline(shell, ex);
 	else
 		execute_cmd(shell, ex);

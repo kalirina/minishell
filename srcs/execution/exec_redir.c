@@ -6,13 +6,13 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 15:31:23 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/15 17:34:30 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/17 17:26:47 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	handle_heredoc(t_redirection *red)
+int	handle_heredoc(t_redirection *red)
 {
 	int		fd;
 	char	*heredoc_content;
@@ -22,31 +22,53 @@ void	handle_heredoc(t_redirection *red)
 		return (-1);
 	fd = open(".temp_heredoc", O_CREAT | O_TRUNC | O_WRONLY, 0600);
 	if (fd == -1)
-		return (perror("error exec: open (input)"), -1);
-	write(fd, heredoc_content, ft_strlen(heredoc_content));
+	{
+		(perror("Error exec: open (heredoc)"), free(heredoc_content));
+		return (-1);
+	}
+	if (write(fd, heredoc_content, ft_strlen(heredoc_content)) == -1)
+	{
+		(perror("Error exec: write (heredoc)"), free(heredoc_content));
+		(close(fd), unlink(".temp_heredoc"));
+		return (-1);
+	}
 	close(fd);
 	free(heredoc_content);
 	fd = open(".temp_heredoc", O_RDONLY);
 	unlink(".temp_heredoc");
+	return (0);
+}
+
+int	safe_open(char *name)
+{
+	int	fd;
+
+	fd = open(name, O_RDONLY);
+	if (fd == -1)
+	{
+		printf("minishell: %s: No such file or directory\n", name);
+		return (-1);
+	}
+	return (fd);
 }
 
 int	setup_input_redirections(t_command *cmd)
 {
 	t_redirection	*input_redir;
 	int				fd;
-	char			*heredoc_content;
 
 	input_redir = cmd->input;
 	while (input_redir != NULL)
 	{
 		if (input_redir->heredoc)
 		{
-			handle_heredoc(input_redir);
+			if (handle_heredoc(input_redir) == -1)
+				return (-1);
 		}
 		else
-			fd = open(input_redir->file, O_RDONLY);
+			fd = safe_open(input_redir->file);
 		if (fd == -1)
-			return (perror("error exec: open (input)"), -1);
+			return (-1);
 		if (dup2(fd, STDIN_FILENO) == -1)
 		{
 			perror("error exec: dup2 (input)");
@@ -75,10 +97,10 @@ int	setup_output_redirections(t_command *cmd)
 			flags |= O_TRUNC;
 		fd = open(output_redir->file, flags, 0644);
 		if (fd == -1)
-			return (perror("error exec: open (output)"), -1);
+			return (perror("Error exec: open (output)"), -1);
 		if (dup2(fd, STDOUT_FILENO) == -1)
 		{
-			perror("error exec: dup2 (output)");
+			perror("Error exec: dup2 (output)");
 			close(fd);
 			return (-1);
 		}
@@ -90,19 +112,20 @@ int	setup_output_redirections(t_command *cmd)
 
 // SETS THE STDIN AND STDOUT OF THE COMMAND TO THE CORRECT 
 // FILE POINTED TO BY THE REDIRECTION LIST
-void	init_redir(t_command *current)
+int	init_redir(t_command *current)
 {
-	int	flg;
+	int	flag;
 
-	flg = 0;
+	flag = 0;
 	if (current->input)
 	{
 		if (setup_input_redirections(current) == -1)
-			flg = 1;
+			flag = -1;
 	}
-	if (flg == 0 && current->output)
+	if (current->output)
 	{
 		if (setup_output_redirections(current) == -1)
-			flg = 1;
+			flag = -1;
 	}
+	return (flag);
 }

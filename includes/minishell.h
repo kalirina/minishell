@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/15 17:21:43 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/17 18:21:11 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,17 @@ typedef struct s_token
 {
 	char			*str;
 	struct s_token	*next;
-	char			quotes;
 } t_token;
+
+typedef struct s_expansion
+{
+	char	*token;
+	char	*res;
+	bool	in_single_quote;
+	bool	in_double_quote;
+	int		i;
+	int		len;
+} t_expansion;
 
 typedef struct s_redirection
 {
@@ -54,25 +63,19 @@ typedef struct s_command
 	struct s_command	*next;
 }	t_command;
 
-typedef struct s_expansion
+typedef struct s_pipe
 {
-	char	*token;
-	char	*res;
-	bool	in_single_quote;
-	bool	in_double_quote;
-	int		i;
-	int		len;
-} t_expansion;
+	pid_t	*pids;
+	int		**fds;
+}	t_pipe;
 
 typedef struct s_executer
 {
 	t_command	*cmds;
 	int			saved_stdin;
 	int			saved_stdout;
-	int			n_commands;
-	int			pipe_in_fd;
-	int			pipe_out_fd;
-	bool		pipe;
+	int			n_cmds;
+	t_pipe		*pipe;
 } t_executer;
 
 typedef struct s_shell
@@ -125,6 +128,12 @@ void	init_environ(t_shell *shell);
 int		skip(char *line);
 int		slash(char *line);
 char	*new_strjoin(char *s1, char *s2);
+//free
+void	free_pipe(t_pipe *p, int n_cmds, bool to_close, int j);
+void	free_fds(int **fds, int n_cmds);
+void	free_executer(t_executer *e, bool to_close);
+void	close_all_pipes(t_pipe *p, int n_cmd);
+
 
 
 int		print_error(char *cmd, char *arg, char *msg);
@@ -148,17 +157,23 @@ void	free_split(char **tab);
 int		is_builtin(char **args);
 int		is_valid_var(char *name);
 int		check_builtin_name(const char *arg0, const char *builtin_name);
+char	*get_exec_path(t_shell *shell, char *cmd);
+void	execute_pipeline(t_shell *shell, t_executer *ex);
+int		execute_builtin_cmd(t_shell *shell, char **args);
+void	reset_stdinout(t_executer *ex);
+t_pipe	*init_pipes(int n_cmds);
 
-void		init_redir(t_command *current);
+
+int			init_redir(t_command *current);
 t_executer	*init_executer(t_command *cmds);
 int			count_commands(t_command *cmd);
 int			setup_input_redirections(t_command *cmd);
 int			setup_output_redirections(t_command *cmd);
 
 //builtins
-int		echo_cmd(t_shell *shell);
+int		echo_cmd(char **args);
 int		env_cmd(t_shell *shell);
-int		pwd_cmd(void);
+int		pwd_cmd(char **args);
 int		exit_cmd(t_shell *shell, char **args);
 int		cd_cmd(t_shell *shell);
 int		export_cmd(t_shell *shell, char **args);

@@ -6,7 +6,7 @@ void	print_tokens(t_token *t)
 	printf("\nTOKENS:\n");
 	while (t)
 	{
-		printf("[%d]{%c}%s\n", i, t->quotes, t->str);
+		printf("[%d]%s\n", i, t->str);
 		i++;
 		t = t->next;
 	}
