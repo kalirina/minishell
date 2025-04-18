@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 23:59:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/14 20:30:29 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/18 09:19:22 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@ void	init_environ(t_shell *shell)
 	}
 }
 
+//TO CHANGE SHELL -> ARGS ?
 int	env_cmd(t_shell *shell)
 {
 	int	i;
