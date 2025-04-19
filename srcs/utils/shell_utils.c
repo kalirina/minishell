@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 23:27:53 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/14 14:12:27 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/19 15:30:21 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,7 @@ int	init_shell(t_shell **shell)
 	*shell = malloc(sizeof(t_shell));
 	if (!shell)
 		return (perror("malloc"), 1);
-	signal(SIGINT, &handle_sigint);
-	signal(SIGQUIT, SIG_IGN);
+	setup_signal_handlers();
 	init_environ(*shell);
 	(*shell)->nb_pipe = 0;
 	(*shell)->nb_cmd = 0;

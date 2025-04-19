@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 17:33:58 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/17 17:05:10 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/19 15:39:23 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ void	child_process(t_shell *shell, t_executer *ex, t_command *current, int i)
 {
 	char	*path;
 
+	// signal(SIGINT, SIG_DFL);
+	// signal(SIGQUIT, SIG_DFL);
 	if (i > 0)
 		dup2(ex->pipe->fds[i - 1][0], STDIN_FILENO);
 	if (i < ex->n_cmds - 1)
@@ -61,6 +63,14 @@ void	execute_pipeline(t_shell *shell, t_executer *ex)
 {
 	t_command	*current;
 	int			i;
+	struct sigaction	sa_ignore;
+
+	// Ignore signals in parent during pipeline
+	sa_ignore.sa_handler = SIG_IGN;
+	sigemptyset(&sa_ignore.sa_mask);
+	sa_ignore.sa_flags = 0;
+	sigaction(SIGINT, &sa_ignore, NULL);
+	sigaction(SIGQUIT, &sa_ignore, NULL);
 
 	current = ex->cmds;
 	i = 0;
@@ -74,4 +84,6 @@ void	execute_pipeline(t_shell *shell, t_executer *ex)
 	i = 0;
 	while (i < ex->n_cmds)
 		waitpid(ex->pipe->pids[i++], NULL, 0);
+
+	setup_signal_handlers();
 }

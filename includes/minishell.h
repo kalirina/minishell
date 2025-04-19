@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/19 10:39:51 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/19 13:17:29 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,6 +129,8 @@ void	print_command(t_command *c);
 //signals
 void	handle_sigint(int signo);
 void	handle_sigquit(int signo);
+void	setup_signal_handlers(void);
+void	handle_shell_signal(void);
 //utils
 void	init_environ(t_shell *shell);
 int		init_shell(t_shell **shell);

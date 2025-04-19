@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/19 10:40:28 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/19 15:39:08 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,8 +111,8 @@ char	*get_exec_path(t_shell *shell, char *cmd)
 
 void	child_ext_cmd(t_shell *shell, char **args, char *path)
 {
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
+	// signal(SIGINT, SIG_DFL);
+	// signal(SIGQUIT, SIG_DFL);
 	execve(path, args, shell->my_environ);
 	print_error(args[0], NULL, strerror(errno));
 	free(path);
@@ -126,6 +126,7 @@ void	exec_ext_cmd(t_shell *shell, char **args)
 	char	*path;
 	pid_t	pid;
 	int		status;
+	struct sigaction	sa_ignore;
 
 	path = get_exec_path(shell, args[0]);
 	if (!path)
@@ -133,7 +134,15 @@ void	exec_ext_cmd(t_shell *shell, char **args)
 		shell->exit_status = 127;
 		return ;
 	}
+
+	// Ignore signals in parent during execution
+	sa_ignore.sa_handler = SIG_IGN;
+	sigemptyset(&sa_ignore.sa_mask);
+	sa_ignore.sa_flags = 0;
+	sigaction(SIGINT, &sa_ignore, NULL);
+	sigaction(SIGQUIT, &sa_ignore, NULL);
 	pid = fork();
+
 	if (pid == -1)
 	{
 		perror("minishell: fork");
@@ -153,6 +162,7 @@ void	exec_ext_cmd(t_shell *shell, char **args)
 			shell->exit_status = 1;
 		free(path);
 	}
+	setup_signal_handlers();
 }
 
 //EXECUTES A SINGLE COMMAND
@@ -168,10 +178,7 @@ void	execute_cmd(t_shell	*shell, t_executer *ex)
 	}
 	if (is_builtin(current->args))
 	{
-		// g_signal_received = 0;
 		shell->exit_status = execute_builtin_cmd(shell, shell->cmd->args);
-		// if (g_signal_received == SIGINT)
-		// 	shell->exit_status = 1;
 	}
 	else
 		exec_ext_cmd(shell, current->args);
