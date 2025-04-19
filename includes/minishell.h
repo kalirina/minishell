@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/17 18:21:11 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/19 10:39:51 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,9 @@ typedef struct s_shell
 extern int	g_pid;
 
 //parsing
-void	lexer(t_shell *shell, char *line);
-void	expand(t_shell	*shell);
-void	parser(t_shell *shell);
+int		lexer(t_shell	*shell, char *line);
+int		expand(t_shell *shell);
+int		parser(t_shell *shell);
 
 //parsing utils
 t_redirection *add_redirection(t_redirection **head, char *file, bool append, bool heredoc);
@@ -158,8 +158,7 @@ void	sort_env_array(char **array, int count);
 int		is_valid_var(char *name);
 //execution
 void	execute(t_shell *shell);
-void	execute_pipeline(t_shell *shell, int num_commands);
-void	execute_cmd(t_shell	*shell);
+void	execute_pipeline(t_shell *shell, t_executer *ex);
 int		execute_builtin_cmd(t_shell *shell, char **args);
 void	exec_ext_cmd(t_shell *shell, char **args);
 void	free_split(char **tab);
@@ -169,7 +168,6 @@ char	*find_cmd_in_path(t_shell *shell, char *cmd);
 char	*check_path_entry(const char *dir, const char *cmd, char **paths);
 int		check_builtin_name(const char *arg0, const char *builtin_name);
 char	*get_exec_path(t_shell *shell, char *cmd);
-void	execute_pipeline(t_shell *shell, t_executer *ex);
 int		execute_builtin_cmd(t_shell *shell, char **args);
 void	reset_stdinout(t_executer *ex);
 t_pipe	*init_pipes(int n_cmds);

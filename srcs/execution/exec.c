@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/17 18:50:26 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/19 10:40:28 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,9 +159,7 @@ void	exec_ext_cmd(t_shell *shell, char **args)
 void	execute_cmd(t_shell	*shell, t_executer *ex)
 {
 	t_command	*current;
-	int			status;
 
-	status = 0;
 	current = shell->cmd;
 	if (init_redir(current) == -1)
 	{
@@ -170,10 +168,10 @@ void	execute_cmd(t_shell	*shell, t_executer *ex)
 	}
 	if (is_builtin(current->args))
 	{
-		g_signal_received = 0;
+		// g_signal_received = 0;
 		shell->exit_status = execute_builtin_cmd(shell, shell->cmd->args);
-		if (g_signal_received == SIGINT)
-			shell->exit_status = 1;
+		// if (g_signal_received == SIGINT)
+		// 	shell->exit_status = 1;
 	}
 	else
 		exec_ext_cmd(shell, current->args);
