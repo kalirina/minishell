@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 17:13:27 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/17 16:46:12 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:15:33 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,10 @@ t_redirection	*add_redirection(t_redirection **head, char *file,
 		current->next = new_redir;
 	}
 	return (new_redir);
+}
+
+void	cleanup_command_line(t_shell *shell)
+{
+	free_command(shell->cmd);
+	shell->cmd = NULL;
 }

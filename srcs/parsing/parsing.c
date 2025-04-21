@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/17 18:48:24 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:15:57 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@ char	**get_args(t_token **tokens, int size)
 		args[0] = ft_strdup("  ");
 		args[1] = NULL;
 		return (args);
-		// return (NULL);
 	}
 	args = malloc((size + 1) * sizeof(char *));
 	if (!args)

@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 10:40:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/19 10:43:24 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:34:34 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,4 +79,4 @@ int	count_commands(t_command *cmd)
 		cmd = cmd->next;
 	}
 	return (count);
-} 
+}
