@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 16:55:29 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 18:33:54 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/21 20:43:53 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,58 +31,56 @@ char	*get_heredoc_input(const char *delimiter)
 			free(line);
 			break ;
 		}
-		
 		result = new_strjoin(result, line);
 		result = new_strjoin(result, "\n");
 	}
 	return (result);
 }
 
-char	*get_var_name(char *start)
-{
-	int	len;
+// char	*get_var_name(char *start)
+// {
+// 	int	len;
 
-	len = 0;
-	while (start[len] && (isalnum(start[len]) || start[len] == '_'))
-		len++;
-	return (ft_substr(start, 0, len));
-}
-char	*expand_heredoc_var(char *line, char **res, int *i)
-{
-	if (line[i] == '$')
-		res = new_node(line)
-}
+// 	len = 0;
+// 	while (start[len] && (isalnum(start[len]) || start[len] == '_'))
+// 		len++;
+// 	return (ft_substr(start, 0, len));
+// }
+// char	*expand_heredoc_var(char *line, char **res, int *i)
+// {
+// 	if (line[i] == '$')
+// 		res = new_node(line)
+// }
 
-char	*expand_heredoc_line(char *line)
-{
-	int		i;
-	int		len;
-	char	*res;
+// char	*expand_heredoc_line(char *line)
+// {
+// 	int		i;
+// 	int		len;
+// 	char	*res;
 
-	len = ft_strlen(line);
-	i = 0;
-	res = ft_strdup("");
-	if (!res)
-		return ;
-	while (i < len)
-	{
-		if (line[i] == '\\')
-		{
-			if (!line[i + 1])
-				return (res);
-			res = append_char(res, line[i + 1]);
-			i += 2;
-		}
-		else if (line[i] == '$')
-		{
-			i++;
-			expand_heredoc_var(line, &res, &i);
-		}
-		else
-		
-	}
-	return (res);
-}
+// 	len = ft_strlen(line);
+// 	i = 0;
+// 	res = ft_strdup("");
+// 	if (!res)
+// 		return ;
+// 	while (i < len)
+// 	{
+// 		if (line[i] == '\\')
+// 		{
+// 			if (!line[i + 1])
+// 				return (res);
+// 			res = append_char(res, line[i + 1]);
+// 			i += 2;
+// 		}
+// 		else if (line[i] == '$')
+// 		{
+// 			i++;
+// 			expand_heredoc_var(line, &res, &i);
+// 		}
+// 		else	
+// 	}
+// 	return (res);
+// }
 
 char	*get_exec_path(t_shell *shell, char *cmd)
 {
