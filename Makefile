@@ -12,6 +12,8 @@ SRCS = srcs/main.c\
 		srcs/utils/list_utils.c\
 		srcs/utils/signals.c\
 		srcs/utils/free.c\
+		srcs/utils/shlvl.c\
+		srcs/utils/uid.c\
 		srcs/utils/shell_utils.c\
 		srcs/builtins/cd.c\
 		srcs/builtins/echo.c\

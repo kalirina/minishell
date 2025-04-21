@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
 /*   Updated: 2025/04/21 19:55:44 by irkalini         ###   ########.fr       */
@@ -82,6 +82,7 @@ typedef struct s_shell
 	t_command			*cmd;
 	char				**my_environ;
 	int					exit_status;
+	int					uid;
 	char				*line_buffer;
 }	t_shell;
 
@@ -132,6 +133,8 @@ void			print_command(t_command *c);
 void			handle_sigint(int signo);
 int				signal_interrupt(int status);
 //utils
+int	      get_uid();
+void      handle_shlvl(t_shell *shell);
 void			init_environ(t_shell *shell);
 int				init_shell(t_shell **shell);
 int				skip(char *line);

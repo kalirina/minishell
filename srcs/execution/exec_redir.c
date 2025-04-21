@@ -36,7 +36,7 @@ int	handle_heredoc(t_redirection *red)
 	free(heredoc_content);
 	fd = open(".temp_heredoc", O_RDONLY);
 	unlink(".temp_heredoc");
-	return (0);
+	return (fd);
 }
 
 int	safe_open(char *name)
@@ -61,10 +61,7 @@ int	setup_input_redirections(t_command *cmd)
 	while (input_redir != NULL)
 	{
 		if (input_redir->heredoc)
-		{
-			if (handle_heredoc(input_redir) == -1)
-				return (-1);
-		}
+			fd = handle_heredoc(input_redir);
 		else
 			fd = safe_open(input_redir->file);
 		if (fd == -1)
