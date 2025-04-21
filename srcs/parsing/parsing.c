@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 18:15:57 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/21 19:16:05 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,8 @@ t_command	*parse_tokens(t_token **tokens)
 		{
 			*tokens = (*tokens)->next;
 			if (!first || !(*tokens) || ft_strncmp((*tokens)->str, "|", 1) == 0)
-				return (printf("minishell: syntax error \
-				near unexpected token '|'\n"), NULL);
+				return (printf(RED "minishell: syntax error \
+				near unexpected token '|'\n" RES), NULL);
 			current->next = parse_cmd(tokens);
 			current = current->next;
 		}
@@ -130,7 +130,7 @@ int	parser(t_shell *shell)
 	}
 	if (shell->cmd->args && ft_strlen(shell->cmd->args[0]) == 0)
 	{
-		printf("minishell: : command not found\n");
+		printf(RED "minishell: : command not found\n" RES);
 		return (-1);
 	}
 	return (0);

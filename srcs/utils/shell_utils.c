@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 23:27:53 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/21 18:15:17 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/21 19:53:12 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,10 +54,9 @@ int	init_shell(t_shell **shell)
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
 	init_environ(*shell);
-	(*shell)->nb_pipe = 0;
-	(*shell)->nb_cmd = 0;
 	(*shell)->exit_status = 0;
 	(*shell)->cmd = NULL;
+	print_banner();
 	return (0);
 }
 
@@ -78,7 +77,7 @@ void	check_line(t_shell *shell, int *exit_status)
 {
 	if (!shell->line_buffer)
 	{
-		printf("exit\n");
+		printf(RED "exit\n" RES);
 		cleanup_shell(shell);
 		rl_clear_history();
 		exit(*exit_status);

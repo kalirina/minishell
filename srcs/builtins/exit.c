@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 13:16:57 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/17 18:31:26 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/21 19:57:45 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,8 @@ int	exit_cmd(t_shell *shell, char **args)
 	int			exit_code;
 	long long	arg_val;
 
-	ft_putstr_fd("exit\n", 1);
+	if (!shell->cmd->next)
+		ft_putstr_fd("exit\n", 1);
 	exit_code = shell->exit_status;
 	if (args[1])
 	{

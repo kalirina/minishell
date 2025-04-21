@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 18:46:27 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/21 19:55:44 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,11 +83,11 @@ typedef struct s_shell
 	char				**my_environ;
 	int					exit_status;
 	char				*line_buffer;
-	int					nb_pipe;
-	int					nb_cmd;
-	int					i;
-	int					pipefd[2];
 }	t_shell;
+
+# define RES		"\033[0m"
+# define RED		"\033[0;31m"
+# define PU			"\033[0;35m"
 
 //parsing
 int				lexer(t_shell	*shell, char *line);
@@ -137,6 +137,7 @@ int				init_shell(t_shell **shell);
 int				skip(char *line);
 int				slash(char *line);
 char			*new_strjoin(char *s1, char *s2);
+void			print_banner(void);
 //free
 void			free_pipe(t_pipe *p, int n_cmds, bool to_close, int j);
 void			free_fds(int **fds, int n_cmds);

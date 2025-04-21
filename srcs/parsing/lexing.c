@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexing.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/17 16:34:35 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/21 19:12:47 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,8 @@ t_token	*default_token(char **ps)
 			if (**ps == quote)
 				(*ps)++;
 			else
-				return (printf("minishell: unclosed quotes found\n"), NULL);
+				return (printf(RED "minishell: unclosed quotes found\n" RES),
+					NULL);
 		}
 		else
 			(*ps)++;
