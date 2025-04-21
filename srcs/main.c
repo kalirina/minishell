@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/18 09:39:07 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:32:53 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,10 +53,10 @@ void	init_shell(t_shell *shell)
 {
 	setup_signal_handlers();
 	shell->my_environ = NULL;
-	shell->hidden = NULL;
 	init_environ(shell);
 	shell->exit_status = 0;
 	shell->cmd = NULL;
+	shell->uid = get_uid();
 }
 
 void	cleanup_command_line(t_shell *shell, char *line_buffer)

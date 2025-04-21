@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/18 09:40:20 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:33:10 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ typedef struct s_shell
 	t_command			*cmd;
 	char				**my_environ;
 	int					exit_status;
+	int					uid;
 }	t_shell;
 
 int		lexer(t_shell *shell, char *line);
@@ -125,6 +126,8 @@ void	handle_sigint(int signo);
 void	setup_signal_handlers(void);
 //utils
 void	init_environ(t_shell *shell);
+int		get_uid();
+void	handle_shlvl(t_shell *shell);
 int		skip(char *line);
 int		slash(char *line);
 char	*new_strjoin(char *s1, char *s2);
@@ -178,5 +181,6 @@ int		exit_cmd(t_shell *shell, char **args);
 int		cd_cmd(t_shell *shell);
 int		export_cmd(t_shell *shell, char **args);
 int		unset_cmd(t_shell *shell, char **args);
+int		export_add_var(t_shell *shell, char *arg);
 
 #endif

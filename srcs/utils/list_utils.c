@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 10:40:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/17 18:48:14 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/21 16:53:27 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,13 @@ t_command	*new_node(void)
 
 char	*is_redirection(char *str)
 {
-	if (ft_strncmp(str, ">>", 2) == 0)
+	if (ft_strncmp(str, ">>", 2) == 0 && ft_strlen(str) == 2)
 		return (">>");
-	if (ft_strncmp(str, ">", 1) == 0)
+	if (ft_strncmp(str, ">", 1) == 0 && ft_strlen(str) == 1)
 		return (">");
-	if (ft_strncmp(str, "<<", 2) == 0)
+	if (ft_strncmp(str, "<<", 2) == 0 && ft_strlen(str) == 2)
 		return ("<<");
-	if (ft_strncmp(str, "<", 1) == 0)
+	if (ft_strncmp(str, "<", 1) == 0 && ft_strlen(str) == 1)
 		return ("<");
 	return (NULL);
 }

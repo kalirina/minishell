@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 13:20:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/14 20:20:34 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:39:35 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,10 @@ void	default_var(t_shell *shell, t_expansion *exp)
 		exp->i++;
 	len = exp->i - start_index;
 	var_name = ft_substr(&exp->token[start_index], 0, len);
-	value = echo_env_val(shell, var_name);
+	if (ft_strncmp(var_name, "UID", 3) == 0 && ft_strlen(var_name) == 3)
+		value = ft_itoa(shell->uid);
+	else
+		value = echo_env_val(shell, var_name);
 	free(var_name);
 	if (value)
 		exp->res = new_strjoin(exp->res, value);

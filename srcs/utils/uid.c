@@ -1,42 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   variables.c                                        :+:      :+:    :+:   */
+/*   uid.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/18 09:31:44 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/18 09:49:00 by enrmarti         ###   ########.fr       */
+/*   Created: 2025/04/21 18:16:51 by enrmarti          #+#    #+#             */
+/*   Updated: 2025/04/21 18:44:31 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-
-bool	check_shlv_flag(char **env)
+int	get_uid()
 {
-	int	i;
-
-	i = 0;
-	while (env[i])
+	struct stat	file_info;
+	char		cwd[1024];
+  
+	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
-		if (ft_strncmp(env[i], "SECRET_F=", 9) == 0)
-			return (1);
-		i++;
+		perror("getuid getcwd");
+		return (-1);
 	}
-	return (0);
-}
-
-char	**add_shlv_flag(char **env)
-{
-	char	**new;
-	int		i;
-
-	i = 0;
-	while (env[i])
-		i++;
-	new = malloc(sizeof(char *) * i + 1);
-	if (!new)
-		return (NULL);
-	
-}
+	if (stat(cwd, &file_info) == -1)
+	{
+		perror("getuid stat");
+		return (-1);
+	}  
+	return (file_info.st_uid);
+  }
+  
