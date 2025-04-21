@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 09:38:31 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/14 20:26:45 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/21 19:17:22 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,8 @@ bool	redirection_at_end(t_token *t)
 		t = t->next;
 	if (is_redirection_char(t->str[0]))
 	{
-		printf("minishell: syntax error near unexpected token '%s'\n", t->str);
+		printf(RED "minishell: syntax error near unexpected token '%s'\n" RES,
+			t->str);
 		return (false);
 	}
 	return (true);
@@ -34,8 +35,8 @@ bool	consecutive_redirections(t_token *t)
 		if (is_redirection_char(t->str[0])
 			&& is_redirection_char(t->next->str[0]))
 		{
-			printf("minishell: syntax error \
-			near unexpected token '%s'\n", t->str);
+			printf(RED "minishell: syntax error \
+			near unexpected token '%s'\n" RES, t->str);
 			return (false);
 		}
 		t = t->next;
@@ -50,7 +51,7 @@ bool	syntax_check(t_token *t)
 		return (false);
 	if (ft_strncmp(t->str, "|", 1) == 0)
 	{
-		printf("minishell: syntax error near unexpected token '|'\n");
+		printf(RED "minishell: syntax error near unexpected token '|'\n" RES);
 		return (false);
 	}
 	if (!consecutive_redirections(t) || !redirection_at_end(t))

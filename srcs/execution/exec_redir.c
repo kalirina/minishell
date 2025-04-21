@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_redir.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 15:31:23 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 19:02:05 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/21 19:21:47 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ int	safe_open(char *name)
 	fd = open(name, O_RDONLY);
 	if (fd == -1)
 	{
-		printf("minishell: %s: No such file or directory\n", name);
+		printf(RED "minishell: %s: No such file or directory\n" RES, name);
 		return (-1);
 	}
 	return (fd);
@@ -107,7 +107,7 @@ int	setup_output_redirections(t_command *cmd)
 	return (0);
 }
 
-// SETS THE STDIN AND STDOUT OF THE COMMAND TO THE CORRECT 
+// SETS THE STDIN AND STDOUT OF THE COMMAND TO THE CORRECT
 // FILE POINTED TO BY THE REDIRECTION LIST
 int	init_redir(t_command *current)
 {

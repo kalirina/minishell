@@ -6,17 +6,28 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 23:27:53 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/14 14:12:27 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/21 19:53:12 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+static void	free_redir_list(t_redirection *redir)
+{
+	t_redirection	*next;
+
+	while (redir != NULL)
+	{
+		next = redir->next;
+		free(redir->file);
+		free(redir);
+		redir = next;
+	}
+}
+
 void	free_command(t_command *cmd)
 {
-	int				i;
-	t_redirection	*current;
-	t_redirection	*next;
+	int	i;
 
 	if (!cmd)
 		return ;
@@ -30,22 +41,8 @@ void	free_command(t_command *cmd)
 		}
 		free(cmd->args);
 	}
-	current = cmd->input;
-	while (current != NULL)
-	{
-		next = current->next;
-		free(current->file);
-		free(current);
-		current = next;
-	}
-	current = cmd->output;
-	while (current != NULL)
-	{
-		next = current->next;
-		free(current->file);
-		free(current);
-		current = next;
-	}
+	free_redir_list(cmd->input);
+	free_redir_list(cmd->output);
 	free(cmd);
 }
 
@@ -54,20 +51,13 @@ int	init_shell(t_shell **shell)
 	*shell = malloc(sizeof(t_shell));
 	if (!shell)
 		return (perror("malloc"), 1);
-	signal(SIGINT, &handle_sigint);
+	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
 	init_environ(*shell);
-	(*shell)->nb_pipe = 0;
-	(*shell)->nb_cmd = 0;
 	(*shell)->exit_status = 0;
 	(*shell)->cmd = NULL;
+	print_banner();
 	return (0);
-}
-
-void	cleanup_command_line(t_shell *shell)
-{
-	free_command(shell->cmd);
-	shell->cmd = NULL;
 }
 
 void	cleanup_shell(t_shell *shell)
@@ -87,7 +77,7 @@ void	check_line(t_shell *shell, int *exit_status)
 {
 	if (!shell->line_buffer)
 	{
-		printf("exit\n");
+		printf(RED "exit\n" RES);
 		cleanup_shell(shell);
 		rl_clear_history();
 		exit(*exit_status);

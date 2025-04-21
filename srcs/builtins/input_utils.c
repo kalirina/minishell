@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   input_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 21:09:21 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/28 18:22:14 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/21 19:15:02 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,13 +44,13 @@ int	slash(char *line)
 		else
 			return (0);
 	}
-	printf("minishell: %s: Is a directory\n", line);
+	printf(RED "minishell: %s: Is a directory\n" RES, line);
 	return (1);
 }
 
 int	print_error(char *cmd, char *arg, char *msg)
 {
-	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(RED "minishell: ", 2);
 	if (cmd)
 	{
 		ft_putstr_fd(cmd, 2);
@@ -63,7 +63,7 @@ int	print_error(char *cmd, char *arg, char *msg)
 		ft_putstr_fd("': ", 2);
 	}
 	ft_putstr_fd(msg, 2);
-	ft_putchar_fd('\n', 2);
+	ft_putstr_fd(RES "\n", 2);
 	return (1);
 }
 

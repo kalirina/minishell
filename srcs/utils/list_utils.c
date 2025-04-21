@@ -6,11 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 10:40:15 by enrmarti          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/04/21 16:53:27 by enrmarti         ###   ########.fr       */
-=======
-/*   Updated: 2025/04/09 23:22:36 by irkalini         ###   ########.fr       */
->>>>>>> 42138607d9b2dd183f145cfe40e188c68282a23f
+/*   Updated: 2025/04/21 18:34:34 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,19 +79,4 @@ int	count_commands(t_command *cmd)
 		cmd = cmd->next;
 	}
 	return (count);
-} 
- 
-void	free_split(char **tab)
-{
-	int	i;
-
-	i = 0;
-	if (!tab)
-		return ;
-	while (tab[i])
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
 }
