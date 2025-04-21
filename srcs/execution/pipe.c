@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 17:33:58 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/19 15:39:23 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/21 18:46:36 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@ void	child_process(t_shell *shell, t_executer *ex, t_command *current, int i)
 {
 	char	*path;
 
-	// signal(SIGINT, SIG_DFL);
-	// signal(SIGQUIT, SIG_DFL);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	if (i > 0)
 		dup2(ex->pipe->fds[i - 1][0], STDIN_FILENO);
 	if (i < ex->n_cmds - 1)
@@ -63,17 +63,14 @@ void	execute_pipeline(t_shell *shell, t_executer *ex)
 {
 	t_command	*current;
 	int			i;
-	struct sigaction	sa_ignore;
+	int			sigint_flag;
+	int			sigquit_flag;
 
-	// Ignore signals in parent during pipeline
-	sa_ignore.sa_handler = SIG_IGN;
-	sigemptyset(&sa_ignore.sa_mask);
-	sa_ignore.sa_flags = 0;
-	sigaction(SIGINT, &sa_ignore, NULL);
-	sigaction(SIGQUIT, &sa_ignore, NULL);
-
+	sigint_flag = 0;
+	sigquit_flag = 0;
 	current = ex->cmds;
 	i = 0;
+	signal(SIGINT, SIG_IGN);
 	while (i < ex->n_cmds)
 	{
 		execute_fork(shell, ex, current, i);
@@ -81,9 +78,27 @@ void	execute_pipeline(t_shell *shell, t_executer *ex)
 		i++;
 	}
 	close_all_pipes(ex->pipe, ex->n_cmds);
+	handle_wait_signals(ex, &sigint_flag, &sigquit_flag);
+	signal(SIGINT, handle_sigint);
+	if (sigint_flag)
+		write(STDOUT_FILENO, "\n", 1);
+	else if (sigquit_flag)
+		write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
+}
+
+void	handle_wait_signals(t_executer *ex, int *sigi, int *sigq)
+{
+	int	i;
+	int	status;
+
 	i = 0;
 	while (i < ex->n_cmds)
-		waitpid(ex->pipe->pids[i++], NULL, 0);
-
-	setup_signal_handlers();
+	{
+		waitpid(ex->pipe->pids[i], &status, 0);
+		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+			*sigi = 1;
+		else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGQUIT)
+			*sigq = 1;
+		i++;
+	}
 }
