@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 18:33:10 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/21 20:34:01 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,15 +82,12 @@ typedef struct s_shell
 	t_command			*cmd;
 	char				**my_environ;
 	int					exit_status;
-<<<<<<< HEAD
 	int					uid;
-=======
 	char				*line_buffer;
 	int					nb_pipe;
 	int					nb_cmd;
 	int					i;
 	int					pipefd[2];
->>>>>>> 42138607d9b2dd183f145cfe40e188c68282a23f
 }	t_shell;
 
 extern int	g_pid;
@@ -135,12 +132,9 @@ void	handle_sigint(int signo);
 void	handle_sigquit(int signo);
 //utils
 void	init_environ(t_shell *shell);
-<<<<<<< HEAD
 int		get_uid();
 void	handle_shlvl(t_shell *shell);
-=======
-int		init_shell(t_shell **shell);
->>>>>>> 42138607d9b2dd183f145cfe40e188c68282a23f
+void	init_shell(t_shell **shell);
 int		skip(char *line);
 int		slash(char *line);
 char	*new_strjoin(char *s1, char *s2);
@@ -167,7 +161,6 @@ void	sort_env_array(char **array, int count);
 int		is_valid_var(char *name);
 //execution
 void	execute(t_shell *shell);
-void	execute_pipeline(t_shell *shell, int num_commands);
 void	execute_cmd(t_shell	*shell);
 int		execute_builtin_cmd(t_shell *shell, char **args);
 void	exec_ext_cmd(t_shell *shell, char **args);
@@ -182,7 +175,6 @@ void	execute_pipeline(t_shell *shell, t_executer *ex);
 int		execute_builtin_cmd(t_shell *shell, char **args);
 void	reset_stdinout(t_executer *ex);
 t_pipe	*init_pipes(int n_cmds);
-
 
 int			init_redir(t_command *current);
 t_executer	*init_executer(t_command *cmds);

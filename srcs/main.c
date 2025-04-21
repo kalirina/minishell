@@ -3,20 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/04/21 18:32:53 by enrmarti         ###   ########.fr       */
-=======
-/*   Updated: 2025/04/10 01:18:00 by irkalini         ###   ########.fr       */
->>>>>>> 42138607d9b2dd183f145cfe40e188c68282a23f
+/*   Updated: 2025/04/21 20:34:06 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-<<<<<<< HEAD
 void    free_command(t_command *cmd)
 {
     int        i;
@@ -54,9 +49,8 @@ void    free_command(t_command *cmd)
     free(cmd);
 }
 
-void	init_shell(t_shell *shell)
+void	init_shell(t_shell **shell)
 {
-	setup_signal_handlers();
 	shell->my_environ = NULL;
 	init_environ(shell);
 	shell->exit_status = 0;
@@ -82,8 +76,6 @@ void	cleanup_shell(t_shell *shell)
 }
 
 
-=======
->>>>>>> 42138607d9b2dd183f145cfe40e188c68282a23f
 int	main(void)
 {
 	t_shell	*shell;
