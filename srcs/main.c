@@ -3,15 +3,20 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2025/04/21 18:32:53 by enrmarti         ###   ########.fr       */
+=======
+/*   Updated: 2025/04/10 01:18:00 by irkalini         ###   ########.fr       */
+>>>>>>> 42138607d9b2dd183f145cfe40e188c68282a23f
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+<<<<<<< HEAD
 void    free_command(t_command *cmd)
 {
     int        i;
@@ -77,34 +82,21 @@ void	cleanup_shell(t_shell *shell)
 }
 
 
+=======
+>>>>>>> 42138607d9b2dd183f145cfe40e188c68282a23f
 int	main(void)
 {
 	t_shell	*shell;
-	char	*line_buffer;
-	int		last_status;
+	int		exit_status;
 
-	shell = (t_shell *)malloc(sizeof(t_shell));
-	if (!shell)
-		perror("malloc");
-	init_shell(shell);
+	exit_status = 0;
+	init_shell(&shell);
 	while (1)
 	{
-		g_signal_received = 0;
-		line_buffer = readline("minishell>");
-		handle_post_cmd_signal(shell);
-		if (!line_buffer) // (Ctrl+D)
-		{
-			ft_putstr_fd("exit\n", STDOUT_FILENO);
-			break ;
-		}
-		if (line_buffer[0] != '\0')
-			add_history(rl_line_buffer);
-		if (line_buffer[0] == '\0' || skip(rl_line_buffer)
-			|| slash(rl_line_buffer))
-		{
-			free(line_buffer);
+		shell->line_buffer = readline("minishell>");
+		check_line(shell, &exit_status);
+		if (skip(shell->line_buffer) || slash(shell->line_buffer))
 			continue ;
-		}
 		if (lexer(shell, rl_line_buffer) == 0 && parser(shell) == 0)
 		{
 			// print_command(shell->cmd);
@@ -113,9 +105,8 @@ int	main(void)
 			shell->tokens = NULL;
 			shell->cmd = NULL;
 		}
-		free(line_buffer);
 	}
-	last_status = shell->exit_status;
+	exit_status = shell->exit_status;
 	cleanup_shell(shell);
-	return (last_status);
+	return (exit_status);
 }

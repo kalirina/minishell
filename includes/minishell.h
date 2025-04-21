@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
 /*   Updated: 2025/04/21 18:33:10 by enrmarti         ###   ########.fr       */
@@ -28,8 +28,6 @@
 # include <fcntl.h>
 # include <limits.h>
 # include <fcntl.h>
-
-extern volatile sig_atomic_t	g_signal_received;
 
 typedef struct s_token
 {
@@ -84,12 +82,23 @@ typedef struct s_shell
 	t_command			*cmd;
 	char				**my_environ;
 	int					exit_status;
+<<<<<<< HEAD
 	int					uid;
+=======
+	char				*line_buffer;
+	int					nb_pipe;
+	int					nb_cmd;
+	int					i;
+	int					pipefd[2];
+>>>>>>> 42138607d9b2dd183f145cfe40e188c68282a23f
 }	t_shell;
 
-int		lexer(t_shell *shell, char *line);
-int		expand(t_shell	*shell);
-int		parser(t_shell *shell);
+extern int	g_pid;
+
+//parsing
+void	lexer(t_shell *shell, char *line);
+void	expand(t_shell	*shell);
+void	parser(t_shell *shell);
 
 //parsing utils
 t_redirection *add_redirection(t_redirection **head, char *file, bool append, bool heredoc);
@@ -103,6 +112,7 @@ bool	syntax_check(t_token *t);
 bool	check_quotes_inquotes(t_expansion *exp);
 bool	check_dollar_quotes(t_expansion *exp);
 void	free_command(t_command *cmd);
+
 int		is_redirection_char(char c);
 t_expansion	*init_expansion(char *token);
 t_command	*new_node(void);
@@ -112,22 +122,25 @@ t_token	*create_token(char *str);
 t_token	*add_token(t_token **head, t_token *new);
 t_token	*get_last_token(t_token **head);
 void	clean_tokens(t_shell *shell);
+t_redirection *add_redirection(t_redirection **head, char *file, bool append, bool heredoc);
 
 //test
 void	perform_quote_removal(t_shell *shell);
 void	print_tokens(t_token *t);
 int		setup_input_redirections(t_command *cmd);
 int		setup_output_redirections(t_command *cmd);
-
 void	print_command(t_command *c);
-
 //signals
 void	handle_sigint(int signo);
-void	setup_signal_handlers(void);
+void	handle_sigquit(int signo);
 //utils
 void	init_environ(t_shell *shell);
+<<<<<<< HEAD
 int		get_uid();
 void	handle_shlvl(t_shell *shell);
+=======
+int		init_shell(t_shell **shell);
+>>>>>>> 42138607d9b2dd183f145cfe40e188c68282a23f
 int		skip(char *line);
 int		slash(char *line);
 char	*new_strjoin(char *s1, char *s2);
@@ -137,28 +150,32 @@ void	free_fds(int **fds, int n_cmds);
 void	free_executer(t_executer *e, bool to_close);
 void	close_all_pipes(t_pipe *p, int n_cmd);
 
-
-
+void	cleanup_command_line(t_shell *shell);
+void	cleanup_shell(t_shell *shell);
+void	free_command(t_command *cmd);
+void	check_line(t_shell *shell, int *exit_status);
 int		print_error(char *cmd, char *arg, char *msg);
+//environment
 char	*get_env_var_value(char **my_environ, const char *var_name);
 int		find_env_var_index(char **my_environ, const char *var);
 int		set_env_var(t_shell *shell, char *var, char *val);
-void	handle_post_cmd_signal(t_shell *shell);
-
 char	*get_var(char *arg);
 char	*get_val(char *arg);
-void	add_new_env_var(t_shell *shell, int i, char *var, char *val);
-void	update_env_var(t_shell *shell, int i, char *var, char *val);
 char	*cd_get_oldpwd_target(t_shell *shell);
 char	*cd_get_home_target(t_shell *shell);
 void	sort_env_array(char **array, int count);
-void	cleanup_shell(t_shell *shell);
-void	cleanup_command_line(t_shell *shell, char *line_buffer);
+int		is_valid_var(char *name);
 //execution
 void	execute(t_shell *shell);
+void	execute_pipeline(t_shell *shell, int num_commands);
+void	execute_cmd(t_shell	*shell);
+int		execute_builtin_cmd(t_shell *shell, char **args);
+void	exec_ext_cmd(t_shell *shell, char **args);
 void	free_split(char **tab);
 int		is_builtin(char **args);
-int		is_valid_var(char *name);
+char	*get_exec_path(t_shell *shell, char *cmd);
+char	*find_cmd_in_path(t_shell *shell, char *cmd);
+char	*check_path_entry(const char *dir, const char *cmd, char **paths);
 int		check_builtin_name(const char *arg0, const char *builtin_name);
 char	*get_exec_path(t_shell *shell, char *cmd);
 void	execute_pipeline(t_shell *shell, t_executer *ex);
