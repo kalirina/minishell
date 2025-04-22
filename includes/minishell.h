@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 20:44:46 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/22 18:09:09 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@ typedef struct s_redirection
 	char					*file;
 	bool					append;
 	bool					heredoc;
+	int						fd_heredoc;
 	struct s_redirection	*next;
 }	t_redirection;
 
@@ -83,12 +84,13 @@ typedef struct s_shell
 	char				**my_environ;
 	int					exit_status;
 	int					uid;
+	bool				skip_cmd;
 	char				*line_buffer;
 }	t_shell;
 
 # define RES		"\033[0m"
 # define RED		"\033[0;31m"
-# define PU			"\033[0;35m"
+# define GREEN		"\033[0;32m"
 
 //parsing
 int				lexer(t_shell	*shell, char *line);
@@ -103,7 +105,7 @@ t_redirection	*add_redirection(
 char			*skip_spaces(char *str);
 char			*append_char(char *str, char c);
 char			*ft_strndup(const char *s, size_t n);
-char			*get_heredoc_input(const char *delimiter);
+char			*get_heredoc_input(t_shell *shell, const char *delimiter);
 char			*echo_env_val(t_shell *shell, char *var);
 bool			is_space(char str);
 bool			syntax_check(t_token *t);
@@ -125,10 +127,6 @@ t_redirection	*add_redirection(
 					bool heredoc);
 //test
 void			perform_quote_removal(t_shell *shell);
-void			print_tokens(t_token *t);
-int				setup_input_redirections(t_command *cmd);
-int				setup_output_redirections(t_command *cmd);
-void			print_command(t_command *c);
 //signals
 void			handle_sigint(int signo);
 int				signal_interrupt(int status);
@@ -166,6 +164,7 @@ int				is_valid_var(char *name);
 void			execute(t_shell *shell);
 void			execute_pipeline(t_shell *shell, t_executer *ex);
 int				execute_builtin_cmd(t_shell *shell, char **args);
+void			preprocess_heredoc(t_shell *shell);
 void			exec_ext_cmd(t_shell *shell, char **args);
 void			free_split(char **tab);
 int				is_builtin(char **args);
@@ -178,13 +177,13 @@ char			*check_path_entry(
 					const char *cmd,
 					char **paths);
 int				check_builtin_name(const char *arg0, const char *builtin_name);
-char			*get_exec_path(t_shell *shell, char *cmd);
 int				execute_builtin_cmd(t_shell *shell, char **args);
 void			reset_stdinout(t_executer *ex);
 t_pipe			*init_pipes(int n_cmds);
 int				init_redir(t_command *current);
 t_executer		*init_executer(t_command *cmds);
 int				count_commands(t_command *cmd);
+int				handle_heredoc(t_shell *shell, t_redirection *red);
 int				setup_input_redirections(t_command *cmd);
 int				setup_output_redirections(t_command *cmd);
 //builtins

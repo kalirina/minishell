@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 17:13:27 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 18:15:33 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/22 12:33:53 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,7 @@ t_redirection	*add_redirection(t_redirection **head, char *file,
 	new_redir->file = ft_strdup(file);
 	new_redir->append = append;
 	new_redir->heredoc = heredoc;
+	new_redir->fd_heredoc = -1;
 	new_redir->next = NULL;
 	if (*head == NULL)
 		*head = new_redir;

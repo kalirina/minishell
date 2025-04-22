@@ -12,7 +12,6 @@ SRCS = srcs/main.c\
 		srcs/utils/list_utils.c\
 		srcs/utils/signals.c\
 		srcs/utils/free.c\
-		srcs/utils/shlvl.c\
 		srcs/utils/uid.c\
 		srcs/utils/shell_utils.c\
 		srcs/builtins/cd.c\
@@ -26,6 +25,7 @@ SRCS = srcs/main.c\
 		srcs/builtins/pwd.c\
 		srcs/builtins/unset.c\
 		srcs/execution/heredoc.c\
+		srcs/execution/heredoc_utils.c\
 		srcs/execution/exec.c\
 		srcs/execution/exec_utils.c\
 		srcs/execution/pipe.c\

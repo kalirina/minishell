@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 23:59:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/21 18:32:37 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/22 14:09:44 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ void	init_environ(t_shell *shell)
 		free(shell->my_environ);
 		exit(EXIT_FAILURE);
 	}
-	// handle_shlvl(shell);
 }
 
 //TO CHANGE SHELL -> ARGS ?

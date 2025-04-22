@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 13:20:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 18:39:35 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/22 14:10:25 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ void	default_var(t_shell *shell, t_expansion *exp)
 	int		start_index;
 	int		len;
 
+	value = NULL;
 	start_index = exp->i;
 	while (exp->token[exp->i] && (ft_isalnum(exp->token[exp->i])
 			|| exp->token[exp->i] == '_'))
@@ -123,6 +124,12 @@ int	expand(t_shell *shell)
 	while (current)
 	{
 		original_str = current->str;
+		if (ft_strncmp(original_str, "<<", 2) == 0
+			&& ft_strlen(original_str) == 2)
+		{
+			current = current->next->next;
+			continue ;
+		}
 		exp = init_expansion(current->str);
 		current->str = expand_str(shell, exp);
 		free(exp);

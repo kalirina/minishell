@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 19:41:15 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/22 18:09:00 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	main(void)
 	init_shell(&shell);
 	while (1)
 	{
-		shell->line_buffer = readline(PU "minishell>" RES);
+		shell->line_buffer = readline(GREEN"min"RES"ish"RED"ell"RES">");
 		check_line(shell, &exit_status);
 		if (skip(shell->line_buffer) || slash(shell->line_buffer))
 			continue ;
