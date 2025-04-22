@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexing_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 14:45:01 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 17:06:02 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/22 19:13:46 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ void	perform_quote_removal(t_shell *shell)
 			process_quotes(rem);
 			current->str = rem->res;
 			free(rem->orig);
+			// free(rem->res);
 			free(rem);
 		}
 		current = current->next;

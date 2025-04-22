@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 23:27:53 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/22 17:40:10 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/22 19:24:55 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,7 @@ void	free_command(t_command *cmd)
 	{
 		i = 0;
 		while (cmd->args[i] != NULL)
-		{
-			free(cmd->args[i]);
-			i++;
-		}
+			free(cmd->args[i++]);
 		free(cmd->args);
 	}
 	free_redir_list(cmd->input);

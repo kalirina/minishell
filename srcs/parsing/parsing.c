@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 18:08:50 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/22 19:20:17 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	**get_args(t_token **tokens, int size)
 	if (size == 0)
 	{
 		args = malloc((2) * sizeof(char *));
-		args[0] = ft_strdup("  ");
+		args[0] = ft_strdup(" ");
 		args[1] = NULL;
 		return (args);
 	}
@@ -30,7 +30,7 @@ char	**get_args(t_token **tokens, int size)
 	i = 0;
 	while (i < size && *tokens)
 	{
-		args[i++] = (*tokens)->str;
+		args[i++] = ft_strdup((*tokens)->str);
 		*tokens = (*tokens)->next;
 	}
 	args[size] = NULL;
