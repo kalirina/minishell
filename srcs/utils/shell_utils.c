@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   shell_utils.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 23:27:53 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/22 15:02:20 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/22 17:40:10 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ int	init_shell(t_shell **shell)
 	(*shell)->exit_status = 0;
 	(*shell)->cmd = NULL;
 	(*shell)->tokens = NULL;
+	(*shell)->skip_cmd = false;
 	print_banner();
 	return (0);
 }

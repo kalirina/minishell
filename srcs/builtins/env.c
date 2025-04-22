@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 23:59:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/14 20:30:29 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/22 14:09:44 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,6 @@ static int	copy_environ_vars(t_shell *shell, char **environ, int count)
 	return (0);
 }
 
-//TO ADD
-//char	*get_uid() that returns the uid
-
 void	init_environ(t_shell *shell)
 {
 	extern char	**environ;
@@ -60,6 +57,7 @@ void	init_environ(t_shell *shell)
 	}
 }
 
+//TO CHANGE SHELL -> ARGS ?
 int	env_cmd(t_shell *shell)
 {
 	int	i;

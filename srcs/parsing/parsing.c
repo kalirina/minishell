@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 16:56:17 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/22 18:08:50 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,11 +127,6 @@ int	parser(t_shell *shell)
 	{
 		perform_quote_removal(shell);
 		shell->cmd = parse_tokens(&shell->tokens);
-	}
-	if (shell->cmd->args && ft_strlen(shell->cmd->args[0]) == 0)
-	{
-		printf(RED "minishell: : command not found\n" RES);
-		return (-1);
 	}
 	return (0);
 }

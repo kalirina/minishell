@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/21 18:33:49 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/22 18:10:03 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,20 +55,21 @@ void	exec_ext_cmd(t_shell *shell, char **args)
 	path = get_exec_path(shell, args[0]);
 	if (!path)
 	{
-		shell->exit_status = 127;
+		if (!shell->skip_cmd)
+			shell->exit_status = 127;
+		else
+			shell->skip_cmd = false;
 		return ;
 	}
 	pid = fork();
 	if (pid == -1)
 	{
-		perror("minishell: fork");
-		free(path);
+		(perror("minishell: fork"), free(path));
 		shell->exit_status = 1;
 	}
 	if (pid == 0)
 		child_ext_cmd(shell, args, path);
-	signal(SIGINT, SIG_IGN);
-	waitpid(pid, &status, 0);
+	(signal(SIGINT, SIG_IGN), waitpid(pid, &status, 0));
 	signal(SIGINT, handle_sigint);
 	handle_exec_status(shell, status);
 	free(path);
@@ -86,9 +87,7 @@ void	execute_cmd(t_shell	*shell, t_executer *ex)
 		return ;
 	}
 	if (is_builtin(current->args))
-	{
 		shell->exit_status = execute_builtin_cmd(shell, shell->cmd->args);
-	}
 	else
 		exec_ext_cmd(shell, current->args);
 	reset_stdinout(ex);
@@ -103,6 +102,7 @@ void	execute(t_shell *shell)
 	ex = init_executer(shell->cmd);
 	if (!ex)
 		return ;
+	preprocess_heredoc(shell);
 	if (ex->n_cmds > 1)
 		execute_pipeline(shell, ex);
 	else

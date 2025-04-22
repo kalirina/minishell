@@ -66,13 +66,13 @@ t_command	*new_node(void)
 
 char	*is_redirection(char *str)
 {
-	if (ft_strncmp(str, ">>", 2) == 0)
+	if (ft_strncmp(str, ">>", 2) == 0 && ft_strlen(str) == 2)
 		return (">>");
-	if (ft_strncmp(str, ">", 1) == 0)
+	if (ft_strncmp(str, ">", 1) == 0 && ft_strlen(str) == 1)
 		return (">");
-	if (ft_strncmp(str, "<<", 2) == 0)
+	if (ft_strncmp(str, "<<", 2) == 0 && ft_strlen(str) == 2)
 		return ("<<");
-	if (ft_strncmp(str, "<", 1) == 0)
+	if (ft_strncmp(str, "<", 1) == 0 && ft_strlen(str) == 1)
 		return ("<");
 	return (NULL);
 }

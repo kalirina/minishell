@@ -3,21 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   exec_redir.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 15:31:23 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 19:21:47 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/22 12:50:15 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	handle_heredoc(t_redirection *red)
+int	handle_heredoc(t_shell *shell, t_redirection *red)
 {
 	int		fd;
 	char	*heredoc_content;
 
-	heredoc_content = get_heredoc_input(red->file);
+	heredoc_content = get_heredoc_input(shell, red->file);
 	if (heredoc_content == NULL)
 		return (-1);
 	fd = open(".temp_heredoc", O_CREAT | O_TRUNC | O_WRONLY, 0600);
@@ -36,7 +36,7 @@ int	handle_heredoc(t_redirection *red)
 	free(heredoc_content);
 	fd = open(".temp_heredoc", O_RDONLY);
 	unlink(".temp_heredoc");
-	return (0);
+	return (fd);
 }
 
 int	safe_open(char *name)
@@ -61,10 +61,7 @@ int	setup_input_redirections(t_command *cmd)
 	while (input_redir != NULL)
 	{
 		if (input_redir->heredoc)
-		{
-			if (handle_heredoc(input_redir) == -1)
-				return (-1);
-		}
+			fd = input_redir->fd_heredoc;
 		else
 			fd = safe_open(input_redir->file);
 		if (fd == -1)
