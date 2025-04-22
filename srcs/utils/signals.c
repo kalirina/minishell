@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 19:45:07 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/22 15:02:47 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,12 @@ void	handle_sigint(int signo)
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
+}
+
+void	ft_exit(t_shell *shell)
+{
+	cleanup_shell(shell);
+	exit(shell->exit_status);
 }
 
 void	print_banner(void)

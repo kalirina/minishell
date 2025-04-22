@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 19:16:05 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/22 16:56:17 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -108,8 +108,8 @@ t_command	*parse_tokens(t_token **tokens)
 		{
 			*tokens = (*tokens)->next;
 			if (!first || !(*tokens) || ft_strncmp((*tokens)->str, "|", 1) == 0)
-				return (printf(RED "minishell: syntax error \
-				near unexpected token '|'\n" RES), NULL);
+				return (printf(RED "minishell: syntax error "
+				"near unexpected token '|'\n" RES), NULL);
 			current->next = parse_cmd(tokens);
 			current = current->next;
 		}

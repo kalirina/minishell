@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 19:55:44 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/22 17:14:29 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,13 +115,13 @@ t_command		*new_node(void);
 char			*is_redirection(char *str);
 t_token			*create_token(char *str);
 t_token			*add_token(t_token **head, t_token *new);
-t_token			*get_last_token(t_token **head);
-void			clean_tokens(t_shell *shell);
+void			free_token(t_token *token);
 t_redirection	*add_redirection(
 					t_redirection **head,
 					char *file,
 					bool append,
 					bool heredoc);
+void			free_tokens(t_token *head, t_shell *shell);
 //test
 void			perform_quote_removal(t_shell *shell);
 void			print_tokens(t_token *t);
@@ -130,7 +130,6 @@ int				setup_output_redirections(t_command *cmd);
 void			print_command(t_command *c);
 //signals
 void			handle_sigint(int signo);
-int				signal_interrupt(int status);
 //utils
 void			init_environ(t_shell *shell);
 int				init_shell(t_shell **shell);
@@ -138,15 +137,14 @@ int				skip(char *line);
 int				slash(char *line);
 char			*new_strjoin(char *s1, char *s2);
 void			print_banner(void);
+void			ft_exit(t_shell *shell);
 //free
 void			free_pipe(t_pipe *p, int n_cmds, bool to_close, int j);
 void			free_fds(int **fds, int n_cmds);
 void			free_executer(t_executer *e, bool to_close);
 void			close_all_pipes(t_pipe *p, int n_cmd);
-
 void			cleanup_command_line(t_shell *shell);
 void			cleanup_shell(t_shell *shell);
-void			free_command(t_command *cmd);
 void			check_line(t_shell *shell, int *exit_status);
 int				print_error(char *cmd, char *arg, char *msg);
 //environment

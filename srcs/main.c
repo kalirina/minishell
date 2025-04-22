@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 19:41:15 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/22 15:08:08 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,9 @@ int	main(void)
 		if (skip(shell->line_buffer) || slash(shell->line_buffer))
 			continue ;
 		if (lexer(shell, rl_line_buffer) == 0 && parser(shell) == 0)
-		{
 			execute(shell);
-			free_command(shell->cmd);
-			shell->tokens = NULL;
-			shell->cmd = NULL;
-		}
+		free_tokens(shell->tokens, shell);
+		cleanup_command_line(shell);
 	}
 	exit_status = shell->exit_status;
 	cleanup_shell(shell);
