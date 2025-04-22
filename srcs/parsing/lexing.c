@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 19:12:47 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/22 18:01:13 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,7 @@ t_token	*default_token(char **ps)
 			if (**ps == quote)
 				(*ps)++;
 			else
-				return (printf(RED "minishell: unclosed quotes found\n" RES),
-					NULL);
+				return (printf(RED "minishell: unclosed quotes\n" RES), NULL);
 		}
 		else
 			(*ps)++;
@@ -92,11 +91,27 @@ int	lexer(t_shell	*shell, char *line)
 	new = next_token(&line);
 	while (new != NULL)
 	{
-		t = add_token(&t, new);
+		if (!add_token(&t, new))
+		{
+			free_token(new);
+			free_tokens(t, shell);
+			return (-1);
+		}
 		new = next_token(&line);
 	}
 	if (!t || !syntax_check(t))
+	{
+		free_tokens(t, shell);
 		return (-1);
+	}
 	shell->tokens = t;
 	return (0);
+}
+
+void	free_token(t_token *token)
+{
+	if (!token)
+		return ;
+	free(token->str);
+	free(token);
 }

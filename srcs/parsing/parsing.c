@@ -108,8 +108,8 @@ t_command	*parse_tokens(t_token **tokens)
 		{
 			*tokens = (*tokens)->next;
 			if (!first || !(*tokens) || ft_strncmp((*tokens)->str, "|", 1) == 0)
-				return (printf(RED "minishell: syntax error \
-				near unexpected token '|'\n" RES), NULL);
+				return (printf(RED "minishell: syntax error "
+				"near unexpected token '|'\n" RES), NULL);
 			current->next = parse_cmd(tokens);
 			current = current->next;
 		}

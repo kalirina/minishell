@@ -1,6 +1,6 @@
 NAME = minishell
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g
 SRCS = srcs/main.c\
 		srcs/parsing/lexing.c\
 		srcs/parsing/lexing_utils.c\
@@ -36,6 +36,10 @@ LIBFT = srcs/libft/libft.a
 INCLUDES = -I include -I libft
 
 all: $(NAME)
+
+valgrind:
+	@make
+	@valgrind --leak-check=full --show-leak-kinds=all --suppressions=ignore.supp --trace-children=yes -s ./minishell
 
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -lreadline -o $(NAME)

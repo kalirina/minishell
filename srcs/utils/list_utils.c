@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/06 10:40:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 18:34:34 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/22 18:03:22 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,14 @@ t_token	*add_token(t_token **head, t_token *new)
 {
 	t_token	*tmp;
 
-	if (!head || !(*head))
-		return (new);
+	if (!head || !new)
+		return (NULL);
+	if (!*head)
+	{
+		*head = new;
+		new->next = NULL;
+		return (*head);
+	}
 	tmp = *head;
 	while (tmp->next)
 		tmp = tmp->next;
@@ -28,10 +34,12 @@ t_token	*add_token(t_token **head, t_token *new)
 }
 
 //	FREES THE LIST OF TOKENS
-void	free_tokens(t_token *head)
+void	free_tokens(t_token *head, t_shell *shell)
 {
 	t_token	*tmp;
 
+	if (!head)
+		return ;
 	while (head)
 	{
 		tmp = head;
@@ -39,6 +47,7 @@ void	free_tokens(t_token *head)
 		free(tmp->str);
 		free(tmp);
 	}
+	shell->tokens = NULL;
 }
 
 t_command	*new_node(void)

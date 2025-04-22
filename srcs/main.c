@@ -26,12 +26,9 @@ int	main(void)
 		if (skip(shell->line_buffer) || slash(shell->line_buffer))
 			continue ;
 		if (lexer(shell, rl_line_buffer) == 0 && parser(shell) == 0)
-		{
 			execute(shell);
-			free_command(shell->cmd);
-			shell->tokens = NULL;
-			shell->cmd = NULL;
-		}
+		free_tokens(shell->tokens, shell);
+		cleanup_command_line(shell);
 	}
 	exit_status = shell->exit_status;
 	cleanup_shell(shell);

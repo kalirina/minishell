@@ -21,6 +21,12 @@ void	handle_sigint(int signo)
 	rl_redisplay();
 }
 
+void	ft_exit(t_shell *shell)
+{
+	cleanup_shell(shell);
+	exit(shell->exit_status);
+}
+
 void	print_banner(void)
 {
 	printf("\n"

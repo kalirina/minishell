@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexing_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 14:45:01 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/17 11:21:18 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/22 17:06:02 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,9 +40,14 @@ t_token	*create_token(char *str)
 {
 	t_token	*t;
 
+	if (!str)
+		return (NULL);
 	t = malloc(sizeof(t_token));
 	if (!t)
+	{
+		free(str);
 		return (NULL);
+	}
 	t->str = str;
 	t->next = NULL;
 	return (t);

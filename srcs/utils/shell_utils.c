@@ -56,6 +56,7 @@ int	init_shell(t_shell **shell)
 	init_environ(*shell);
 	(*shell)->exit_status = 0;
 	(*shell)->cmd = NULL;
+	(*shell)->tokens = NULL;
 	(*shell)->skip_cmd = false;
 	print_banner();
 	return (0);
@@ -65,12 +66,15 @@ void	cleanup_shell(t_shell *shell)
 {
 	if (!shell)
 		return ;
-	if (shell->my_environ != NULL)
+	if (shell->my_environ)
 		free_split(shell->my_environ);
-	if (shell->cmd != NULL)
+	if (shell->cmd)
 		cleanup_command_line(shell);
-	if (shell->line_buffer != NULL)
+	if (shell->tokens)
+		free_tokens(shell->tokens, shell);
+	if (shell->line_buffer)
 		free(shell->line_buffer);
+	rl_clear_history();
 	free(shell);
 }
 
@@ -78,7 +82,7 @@ void	check_line(t_shell *shell, int *exit_status)
 {
 	if (!shell->line_buffer)
 	{
-		printf(RED "exit\n" RES);
+		printf("exit\n");
 		cleanup_shell(shell);
 		rl_clear_history();
 		exit(*exit_status);
