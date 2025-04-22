@@ -6,17 +6,17 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 18:16:51 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 18:44:31 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/22 14:11:45 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	get_uid()
+int	get_uid(void)
 {
 	struct stat	file_info;
 	char		cwd[1024];
-  
+
 	if (getcwd(cwd, sizeof(cwd)) == NULL)
 	{
 		perror("getuid getcwd");
@@ -26,7 +26,6 @@ int	get_uid()
 	{
 		perror("getuid stat");
 		return (-1);
-	}  
+	}
 	return (file_info.st_uid);
-  }
-  
+}

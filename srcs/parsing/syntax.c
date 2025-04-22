@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 09:38:31 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/21 19:17:22 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/22 14:10:34 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,8 +35,8 @@ bool	consecutive_redirections(t_token *t)
 		if (is_redirection_char(t->str[0])
 			&& is_redirection_char(t->next->str[0]))
 		{
-			printf(RED "minishell: syntax error \
-			near unexpected token '%s'\n" RES, t->str);
+			printf(RED "minishell: syntax error "
+				"near unexpected token '%s'\n" RES, t->str);
 			return (false);
 		}
 		t = t->next;
