@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 16:55:29 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 14:08:32 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 19:33:11 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,11 +30,14 @@ void	default_heredoc_var(t_shell *shell, char *line, char **res, int *i)
 	var_name = get_var_name(&line[*i]);
 	value = NULL;
 	if (ft_strncmp(var_name, "UID", 3) == 0 && ft_strlen(var_name) == 3)
-	value = ft_itoa(shell->uid);
+		value = ft_itoa(shell->uid);
 	else
-	value = echo_env_val(shell, var_name);
+		value = echo_env_val(shell, var_name);
 	if (value)
+	{
 		*res = new_strjoin(*res, value);
+		free(value);
+	}
 	(*i) += ft_strlen(var_name);
 	free(var_name);
 }
@@ -52,12 +55,14 @@ void	expand_heredoc_var(t_shell *shell, char *line, char **res, int *i)
 	{
 		value = ft_itoa(shell->exit_status);
 		*res = new_strjoin(*res, value);
+		free(value);
 		(*i)++;
 	}
 	else if (line[*i] == '$')
 	{
 		value = ft_itoa(getpid());
 		*res = new_strjoin(*res, value);
+		free(value);
 		(*i)++;
 	}
 	else
@@ -78,7 +83,7 @@ char	*expand_heredoc_line(t_shell *shell, char *line, int len)
 		if (line[i] == '\\')
 		{
 			if (!line[i + 1])
-				return (res);
+				return (free(line), res);
 			res = append_char(res, line[i + 1]);
 			i += 2;
 		}
@@ -88,7 +93,7 @@ char	*expand_heredoc_line(t_shell *shell, char *line, int len)
 			expand_heredoc_var(shell, line, &res, &i);
 		}
 		else
-		res = append_char(res, line[i++]);
+			res = append_char(res, line[i++]);
 	}
 	return (free(line), res);
 }
@@ -97,6 +102,7 @@ char	*get_heredoc_input(t_shell *shell, const char *delimiter)
 {
 	char	*line;
 	char	*result;
+	char	*expanded;
 	int		delimiter_length;
 
 	result = NULL;
@@ -112,8 +118,9 @@ char	*get_heredoc_input(t_shell *shell, const char *delimiter)
 			free(line);
 			break ;
 		}
-		line = expand_heredoc_line(shell, line, ft_strlen(line));
-		result = new_strjoin(result, line);
+		expanded = expand_heredoc_line(shell, line, ft_strlen(line));
+		result = new_strjoin(result, expanded);
+		free(expanded);
 		result = new_strjoin(result, "\n");
 	}
 	return (result);

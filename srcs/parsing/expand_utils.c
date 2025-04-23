@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 12:02:12 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/14 20:04:27 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 19:27:44 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,13 +106,13 @@ char	*new_strjoin(char *s1, char *s2)
 	if (!s1 && !s2)
 		return (NULL);
 	if (!s1)
-		return ((char *)s2);
+		return (ft_strdup(s2));
 	if (!s2)
-		return ((char *)s1);
+		return (ft_strdup(s1));
 	len = ft_strlen(s1) + ft_strlen(s2) + 1;
 	ptr = (char *)malloc(sizeof(char) * len);
-	if (!ptr || !s1 || !s2)
-		return (0);
+	if (!ptr)
+		return (NULL);
 	ptr = util_strnjoin(ptr, s1, s2);
 	free(s1);
 	return (ptr);
