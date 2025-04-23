@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 23:27:53 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/23 12:02:40 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 15:43:02 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,7 @@ int	init_shell(t_shell **shell)
 	(*shell)->exit_status = 0;
 	(*shell)->cmd = NULL;
 	(*shell)->tokens = NULL;
+	(*shell)->uid = 0;
 	(*shell)->skip_cmd = false;
 	print_banner();
 	return (0);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/23 13:05:33 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 15:09:12 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int	execute_builtin_cmd(t_shell *shell, char **args, t_executer *ex)
 	return (status);
 }
 
-void	child_ext_cmd(t_shell *shell, char **args, char *path)
+void	child_ext_cmd(t_shell *shell, char **args, char *path, t_executer *ex)
 {
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
@@ -42,11 +42,11 @@ void	child_ext_cmd(t_shell *shell, char **args, char *path)
 	print_error(args[0], NULL, strerror(errno));
 	free(path);
 	if (errno == EACCES)
-		ft_exit(shell, 126);
-	ft_exit(shell, 127);
+		ft_exit(shell, 126, ex);
+	ft_exit(shell, 127, ex);
 }
 
-void	exec_ext_cmd(t_shell *shell, char **args)
+void	exec_ext_cmd(t_shell *shell, char **args, t_executer *ex)
 {
 	char	*path;
 	pid_t	pid;
@@ -68,7 +68,7 @@ void	exec_ext_cmd(t_shell *shell, char **args)
 		shell->exit_status = 1;
 	}
 	if (pid == 0)
-		child_ext_cmd(shell, args, path);
+		child_ext_cmd(shell, args, path, ex);
 	(signal(SIGINT, SIG_IGN), waitpid(pid, &status, 0));
 	signal(SIGINT, handle_sigint);
 	handle_exec_status(shell, status);
@@ -89,7 +89,7 @@ void	execute_cmd(t_shell	*shell, t_executer *ex)
 	if (is_builtin(current->args))
 		shell->exit_status = execute_builtin_cmd(shell, shell->cmd->args, ex);
 	else
-		exec_ext_cmd(shell, current->args);
+		exec_ext_cmd(shell, current->args, ex);
 	reset_stdinout(ex);
 }
 

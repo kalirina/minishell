@@ -6,13 +6,13 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/23 13:13:26 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 19:46:31 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	is_redirection_char(char c)
+bool	is_redirection_char(char c)
 {
 	return (c == '>' || c == '<' || c == '|');
 }
