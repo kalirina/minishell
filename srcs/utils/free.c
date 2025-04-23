@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 14:03:24 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/17 17:38:14 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 12:44:32 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,18 +55,27 @@ void	free_pipe(t_pipe *p, int n_cmds, bool to_close, int j)
 		{
 			close(p->fds[i][0]);
 			close(p->fds[i][1]);
+			i++;
 		}
 	}
 	if (p->fds)
 		free_fds(p->fds, n_cmds);
 	if (p->pids)
 		free(p->pids);
+	p->fds = NULL;
+	p->pids = NULL;
 	free(p);
 }
 
-void	free_executer(t_executer *e, bool to_close)
+void	free_executer(t_executer *e)
 {
-	free_pipe(e->pipe, e->n_cmds, to_close, e->n_cmds -1);
+	if (!e)
+		return ;
+	if (e->n_cmds > 1)
+		free_pipe(e->pipe, e->n_cmds, true, e->n_cmds -1);
+	else
+		free_pipe(e->pipe, e->n_cmds, false, e->n_cmds -1);
+	e->pipe = NULL;
 	free(e);
 }
 
@@ -76,5 +85,4 @@ void	reset_stdinout(t_executer *ex)
 	dup2(ex->saved_stdout, STDOUT_FILENO);
 	close(ex->saved_stdin);
 	close(ex->saved_stdout);
-	free(ex);
 }

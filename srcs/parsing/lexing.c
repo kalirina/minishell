@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   lexing.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 18:01:13 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/23 13:13:26 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,12 +106,4 @@ int	lexer(t_shell	*shell, char *line)
 	}
 	shell->tokens = t;
 	return (0);
-}
-
-void	free_token(t_token *token)
-{
-	if (!token)
-		return ;
-	free(token->str);
-	free(token);
 }

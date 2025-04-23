@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 17:13:27 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 12:33:53 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 12:01:40 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,17 @@ t_redirection	*add_redirection(t_redirection **head, char *file,
 	return (new_redir);
 }
 
-void	cleanup_command_line(t_shell *shell)
+void	free_commands(t_shell *shell)
 {
-	free_command(shell->cmd);
+	t_command	*tmp;
+	t_command	*next;
+
+	tmp = shell->cmd;
+	while (tmp)
+	{
+		next = tmp->next;
+		free_command(tmp);
+		tmp = next;
+	}
 	shell->cmd = NULL;
 }

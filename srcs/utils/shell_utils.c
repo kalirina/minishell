@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 23:27:53 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/22 19:24:55 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 12:02:40 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	cleanup_shell(t_shell *shell)
 	if (shell->my_environ)
 		free_split(shell->my_environ);
 	if (shell->cmd)
-		cleanup_command_line(shell);
+		free_commands(shell);
 	if (shell->tokens)
 		free_tokens(shell->tokens, shell);
 	if (shell->line_buffer)

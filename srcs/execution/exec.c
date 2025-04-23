@@ -6,13 +6,13 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/22 18:57:06 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 13:05:33 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-int	execute_builtin_cmd(t_shell *shell, char **args)
+int	execute_builtin_cmd(t_shell *shell, char **args, t_executer *ex)
 {
 	int	status;
 
@@ -30,7 +30,7 @@ int	execute_builtin_cmd(t_shell *shell, char **args)
 	else if (check_builtin_name(args[0], "env"))
 		status = env_cmd(shell);
 	else if (check_builtin_name(args[0], "exit"))
-		status = exit_cmd(shell, args);
+		status = exit_cmd(shell, args, ex);
 	return (status);
 }
 
@@ -87,7 +87,7 @@ void	execute_cmd(t_shell	*shell, t_executer *ex)
 		return ;
 	}
 	if (is_builtin(current->args))
-		shell->exit_status = execute_builtin_cmd(shell, shell->cmd->args);
+		shell->exit_status = execute_builtin_cmd(shell, shell->cmd->args, ex);
 	else
 		exec_ext_cmd(shell, current->args);
 	reset_stdinout(ex);
@@ -107,4 +107,5 @@ void	execute(t_shell *shell)
 		execute_pipeline(shell, ex);
 	else
 		execute_cmd(shell, ex);
+	free_executer(ex);
 }

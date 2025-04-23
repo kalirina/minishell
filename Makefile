@@ -39,7 +39,7 @@ all: $(NAME)
 
 valgrind:
 	@make
-	@valgrind --leak-check=full --show-leak-kinds=all --suppressions=ignore.supp --trace-children=yes -s ./minishell
+	@valgrind --leak-check=full --show-leak-kinds=all --suppressions=ignore.supp -s ./minishell
 
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $(OBJS) $(LIBFT) -lreadline -o $(NAME)
