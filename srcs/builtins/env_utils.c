@@ -26,6 +26,7 @@ char	*create_env_string(const char *var, const char *val)
 			return (perror("minishell: malloc failed"), NULL);
 		tmp = result;
 		result = ft_strjoin(result, val);
+		free(tmp);
 		if (!result)
 			return (perror("minishell: malloc failed"), NULL);
 		free(tmp);
