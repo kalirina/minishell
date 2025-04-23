@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/23 20:37:32 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/24 00:13:10 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,10 +173,15 @@ char			*check_path_entry(
 					const char *dir,
 					const char *cmd,
 					char **paths);
+char			*check_cdpath_entry(
+					const char *dir,
+					const char *arg,
+					char **cdpaths);
 int				check_builtin_name(const char *arg0, const char *builtin_name);
 int				execute_builtin_cmd(t_shell *shell, char **args,
 					t_executer *ex);
 void			reset_stdinout(t_executer *ex);
+char			*path_with_cdpath(t_shell *shell, char *arg);
 t_pipe			*init_pipes(int n_cmds);
 int				init_redir(t_command *current);
 t_executer		*init_executer(t_command *cmds);
@@ -184,8 +189,6 @@ int				count_commands(t_command *cmd);
 int				handle_heredoc(t_shell *shell, t_redirection *red);
 int				setup_input_redirections(t_command *cmd);
 int				setup_output_redirections(t_command *cmd);
-bool			arg_starts_dot_slash(const char *arg);
-bool			arg_has_slash(const char *arg);
 //builtins
 int				echo_cmd(char **args);
 int				env_cmd(t_shell *shell);
