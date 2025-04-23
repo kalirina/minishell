@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 00:16:19 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/23 16:08:53 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/23 16:08:55 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ char	*create_env_string(const char *var, const char *val)
 		free(tmp);
 		if (!result)
 			return (perror("minishell: malloc failed"), NULL);
+		free(tmp);
 		return (result);
 	}
 	else

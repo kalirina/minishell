@@ -112,7 +112,7 @@ bool			syntax_check(t_token *t);
 bool			check_quotes_inquotes(t_expansion *exp);
 bool			check_dollar_quotes(t_expansion *exp);
 void			free_command(t_command *cmd);
-int				is_redirection_char(char c);
+bool			is_redirection_char(char c);
 t_expansion		*init_expansion(char *token);
 t_command		*new_node(void);
 char			*is_redirection(char *str);
