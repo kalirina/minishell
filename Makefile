@@ -15,6 +15,7 @@ SRCS = srcs/main.c\
 		srcs/utils/uid.c\
 		srcs/utils/shell_utils.c\
 		srcs/builtins/cd.c\
+		srcs/builtins/cd_utils.c\
 		srcs/builtins/echo.c\
 		srcs/builtins/env_utils.c\
 		srcs/builtins/export_utils.c\

@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:58:25 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/23 20:39:55 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/24 00:16:23 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,12 @@ char	*cd_get_target(t_shell *shell, char **args)
 		target_path = cd_get_oldpwd_target(shell);
 	else
 	{
+		if (args[1][0] != '/' && args[1][0] != '.')
+		{
+			target_path = path_with_cdpath(shell, args[1]);
+			if (target_path)
+				return (printf("%s\n", target_path), target_path);
+		}
 		target_path = ft_strdup(args[1]);
 		if (!target_path)
 			perror("minishell: cd: ft_strdup failed");
