@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 14:45:01 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/23 11:06:18 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 13:13:36 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,4 +98,12 @@ void	perform_quote_removal(t_shell *shell)
 		}
 		current = current->next;
 	}
+}
+
+void	free_token(t_token *token)
+{
+	if (!token)
+		return ;
+	free(token->str);
+	free(token);
 }

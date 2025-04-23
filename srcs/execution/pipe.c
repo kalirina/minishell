@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 17:33:58 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/23 12:22:39 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/23 13:14:14 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void	child_process(t_shell *shell, t_executer *ex, t_command *current, int i)
 	if (setup_output_redirections(current))
 		ft_exit(shell, EXIT_FAILURE);
 	if (is_builtin(current->args))
-		ft_exit(shell, execute_builtin_cmd(shell, current->args));
+		ft_exit(shell, execute_builtin_cmd(shell, current->args, ex));
 	else
 	{
 		path = get_exec_path(shell, current->args[0]);
@@ -51,7 +51,7 @@ void	execute_fork(t_shell *shell, t_executer *ex, t_command *current, int i)
 	pipe->pids[i] = fork();
 	if (pipe->pids[i] == -1)
 	{
-		(perror("Error exec: fork"), free_executer(ex, 1));
+		(perror("Error exec: fork"), free_executer(ex));
 		return ;
 	}
 	if (pipe->pids[i] == 0)
