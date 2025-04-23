@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 18:08:50 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 13:11:57 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	**get_args(t_token **tokens, int size)
 	if (size == 0)
 	{
 		args = malloc((2) * sizeof(char *));
-		args[0] = ft_strdup("  ");
+		args[0] = ft_strdup(" ");
 		args[1] = NULL;
 		return (args);
 	}
@@ -30,7 +30,7 @@ char	**get_args(t_token **tokens, int size)
 	i = 0;
 	while (i < size && *tokens)
 	{
-		args[i++] = (*tokens)->str;
+		args[i++] = ft_strdup((*tokens)->str);
 		*tokens = (*tokens)->next;
 	}
 	args[size] = NULL;
@@ -109,7 +109,7 @@ t_command	*parse_tokens(t_token **tokens)
 			*tokens = (*tokens)->next;
 			if (!first || !(*tokens) || ft_strncmp((*tokens)->str, "|", 1) == 0)
 				return (printf(RED "minishell: syntax error "
-				"near unexpected token '|'\n" RES), NULL);
+						"near unexpected token '|'\n" RES), NULL);
 			current->next = parse_cmd(tokens);
 			current = current->next;
 		}
@@ -121,12 +121,16 @@ t_command	*parse_tokens(t_token **tokens)
 
 int	parser(t_shell *shell)
 {
+	t_token	*head;
+
 	if (!shell->tokens)
 		return (-1);
+	head = shell->tokens;
 	if (expand(shell) == 0)
 	{
 		perform_quote_removal(shell);
 		shell->cmd = parse_tokens(&shell->tokens);
 	}
+	free_tokens(head, shell);
 	return (0);
 }

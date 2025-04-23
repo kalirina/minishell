@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 13:16:57 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/21 19:57:45 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/23 13:06:15 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ static long long	ft_atoll(const char *str)
 	return (res * sign);
 }
 
-int	exit_cmd(t_shell *shell, char **args)
+int	exit_cmd(t_shell *shell, char **args, t_executer *ex)
 {
 	int			exit_code;
 	long long	arg_val;
@@ -85,5 +85,6 @@ int	exit_cmd(t_shell *shell, char **args)
 		}
 	}
 	cleanup_shell(shell);
+	free_executer(ex);
 	exit(exit_code);
 }

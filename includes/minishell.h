@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 18:09:09 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 13:12:33 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,9 +142,9 @@ void			ft_exit(t_shell *shell);
 //free
 void			free_pipe(t_pipe *p, int n_cmds, bool to_close, int j);
 void			free_fds(int **fds, int n_cmds);
-void			free_executer(t_executer *e, bool to_close);
+void			free_executer(t_executer *e);
 void			close_all_pipes(t_pipe *p, int n_cmd);
-void			cleanup_command_line(t_shell *shell);
+void			free_commands(t_shell *shell);
 void			cleanup_shell(t_shell *shell);
 void			check_line(t_shell *shell, int *exit_status);
 int				print_error(char *cmd, char *arg, char *msg);
@@ -161,7 +161,6 @@ int				is_valid_var(char *name);
 //execution
 void			execute(t_shell *shell);
 void			execute_pipeline(t_shell *shell, t_executer *ex);
-int				execute_builtin_cmd(t_shell *shell, char **args);
 void			preprocess_heredoc(t_shell *shell);
 void			exec_ext_cmd(t_shell *shell, char **args);
 void			free_split(char **tab);
@@ -175,7 +174,8 @@ char			*check_path_entry(
 					const char *cmd,
 					char **paths);
 int				check_builtin_name(const char *arg0, const char *builtin_name);
-int				execute_builtin_cmd(t_shell *shell, char **args);
+int				execute_builtin_cmd(t_shell *shell, char **args,
+					t_executer *ex);
 void			reset_stdinout(t_executer *ex);
 t_pipe			*init_pipes(int n_cmds);
 int				init_redir(t_command *current);
@@ -188,7 +188,7 @@ int				setup_output_redirections(t_command *cmd);
 int				echo_cmd(char **args);
 int				env_cmd(t_shell *shell);
 int				pwd_cmd(char **args);
-int				exit_cmd(t_shell *shell, char **args);
+int				exit_cmd(t_shell *shell, char **args, t_executer *ex);
 int				cd_cmd(t_shell *shell);
 int				export_cmd(t_shell *shell, char **args);
 int				unset_cmd(t_shell *shell, char **args);
