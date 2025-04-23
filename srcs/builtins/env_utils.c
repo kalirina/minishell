@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 00:16:19 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/27 03:30:56 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/23 16:08:53 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 char	*create_env_string(const char *var, const char *val)
 {
 	char	*result;
+	char	*tmp;
 
 	if (!var)
 		return (NULL);
@@ -23,7 +24,9 @@ char	*create_env_string(const char *var, const char *val)
 		result = ft_strjoin(var, "=");
 		if (!result)
 			return (perror("minishell: malloc failed"), NULL);
+		tmp = result;
 		result = ft_strjoin(result, val);
+		free(tmp);
 		if (!result)
 			return (perror("minishell: malloc failed"), NULL);
 		return (result);
