@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 19:20:17 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 11:12:00 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,12 +121,16 @@ t_command	*parse_tokens(t_token **tokens)
 
 int	parser(t_shell *shell)
 {
+	t_token	*head;
+	
 	if (!shell->tokens)
 		return (-1);
+	head = shell->tokens;
 	if (expand(shell) == 0)
 	{
 		perform_quote_removal(shell);
 		shell->cmd = parse_tokens(&shell->tokens);
 	}
+	free_tokens(head, shell);
 	return (0);
 }

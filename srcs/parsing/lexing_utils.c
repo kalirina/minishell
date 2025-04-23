@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/26 14:45:01 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 19:13:46 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 11:06:18 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,9 +92,8 @@ void	perform_quote_removal(t_shell *shell)
 		{
 			rem = init_rem(current->str);
 			process_quotes(rem);
+			free(current->str);
 			current->str = rem->res;
-			free(rem->orig);
-			// free(rem->res);
 			free(rem);
 		}
 		current = current->next;
