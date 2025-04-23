@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/23 13:12:33 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 15:09:27 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ int				skip(char *line);
 int				slash(char *line);
 char			*new_strjoin(char *s1, char *s2);
 void			print_banner(void);
-void			ft_exit(t_shell *shell, int exit_status);
+void			ft_exit(t_shell *shell, int exit_status, t_executer *ex);
 //free
 void			free_pipe(t_pipe *p, int n_cmds, bool to_close, int j);
 void			free_fds(int **fds, int n_cmds);
@@ -162,7 +162,7 @@ int				is_valid_var(char *name);
 void			execute(t_shell *shell);
 void			execute_pipeline(t_shell *shell, t_executer *ex);
 void			preprocess_heredoc(t_shell *shell);
-void			exec_ext_cmd(t_shell *shell, char **args);
+void			exec_ext_cmd(t_shell *shell, char **args, t_executer *ex);
 void			free_split(char **tab);
 int				is_builtin(char **args);
 char			*get_exec_path(t_shell *shell, char *cmd);

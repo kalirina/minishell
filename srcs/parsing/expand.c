@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 13:20:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/23 13:13:09 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/23 15:49:38 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,10 @@ void	default_var(t_shell *shell, t_expansion *exp)
 		value = echo_env_val(shell, var_name);
 	free(var_name);
 	if (value)
+	{
 		exp->res = new_strjoin(exp->res, value);
+		free(value);
+	}
 }
 
 //HANDLES CASES SUCH AS $$, $?, $=, etc
@@ -59,12 +62,11 @@ void	handle_var_expansion(t_shell *shell, t_expansion *exp)
 	pid_t	pid;
 	char	*value;
 
-	if (check_quotes_inquotes(exp) || check_dollar_quotes(exp))
-		return ;
 	if (exp->token[exp->i] == '?')
 	{
 		value = ft_itoa(shell->exit_status);
 		exp->res = new_strjoin(exp->res, value);
+		free(value);
 		exp->i++;
 	}
 	else if (exp->token[exp->i] == '\0' || exp->token[exp->i] == '='
@@ -78,11 +80,11 @@ void	handle_var_expansion(t_shell *shell, t_expansion *exp)
 		value = ft_itoa(pid);
 		exp->res = new_strjoin(exp->res, value);
 		exp->i++;
+		free(value);
 	}
 	else
 		default_var(shell, exp);
 }
-// free(value);
 
 //EXPANDS THE ENV VARS FOUND IN THE STRING INSIDE THE EXP STRUCTURE
 char	*expand_str(t_shell *shell, t_expansion *exp)
@@ -101,7 +103,8 @@ char	*expand_str(t_shell *shell, t_expansion *exp)
 		else if (exp->token[exp->i] == '$' && !(exp->in_single_quote))
 		{
 			exp->i++;
-			handle_var_expansion(shell, exp);
+			if (!check_quotes_inquotes(exp) && !check_dollar_quotes(exp))
+				handle_var_expansion(shell, exp);
 		}
 		else
 		{

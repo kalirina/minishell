@@ -6,8 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 09:38:31 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 16:43:10 by irkalini         ###   ########.fr       */
-/*   Updated: 2025/04/22 14:10:34 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 15:47:52 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,6 +66,8 @@ bool	check_quotes_inquotes(t_expansion *exp)
 	int		i;
 
 	i = exp->i;
+	if (i >= exp->len)
+		return (false);
 	token = exp->token;
 	if (token[i] == '\'' && exp->in_single_quote)
 	{
@@ -89,16 +90,20 @@ bool	check_quotes_inquotes(t_expansion *exp)
 bool	check_dollar_quotes(t_expansion *exp)
 {
 	char	*token;
+	char	next;
 	int		i;
 
 	i = exp->i;
+	if (i >= exp->len)
+		return (false);
 	token = exp->token;
-	if (token[i + 1] && token[i] == '\'' && token[i + 1] == '\'')
+	next = token[i + 1];
+	if (next && token[i] == '\'' && next == '\'')
 	{
 		exp->i += 2;
 		return (true);
 	}
-	else if (token[i + 1] && token[i] == '"' && token[i + 1] == '"')
+	else if (next && token[i] == '"' && next == '"')
 	{
 		exp->i += 2;
 		return (true);
