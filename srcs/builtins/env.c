@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 23:59:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/22 14:09:44 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 11:43:26 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,12 @@ void	init_environ(t_shell *shell)
 	if (!shell->my_environ)
 	{
 		perror("minishell: init_environ: malloc failed");
+		cleanup_shell(shell);
 		exit(EXIT_FAILURE);
 	}
 	if (copy_environ_vars(shell, environ, count) != 0)
 	{
-		free(shell->my_environ);
+		cleanup_shell(shell);
 		exit(EXIT_FAILURE);
 	}
 }

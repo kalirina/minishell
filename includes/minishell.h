@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 18:56:58 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 12:21:30 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,7 +138,7 @@ int				skip(char *line);
 int				slash(char *line);
 char			*new_strjoin(char *s1, char *s2);
 void			print_banner(void);
-void			ft_exit(t_shell *shell);
+void			ft_exit(t_shell *shell, int exit_status);
 //free
 void			free_pipe(t_pipe *p, int n_cmds, bool to_close, int j);
 void			free_fds(int **fds, int n_cmds);

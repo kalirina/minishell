@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 17:33:58 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 12:44:07 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 12:22:39 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,20 +25,20 @@ void	child_process(t_shell *shell, t_executer *ex, t_command *current, int i)
 		dup2(ex->pipe->fds[i][1], STDOUT_FILENO);
 	close_all_pipes(ex->pipe, ex->n_cmds);
 	if (setup_input_redirections(current))
-		exit(EXIT_FAILURE);
+		ft_exit(shell, EXIT_FAILURE);
 	if (setup_output_redirections(current))
-		exit(EXIT_FAILURE);
+		ft_exit(shell, EXIT_FAILURE);
 	if (is_builtin(current->args))
-		exit(execute_builtin_cmd(shell, current->args));
+		ft_exit(shell, execute_builtin_cmd(shell, current->args));
 	else
 	{
 		path = get_exec_path(shell, current->args[0]);
 		if (!path)
-			exit(127);
+			ft_exit(shell, 127);
 		execve(path, current->args, shell->my_environ);
 		perror("Error exec: execve");
 		free(path);
-		exit(EXIT_FAILURE);
+		ft_exit(shell, EXIT_FAILURE);
 	}
 }
 
