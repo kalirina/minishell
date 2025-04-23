@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   expand.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/27 13:20:15 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 14:10:25 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 13:13:09 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-//KEEPS TRACK WHETHER WE ARE INSIDE OF QUOTES OR NOT 
+//KEEPS TRACK WHETHER WE ARE INSIDE OF QUOTES OR NOT
 void	handle_quotes(t_expansion *exp)
 {
 	exp->res = append_char(exp->res, exp->token[exp->i]);
@@ -82,6 +82,7 @@ void	handle_var_expansion(t_shell *shell, t_expansion *exp)
 	else
 		default_var(shell, exp);
 }
+// free(value);
 
 //EXPANDS THE ENV VARS FOUND IN THE STRING INSIDE THE EXP STRUCTURE
 char	*expand_str(t_shell *shell, t_expansion *exp)

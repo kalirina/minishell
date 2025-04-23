@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 16:36:39 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 13:11:55 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,20 @@ void	handle_sigint(int signo)
 	rl_redisplay();
 }
 
-void	ft_exit(t_shell *shell)
+void	ft_exit(t_shell *shell, int exit_status)
 {
+	if (!exit_status)
+		exit_status = shell->exit_status;
 	cleanup_shell(shell);
-	exit(shell->exit_status);
+	exit(exit_status);
+}
+
+void	free_token(t_token *token)
+{
+	if (!token)
+		return ;
+	free(token->str);
+	free(token);
 }
 
 void	print_banner(void)

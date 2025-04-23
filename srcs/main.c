@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/23 13:12:07 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/23 13:14:30 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ int	main(void)
 			continue ;
 		if (lexer(shell, rl_line_buffer) == 0 && parser(shell) == 0)
 			execute(shell);
-		free_commands(shell);
+		cleanup_command_line(shell);
 	}
 	exit_status = shell->exit_status;
 	cleanup_shell(shell);

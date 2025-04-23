@@ -3,7 +3,7 @@
 /*                                                        :::      ::::::::   */
 /*   exec.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
 /*   Updated: 2025/04/23 13:05:33 by enrmarti         ###   ########.fr       */
@@ -42,8 +42,8 @@ void	child_ext_cmd(t_shell *shell, char **args, char *path)
 	print_error(args[0], NULL, strerror(errno));
 	free(path);
 	if (errno == EACCES)
-		exit(126);
-	exit(127);
+		ft_exit(shell, 126);
+	ft_exit(shell, 127);
 }
 
 void	exec_ext_cmd(t_shell *shell, char **args)
