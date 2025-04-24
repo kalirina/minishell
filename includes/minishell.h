@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/24 15:59:33 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/24 16:26:31 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -173,10 +173,15 @@ char			*check_path_entry(
 					const char *dir,
 					const char *cmd,
 					char **paths);
+char			*check_cdpath_entry(
+					const char *dir,
+					const char *arg,
+					char **cdpaths);
 int				check_builtin_name(const char *arg0, const char *builtin_name);
 int				execute_builtin_cmd(t_shell *shell, char **args,
 					t_executer *ex);
 void			reset_stdinout(t_executer *ex);
+char			*path_with_cdpath(t_shell *shell, char *arg);
 t_pipe			*init_pipes(int n_cmds);
 int				init_redir(t_command *current);
 t_executer		*init_executer(t_command *cmds);
