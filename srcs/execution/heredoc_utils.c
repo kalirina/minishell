@@ -3,19 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 12:28:36 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 19:02:39 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/24 22:04:11 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	preprocess_heredoc(t_shell *shell)
+volatile sig_atomic_t g_heredoc_interrupt = 0;
+
+void	preprocess_heredoc(t_shell *shell, t_executer *ex)
 {
 	t_redirection	*current;
 	t_command		*cmds;
+	int				fd;
 
 	cmds = shell->cmd;
 	while (cmds)
@@ -25,7 +28,10 @@ void	preprocess_heredoc(t_shell *shell)
 		{
 			if (current->heredoc)
 			{
-				current->fd_heredoc = handle_heredoc(shell, current);
+				fd = handle_heredoc(shell, current, ex);
+				if (fd == -1)
+					return ;
+				current->fd_heredoc = fd;
 			}
 			current = current->next;
 		}
@@ -98,4 +104,24 @@ void	handle_exec_status(t_shell *shell, int status)
 		shell->exit_status = 128 + WTERMSIG(status);
 	else
 		shell->exit_status = 1;
+}
+
+// //^C terminates the heredoc input -> back to the shell without executing
+// void	handle_heredoc_sigint(int sig)
+// {
+// 	(void)sig;
+// 	g_heredoc_interrupt = 1;
+// 	rl_done = 1;
+// 	write(STDOUT_FILENO, "\n", 1);
+// 	rl_replace_line("", 0);
+// 	rl_on_new_line();
+// 	rl_redisplay();
+// }
+
+void	handle_heredoc_sigint(int sig)
+{
+	(void)sig;
+	g_heredoc_interrupt = 1;
+	write(STDOUT_FILENO, "\n", 1);
+	close(STDIN_FILENO);
 }

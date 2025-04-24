@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc.c                                          :+:      :+:    :+:   */
+/*   heredoc_backup.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 16:55:29 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/24 21:57:26 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/24 21:19:01 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ char	*get_heredoc_input(t_shell *shell, const char *delimiter)
 
 	result = NULL;
 	delimiter_length = ft_strlen(delimiter);
-	// signal(SIGINT, handle_heredoc_sigint);
+	signal(SIGINT, handle_heredoc_sigint);
 	while (1)
 	{
 		line = readline("> ");
@@ -129,7 +129,7 @@ char	*get_heredoc_input(t_shell *shell, const char *delimiter)
 	return (result);
 }
 
-int	heredoc_fork(t_shell *shell, char *delimiter, t_executer *ex)
+char	*heredoc_fork(t_shell *shell, char *delimiter, t_executer *ex)
 {
 	char	*result;
 	char	*tmp;
@@ -138,20 +138,13 @@ int	heredoc_fork(t_shell *shell, char *delimiter, t_executer *ex)
 	result = NULL;
 	child_pid = fork();
 	if (child_pid == -1)
-		return (perror("fork failed"), -1);
+		return (perror("fork failed"), NULL);
 	else if (child_pid == 0)
 	{
 		signal(SIGINT, handle_heredoc_sigint);
 		tmp = get_heredoc_input(shell, delimiter);
-		int fd = open(".temp_heredoc", O_CREAT | O_WRONLY | O_TRUNC, 0600);
-		if (fd == -1)
-			exit(1);
-		if (tmp)
-		{
-			write(fd, tmp, ft_strlen(tmp));
-			free(tmp);
-		}
-		close(fd);
+		result = tmp;
+		free(tmp);
 		ft_exit(shell, 0, ex);
 	}
 	else
@@ -159,50 +152,35 @@ int	heredoc_fork(t_shell *shell, char *delimiter, t_executer *ex)
 		signal(SIGINT, SIG_IGN);
 		waitpid(child_pid, NULL, 0);
 		if (g_heredoc_interrupt)
-			return (-1);
+			return (NULL);
 	}
 	signal(SIGINT, handle_sigint);
-	return (0);
-}
-
-
-void	print_heredoc_debug(void)
-{
-	int		fd;
-	char	buffer[1024];
-	ssize_t	bytes_read;
-
-	fd = open(".temp_heredoc", O_RDONLY);
-	if (fd == -1)
-	{
-		perror("debug: open .temp_heredoc failed");
-		return;
-	}
-	printf("🔍 Debug: Contents of .temp_heredoc:\n");
-	while ((bytes_read = read(fd, buffer, sizeof(buffer) - 1)) > 0)
-	{
-		buffer[bytes_read] = '\0';
-		printf("%s", buffer);
-	}
-	if (bytes_read == -1)
-		perror("debug: read failed");
-	printf("🔚 End of heredoc debug output.\n");
-	close(fd);
+	return (result);
 }
 
 int	handle_heredoc(t_shell *shell, t_redirection *red, t_executer *ex)
 {
-	int	fd;
+	int		fd;
+	char	*heredoc_content;
 
-	if (heredoc_fork(shell, red->file, ex) != 0)
+	heredoc_content = heredoc_fork(shell, red->file, ex);
+	if (heredoc_content == NULL)
 		return (-1);
-	fd = open(".temp_heredoc", O_RDONLY);
-	print_heredoc_debug();
+	fd = open(".temp_heredoc", O_CREAT | O_TRUNC | O_WRONLY, 0600);
 	if (fd == -1)
 	{
-		perror("Error exec: open (heredoc)");
+		(perror("Error exec: open (heredoc)"), free(heredoc_content));
 		return (-1);
 	}
+	if (write(fd, heredoc_content, ft_strlen(heredoc_content)) == -1)
+	{
+		(perror("Error exec: write (heredoc)"), free(heredoc_content));
+		(close(fd), unlink(".temp_heredoc"));
+		return (-1);
+	}
+	close(fd);
+	free(heredoc_content);
+	fd = open(".temp_heredoc", O_RDONLY);
 	unlink(".temp_heredoc");
 	return (fd);
 }

@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/24 00:13:10 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/24 20:13:54 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ typedef struct s_shell
 	char				*line_buffer;
 }	t_shell;
 
+extern volatile sig_atomic_t g_heredoc_interrupt;
+
 # define RES		"\033[0m"
 # define RED		"\033[0;31m"
 # define GREEN		"\033[0;32m"
@@ -129,6 +131,7 @@ void			free_tokens(t_token *head, t_shell *shell);
 void			perform_quote_removal(t_shell *shell);
 //signals
 void			handle_sigint(int signo);
+void			handle_heredoc_sigint(int sig);
 //utils
 int				get_uid(void);
 void			handle_shlvl(t_shell *shell);
@@ -161,7 +164,7 @@ int				is_valid_var(char *name);
 //execution
 void			execute(t_shell *shell);
 void			execute_pipeline(t_shell *shell, t_executer *ex);
-void			preprocess_heredoc(t_shell *shell);
+void			preprocess_heredoc(t_shell *shell, t_executer *ex);
 void			exec_ext_cmd(t_shell *shell, char **args, t_executer *ex);
 void			free_split(char **tab);
 int				is_builtin(char **args);
@@ -186,7 +189,7 @@ t_pipe			*init_pipes(int n_cmds);
 int				init_redir(t_command *current);
 t_executer		*init_executer(t_command *cmds);
 int				count_commands(t_command *cmd);
-int				handle_heredoc(t_shell *shell, t_redirection *red);
+int				handle_heredoc(t_shell *shell, t_redirection *red, t_executer *ex);
 int				setup_input_redirections(t_command *cmd);
 int				setup_output_redirections(t_command *cmd);
 //builtins

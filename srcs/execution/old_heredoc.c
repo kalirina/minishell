@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   heredoc.c                                          :+:      :+:    :+:   */
+/*   old_heredoc.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 16:55:29 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/24 21:57:26 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/24 21:34:26 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,102 +107,52 @@ char	*get_heredoc_input(t_shell *shell, const char *delimiter)
 
 	result = NULL;
 	delimiter_length = ft_strlen(delimiter);
-	// signal(SIGINT, handle_heredoc_sigint);
+	signal(SIGINT, handle_heredoc_sigint);
 	while (1)
 	{
-		line = readline("> ");
 		if (g_heredoc_interrupt)
-			break ;
+			return (signal(SIGINT, handle_sigint), NULL);
+		line = readline("> ");
 		if (!line)
-		{
-			printf("minishell: here-document delimited by end-of-file (wanted `%s')\n", delimiter);
-			return (result);
-		}
+			break ;
 		if (line && strncmp(line, delimiter, delimiter_length) == 0
 			&& ft_strlen(line) == delimiter_length)
-			return (free(line),result);
+		{
+			free(line);
+			break ;
+		}
 		expanded = expand_heredoc_line(shell, line, ft_strlen(line));
 		result = new_strjoin(result, expanded);
 		free(expanded);
 		result = new_strjoin(result, "\n");
 	}
+	signal(SIGINT, handle_sigint);
 	return (result);
 }
 
-int	heredoc_fork(t_shell *shell, char *delimiter, t_executer *ex)
-{
-	char	*result;
-	char	*tmp;
-	pid_t	child_pid;
-
-	result = NULL;
-	child_pid = fork();
-	if (child_pid == -1)
-		return (perror("fork failed"), -1);
-	else if (child_pid == 0)
-	{
-		signal(SIGINT, handle_heredoc_sigint);
-		tmp = get_heredoc_input(shell, delimiter);
-		int fd = open(".temp_heredoc", O_CREAT | O_WRONLY | O_TRUNC, 0600);
-		if (fd == -1)
-			exit(1);
-		if (tmp)
-		{
-			write(fd, tmp, ft_strlen(tmp));
-			free(tmp);
-		}
-		close(fd);
-		ft_exit(shell, 0, ex);
-	}
-	else
-	{
-		signal(SIGINT, SIG_IGN);
-		waitpid(child_pid, NULL, 0);
-		if (g_heredoc_interrupt)
-			return (-1);
-	}
-	signal(SIGINT, handle_sigint);
-	return (0);
-}
-
-
-void	print_heredoc_debug(void)
+int	handle_heredoc(t_shell *shell, t_redirection *red)
 {
 	int		fd;
-	char	buffer[1024];
-	ssize_t	bytes_read;
+	char	*heredoc_content;
 
-	fd = open(".temp_heredoc", O_RDONLY);
+	heredoc_content = get_heredoc_input(shell, red->file);
+	if (heredoc_content == NULL)
+		return (-1);
+	fd = open(".temp_heredoc", O_CREAT | O_TRUNC | O_WRONLY, 0600);
 	if (fd == -1)
 	{
-		perror("debug: open .temp_heredoc failed");
-		return;
+		(perror("Error exec: open (heredoc)"), free(heredoc_content));
+		return (-1);
 	}
-	printf("🔍 Debug: Contents of .temp_heredoc:\n");
-	while ((bytes_read = read(fd, buffer, sizeof(buffer) - 1)) > 0)
+	if (write(fd, heredoc_content, ft_strlen(heredoc_content)) == -1)
 	{
-		buffer[bytes_read] = '\0';
-		printf("%s", buffer);
+		(perror("Error exec: write (heredoc)"), free(heredoc_content));
+		(close(fd), unlink(".temp_heredoc"));
+		return (-1);
 	}
-	if (bytes_read == -1)
-		perror("debug: read failed");
-	printf("🔚 End of heredoc debug output.\n");
 	close(fd);
-}
-
-int	handle_heredoc(t_shell *shell, t_redirection *red, t_executer *ex)
-{
-	int	fd;
-
-	if (heredoc_fork(shell, red->file, ex) != 0)
-		return (-1);
+	free(heredoc_content);
 	fd = open(".temp_heredoc", O_RDONLY);
-	print_heredoc_debug();
-	if (fd == -1)
-	{
-		perror("Error exec: open (heredoc)");
-		return (-1);
-	}
 	unlink(".temp_heredoc");
 	return (fd);
 }
