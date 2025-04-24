@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 16:55:29 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/24 23:12:34 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/24 23:18:19 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,9 +154,12 @@ int	heredoc_fork(t_shell *shell, char *delimiter, t_executer *ex)
 		}
 		close(fd);
 		if (g_heredoc_interrupt)
+		{
+			unlink(".temp_heredoc");
 			ft_exit(shell, 130, ex);
+		}
 		else
-		ft_exit(shell, 0, ex);
+			ft_exit(shell, 0, ex);
 	}
 	else
 	{
@@ -168,7 +171,6 @@ int	heredoc_fork(t_shell *shell, char *delimiter, t_executer *ex)
 	signal(SIGINT, handle_sigint);
 	return (0);
 }
-
 
 int	handle_heredoc(t_shell *shell, t_redirection *red, t_executer *ex)
 {
