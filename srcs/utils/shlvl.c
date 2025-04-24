@@ -6,86 +6,59 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/24 15:57:06 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/24 16:24:21 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/24 17:01:54 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-bool	check_shlv_flag(char **env)
+static char	*create_shlvl_str(int shlvl)
 {
-	int	i;
+	char	*shlvl_str;
+	char	*new_shlvl;
 
-	i = 0;
-	while (env[i])
+	shlvl_str = ft_itoa(shlvl);
+	if (!shlvl_str)
 	{
-		if (ft_strncmp(env[i], "SECRET_F=", 9) == 0)
-			return (true);
-		i++;
-	}
-	return (false);
-}
-
-void	add_shlv_flag(t_shell *shell)
-{
-	char	*shlvl_flag;
-
-	shlvl_flag = ft_strdup("SECRET_F=1");
-	if (!shlvl_flag)
-	{
-		perror("shlvl dup");
-		return ;
-	}
-	if (export_add_var(shell, shlvl_flag) != 0)
-		perror("Error shlvl flag export");
-    free(shlvl_flag);
-}
-
-char	*augment_shlvl(t_shell *shell, int i)
-{
-	char	*env;
-	char	*res;
-	char	*new;
-	char	*old;
-	int		j;
-
-	env = shell->my_environ[i];
-	if (!env[6])
+		perror("ft_itoa failed");
 		return (NULL);
-	old = ft_strdup(&env[6]);
-	if (!old)
-		return (perror("Error shlvl strdup"), NULL);
-	j = ft_atoi(old) + 1;
-	free(old);
-	new = ft_itoa(j);
-	res = new_strjoin("SHLVL=", new);
-	free(new);
-	if (!res)
-		return (perror("Error shlvl strjoin"), NULL);
-	printf("res: %s\n", res);
-	return (res);
+	}
+	new_shlvl = malloc(7 + ft_strlen(shlvl_str) + 1);
+	if (!new_shlvl)
+	{
+		perror("malloc failed");
+		free(shlvl_str);
+		return (NULL);
+	}
+	ft_strlcpy(new_shlvl, "SHLVL=", 7);
+	ft_strlcpy(new_shlvl + 6, shlvl_str, ft_strlen(shlvl_str) + 1);
+	free(shlvl_str);
+	return (new_shlvl);
 }
 
 void	handle_shlvl(t_shell *shell)
 {
-	// char	*tmp;
-	// int		i;
-    (void) shell;
-	// i = 0;
-	// if (!check_shlv_flag(shell->my_environ))
-	// 	add_shlv_flag(shell);
-	// else
-	// {
-	// 	while (shell->my_environ[i])
-	// 	{
-	// 		if (ft_strncmp(shell->my_environ[i], "SHLVL=", 6) == 0)
-	// 		{
-	// 			tmp = augment_shlvl(shell, i);
-	// 			free(shell->my_environ[i]);
-	// 			shell->my_environ[i] = tmp;
-	// 			break ;
-	// 		}
-	// 		i++;
-	// 	}	
-	// }
+	char	*new_shlvl;
+	char	*shlvl_value;
+	int		i;
+	int		shlvl;
+
+	i = 0;
+	shlvl = 1;
+	while (shell->my_environ[i] != NULL)
+	{
+		if (ft_strncmp(shell->my_environ[i], "SHLVL=", 6) == 0)
+		{
+			shlvl_value = shell->my_environ[i] + 6;
+			shlvl = ft_atoi(shlvl_value) + 1;
+			break ;
+		}
+		i++;
+	}
+	new_shlvl = create_shlvl_str(shlvl);
+	if (new_shlvl)
+	{
+		export_add_var(shell, new_shlvl);
+		free(new_shlvl);
+	}
 }

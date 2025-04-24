@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/24 16:26:31 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/24 19:54:44 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,11 +125,11 @@ t_redirection	*add_redirection(
 					bool append,
 					bool heredoc);
 void			free_tokens(t_token *head, t_shell *shell);
-//test
 void			perform_quote_removal(t_shell *shell);
 //signals
 void			handle_sigint(int signo);
 //utils
+bool			check_empty_str(char *str);
 int				get_uid(void);
 void			handle_shlvl(t_shell *shell);
 void			init_environ(t_shell *shell, char **environ);

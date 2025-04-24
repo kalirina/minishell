@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 12:28:36 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 19:02:39 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/24 17:59:22 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,7 @@ void	preprocess_heredoc(t_shell *shell)
 		while (current)
 		{
 			if (current->heredoc)
-			{
 				current->fd_heredoc = handle_heredoc(shell, current);
-			}
 			current = current->next;
 		}
 		cmds = cmds->next;
@@ -35,20 +33,9 @@ void	preprocess_heredoc(t_shell *shell)
 
 bool	check_empty_cmd(t_shell *shell, char *cmd)
 {
-	int	flag;
-	int	i;
-
 	if (!cmd || !cmd[0])
 		return (print_error(cmd, NULL, "command not found"), true);
-	flag = 1;
-	i = 0;
-	while (cmd[i] && flag)
-	{
-		if (!is_space(cmd[i]))
-			flag = 0;
-		i++;
-	}
-	if (flag == 1)
+	if (check_empty_str(cmd))
 	{
 		shell->exit_status = 0;
 		shell->skip_cmd = true;

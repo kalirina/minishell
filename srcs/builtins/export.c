@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 20:44:35 by irkalini          #+#    #+#             */
-/*   Updated: 2025/03/28 18:22:04 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/24 17:52:58 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int	export_cmd(t_shell *shell, char **args)
 	char	*tmp;
 
 	status = 0;
-	if (!args[1])
+	if (!args[1] || check_empty_str(args[1]))
 		return (export_no_arg(shell), 0);
 	i = 1;
 	while (args[i])
