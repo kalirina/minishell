@@ -29,6 +29,7 @@ SRCS = srcs/main.c\
 		srcs/execution/heredoc_utils.c\
 		srcs/execution/exec.c\
 		srcs/execution/exec_utils.c\
+		srcs/execution/exec_utils2.c\
 		srcs/execution/pipe.c\
 		srcs/execution/pipe_utils.c\
 		srcs/execution/exec_redir.c

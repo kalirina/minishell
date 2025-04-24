@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/24 20:13:54 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/24 23:43:17 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ typedef struct s_shell
 	char				*line_buffer;
 }	t_shell;
 
-extern volatile sig_atomic_t g_heredoc_interrupt;
+extern volatile sig_atomic_t	g_heredoc_interrupt;
 
 # define RES		"\033[0m"
 # define RED		"\033[0;31m"
@@ -107,7 +107,7 @@ t_redirection	*add_redirection(
 char			*skip_spaces(char *str);
 char			*append_char(char *str, char c);
 char			*ft_strndup(const char *s, size_t n);
-char			*get_heredoc_input(t_shell *shell, const char *delimiter);
+char			*get_heredoc_input(t_shell *shell, char *delimiter, int delimiter_size);
 char			*echo_env_val(t_shell *shell, char *var);
 bool			is_space(char str);
 bool			syntax_check(t_token *t);
@@ -133,6 +133,7 @@ void			perform_quote_removal(t_shell *shell);
 void			handle_sigint(int signo);
 void			handle_heredoc_sigint(int sig);
 //utils
+int				safe_open(char *name);
 int				get_uid(void);
 void			handle_shlvl(t_shell *shell);
 void			init_environ(t_shell *shell);
@@ -165,6 +166,7 @@ int				is_valid_var(char *name);
 void			execute(t_shell *shell);
 void			execute_pipeline(t_shell *shell, t_executer *ex);
 void			preprocess_heredoc(t_shell *shell, t_executer *ex);
+char			*expand_heredoc_line(t_shell *shell, char *line, int len);
 void			exec_ext_cmd(t_shell *shell, char **args, t_executer *ex);
 void			free_split(char **tab);
 int				is_builtin(char **args);
@@ -189,7 +191,8 @@ t_pipe			*init_pipes(int n_cmds);
 int				init_redir(t_command *current);
 t_executer		*init_executer(t_command *cmds);
 int				count_commands(t_command *cmd);
-int				handle_heredoc(t_shell *shell, t_redirection *red, t_executer *ex);
+int				handle_heredoc(t_shell *shell, t_redirection *red,
+					t_executer *ex);
 int				setup_input_redirections(t_command *cmd);
 int				setup_output_redirections(t_command *cmd);
 //builtins

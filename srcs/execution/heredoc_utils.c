@@ -6,122 +6,94 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 12:28:36 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/24 23:06:32 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/24 23:35:35 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-volatile sig_atomic_t g_heredoc_interrupt = 0;
-
-void	preprocess_heredoc(t_shell *shell, t_executer *ex)
+char	*get_var_name(char *start)
 {
-	t_redirection	*current;
-	t_command		*cmds;
-	int				fd;
+	int	len;
 
-	cmds = shell->cmd;
-	while (cmds)
-	{
-		current = cmds->input;
-		while (current)
-		{
-			if (current->heredoc)
-			{
-				fd = handle_heredoc(shell, current, ex);
-				if (fd == -1)
-					return ;
-				current->fd_heredoc = fd;
-			}
-			current = current->next;
-		}
-		cmds = cmds->next;
-	}
+	len = 0;
+	while (start[len] && (isalnum(start[len]) || start[len] == '_'))
+	len++;
+	return (ft_substr(start, 0, len));
 }
 
-bool	check_empty_cmd(t_shell *shell, char *cmd)
+void	default_heredoc_var(t_shell *shell, char *line, char **res, int *i)
 {
-	int	flag;
-	int	i;
+	char	*var_name;
+	char	*value;
 
-	if (!cmd || !cmd[0])
-		return (print_error(cmd, NULL, "command not found"), true);
-	flag = 1;
+	var_name = get_var_name(&line[*i]);
+	value = NULL;
+	if (ft_strncmp(var_name, "UID", 3) == 0 && ft_strlen(var_name) == 3)
+		value = ft_itoa(shell->uid);
+	else
+		value = echo_env_val(shell, var_name);
+	if (value)
+	{
+		*res = new_strjoin(*res, value);
+		free(value);
+	}
+	(*i) += ft_strlen(var_name);
+	free(var_name);
+}
+
+void	expand_heredoc_var(t_shell *shell, char *line, char **res, int *i)
+{
+	char	*value;
+
+	if (!line[*i] || line[*i] == '='
+		|| line[*i] == ':' || line[*i] == ' ')
+		*res = append_char(*res, '$');
+	else if (ft_isdigit(line[*i]))
+		(*i)++;
+	else if (line[*i] == '?')
+	{
+		value = ft_itoa(shell->exit_status);
+		*res = new_strjoin(*res, value);
+		free(value);
+		(*i)++;
+	}
+	else if (line[*i] == '$')
+	{
+		value = ft_itoa(getpid());
+		*res = new_strjoin(*res, value);
+		free(value);
+		(*i)++;
+	}
+	else
+		default_heredoc_var(shell, line, res, i);
+}
+
+char	*expand_heredoc_line(t_shell *shell, char *line, int len)
+{
+	int		i;
+	char	*res;
+
 	i = 0;
-	while (cmd[i] && flag)
-	{
-		if (!is_space(cmd[i]))
-			flag = 0;
-		i++;
-	}
-	if (flag == 1)
-	{
-		shell->exit_status = 0;
-		shell->skip_cmd = true;
-		return (true);
-	}
-	return (false);
-}
-
-char	*get_exec_path(t_shell *shell, char *cmd)
-{
-	char	*path;
-
-	if (check_empty_cmd(shell, cmd))
+	res = ft_strdup("");
+	if (!res)
 		return (NULL);
-	if (ft_strchr(cmd, '/'))
+	while (i < len)
 	{
-		path = ft_strdup(cmd);
-		if (!path)
-			return (perror("minishell: ft_strdup failed"), NULL);
-		if (access(path, F_OK) == -1)
-			print_error(NULL, path, strerror(errno));
-		else if (access(path, X_OK) == -1)
-			print_error(NULL, path, strerror(errno));
+		if (line[i] == '\\')
+		{
+			if (!line[i + 1])
+				return (free(line), res);
+			res = append_char(res, line[i + 1]);
+			i += 2;
+		}
+		else if (line[i] == '$')
+		{
+			i++;
+			expand_heredoc_var(shell, line, &res, &i);
+		}
 		else
-			return (path);
-		return (free(path), NULL);
+			res = append_char(res, line[i++]);
 	}
-	else
-	{
-		path = find_cmd_in_path(shell, cmd);
-		if (!path)
-			return (print_error(cmd, NULL, "command not found"), NULL);
-		return (path);
-	}
-	return (path);
-}
-
-void	handle_exec_status(t_shell *shell, int status)
-{
-	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-		write(STDOUT_FILENO, "\n", 1);
-	else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGQUIT)
-		write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
-	if (WIFEXITED(status))
-		shell->exit_status = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
-		shell->exit_status = 128 + WTERMSIG(status);
-	else
-		shell->exit_status = 1;
-}
-
-// //^C terminates the heredoc input -> back to the shell without executing
-// void	handle_heredoc_sigint(int sig)
-// {
-// 	(void)sig;
-// 	g_heredoc_interrupt = 1;
-// 	rl_done = 1;
-// 	write(STDOUT_FILENO, "\n", 1);
-// 	rl_replace_line("", 0);
-// 	rl_on_new_line();
-// 	rl_redisplay();
-// }
-
-void	handle_heredoc_sigint(int sig)
-{
-	(void)sig;
-	g_heredoc_interrupt = 1;
-	write(STDOUT_FILENO, "\n", 1);
-	close(STDIN_FILENO);
+	return (free(line), res);
 }
