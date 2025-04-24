@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/27 23:59:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/23 11:43:26 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/24 15:53:18 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,8 @@ static int	copy_environ_vars(t_shell *shell, char **environ, int count)
 	return (0);
 }
 
-void	init_environ(t_shell *shell)
+void	init_environ(t_shell *shell, char **environ)
 {
-	extern char	**environ;
 	int			i;
 	int			count;
 

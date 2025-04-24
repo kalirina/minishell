@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/23 19:50:20 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/24 15:59:33 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,8 +132,8 @@ void			handle_sigint(int signo);
 //utils
 int				get_uid(void);
 void			handle_shlvl(t_shell *shell);
-void			init_environ(t_shell *shell);
-int				init_shell(t_shell **shell);
+void			init_environ(t_shell *shell, char **environ);
+int				init_shell(t_shell **shell, char **env);
 int				skip(char *line);
 int				slash(char *line);
 char			*new_strjoin(char *s1, char *s2);
@@ -184,6 +184,7 @@ int				count_commands(t_command *cmd);
 int				handle_heredoc(t_shell *shell, t_redirection *red);
 int				setup_input_redirections(t_command *cmd);
 int				setup_output_redirections(t_command *cmd);
+int				export_add_var(t_shell *shell, char *arg);
 //builtins
 int				echo_cmd(char **args);
 int				env_cmd(t_shell *shell);

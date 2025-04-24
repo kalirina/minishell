@@ -6,19 +6,20 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/19 17:54:30 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/23 13:21:06 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/24 15:52:48 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
-int	main(void)
+int	main(int argc, char **argv, char **env)
 {
 	t_shell	*shell;
 	int		exit_status;
 
+	((void)argc, (void)argv);
 	exit_status = 0;
-	init_shell(&shell);
+	init_shell(&shell, env);
 	while (1)
 	{
 		shell->line_buffer = readline(GREEN"min"RES"ish"RED"ell"RES">");
