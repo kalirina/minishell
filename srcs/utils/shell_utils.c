@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 23:27:53 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/23 15:43:02 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/24 15:58:27 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,19 +43,20 @@ void	free_command(t_command *cmd)
 	free(cmd);
 }
 
-int	init_shell(t_shell **shell)
+int	init_shell(t_shell **shell, char **env)
 {
 	*shell = malloc(sizeof(t_shell));
 	if (!shell)
 		return (perror("malloc"), 1);
 	signal(SIGINT, handle_sigint);
 	signal(SIGQUIT, SIG_IGN);
-	init_environ(*shell);
+	init_environ(*shell, env);
 	(*shell)->exit_status = 0;
 	(*shell)->cmd = NULL;
 	(*shell)->tokens = NULL;
 	(*shell)->uid = 0;
 	(*shell)->skip_cmd = false;
+	handle_shlvl(*shell);
 	print_banner();
 	return (0);
 }

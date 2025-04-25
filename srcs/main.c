@@ -12,14 +12,14 @@
 
 #include "../includes/minishell.h"
 
-int	main(int argc, char **argv, char **envp)
+int	main(int argc, char **argv, char **env)
 {
 	t_shell	*shell;
 	int		exit_status;
 
-	((void)argc, (void)argv, (void)envp);
+	((void)argc, (void)argv);
 	exit_status = 0;
-	init_shell(&shell);
+	init_shell(&shell, env);
 	while (1)
 	{
 		shell->line_buffer = readline(GREEN"min"RES"ish"RED"ell"RES">");

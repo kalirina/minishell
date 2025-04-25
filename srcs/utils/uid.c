@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 18:16:51 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/22 14:11:45 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/24 19:54:29 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,4 +28,20 @@ int	get_uid(void)
 		return (-1);
 	}
 	return (file_info.st_uid);
+}
+
+bool	check_empty_str(char *str)
+{
+	int	i;
+
+	if (!str)
+		return (true);
+	i = 0;
+	while (str[i])
+	{
+		if (!is_space(str[i]))
+			return (false);
+		i++;
+	}
+	return (true);
 }

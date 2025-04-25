@@ -127,17 +127,17 @@ t_redirection	*add_redirection(
 					bool append,
 					bool heredoc);
 void			free_tokens(t_token *head, t_shell *shell);
-//test
 void			perform_quote_removal(t_shell *shell);
 //signals
 void			handle_sigint(int signo);
 void			handle_heredoc_sigint(int sig);
 //utils
 int				safe_open(char *name);
+bool			check_empty_str(char *str);
 int				get_uid(void);
 void			handle_shlvl(t_shell *shell);
-void			init_environ(t_shell *shell);
-int				init_shell(t_shell **shell);
+void			init_environ(t_shell *shell, char **environ);
+int				init_shell(t_shell **shell, char **env);
 int				skip(char *line);
 int				slash(char *line);
 char			*new_strjoin(char *s1, char *s2);
@@ -195,6 +195,7 @@ int				handle_heredoc(t_shell *shell, t_redirection *red,
 					t_executer *ex);
 int				setup_input_redirections(t_command *cmd);
 int				setup_output_redirections(t_command *cmd);
+int				export_add_var(t_shell *shell, char *arg);
 //builtins
 int				echo_cmd(char **args);
 int				env_cmd(t_shell *shell);
