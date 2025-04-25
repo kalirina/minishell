@@ -6,12 +6,11 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/24 23:40:19 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/25 15:50:36 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-extern volatile sig_atomic_t	g_heredoc_interrupt;
 
 void	handle_sigint(int signo)
 {

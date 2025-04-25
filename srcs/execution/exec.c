@@ -6,11 +6,12 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/19 22:31:02 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/24 23:44:21 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/25 15:45:29 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
 volatile sig_atomic_t	g_heredoc_interrupt = 0;
 
 int	execute_builtin_cmd(t_shell *shell, char **args, t_executer *ex)
@@ -103,7 +104,6 @@ void	execute(t_shell *shell)
 	ex = init_executer(shell->cmd);
 	if (!ex)
 		return ;
-	// g_heredoc_interrupt = 0;
 	preprocess_heredoc(shell, ex);
 	if (g_heredoc_interrupt)
 		return ;

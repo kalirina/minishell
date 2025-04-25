@@ -6,12 +6,11 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 16:55:29 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/24 23:40:29 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/25 15:50:18 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-extern volatile sig_atomic_t	g_heredoc_interrupt;
 
 char	*get_heredoc_input(t_shell *shell, char *delimiter, int delimiter_size)
 {

@@ -6,7 +6,7 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/24 23:43:17 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/25 15:45:08 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,8 @@ t_redirection	*add_redirection(
 char			*skip_spaces(char *str);
 char			*append_char(char *str, char c);
 char			*ft_strndup(const char *s, size_t n);
-char			*get_heredoc_input(t_shell *shell, char *delimiter, int delimiter_size);
+char			*get_heredoc_input(t_shell *shell, char *delimiter,
+					int delimiter_size);
 char			*echo_env_val(t_shell *shell, char *var);
 bool			is_space(char str);
 bool			syntax_check(t_token *t);
