@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 16:55:29 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/25 17:19:32 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/25 19:03:21 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void	heredoc_child(t_shell *shell, char *delimiter, t_executer *ex)
 	char	*tmp;
 
 	signal(SIGINT, handle_heredoc_sigint);
+	g_heredoc_interrupt = 0;
 	tmp = get_heredoc_input(shell, delimiter, ft_strlen(delimiter));
 	fd = open(".temp_heredoc", O_CREAT | O_WRONLY | O_TRUNC, 0600);
 	if (fd == -1)
@@ -60,10 +61,10 @@ void	heredoc_child(t_shell *shell, char *delimiter, t_executer *ex)
 	if (g_heredoc_interrupt)
 	{
 		unlink(".temp_heredoc");
-		ft_exit(shell, 130, ex);
+		ft_exit_heredoc(shell, 130, ex);
 	}
 	else
-		ft_exit(shell, 0, ex);
+		ft_exit_heredoc(shell, 0, ex);
 }
 
 int	heredoc_fork(t_shell *shell, char *delimiter, t_executer *ex)

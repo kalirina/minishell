@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/25 17:25:25 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/25 19:04:23 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,6 +172,8 @@ void			preprocess_heredoc(t_shell *shell, t_executer *ex);
 char			*expand_heredoc_line(t_shell *shell, char *line, int len);
 void			exec_ext_cmd(t_shell *shell, char **args, t_executer *ex);
 void			free_split(char **tab);
+void			ft_exit_heredoc(t_shell *shell, int exit_status,
+					t_executer *ex);
 int				is_builtin(char **args);
 char			*get_exec_path(t_shell *shell, char *cmd);
 char			*find_cmd_in_path(t_shell *shell, char *cmd);

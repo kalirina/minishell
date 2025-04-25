@@ -3,14 +3,21 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 12:28:36 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/24 23:35:35 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/25 18:56:58 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+void	ft_exit_heredoc(t_shell *shell, int exit_status, t_executer *ex)
+{
+	free_executer(ex);
+	cleanup_shell(shell);
+	exit(exit_status);
+}
 
 char	*get_var_name(char *start)
 {
