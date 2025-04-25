@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   syntax.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/10 09:38:31 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/23 19:55:40 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/25 16:12:28 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 //CHECKS IF THE LAST TOKEN IS A REDIRECTION
 // ex.   grep test <input >
-bool	redirection_at_end(t_token *t)
+bool	redirection_at_end(t_token *t, t_shell *shell)
 {
 	while (t->next)
 		t = t->next;
@@ -22,13 +22,14 @@ bool	redirection_at_end(t_token *t)
 	{
 		printf(RED "minishell: syntax error near unexpected token '%s'\n" RES,
 			t->str);
+		shell->exit_status = 2;
 		return (false);
 	}
 	return (true);
 }
 
 //CHECKS FOR CONSECUTIVE REDIRECTIONS BUT IGNORES | >
-bool	consecutive_redirections(t_token *t)
+bool	consecutive_redirections(t_token *t, t_shell *shell)
 {
 	bool	current_is_redir;
 	bool	next_is_redir;
@@ -43,6 +44,7 @@ bool	consecutive_redirections(t_token *t)
 		{
 			printf(RED "minishell: syntax error "
 				"near unexpected token '%s'\n" RES, t->next->str);
+			shell->exit_status = 2;
 			return (false);
 		}
 		t = t->next;
@@ -51,16 +53,17 @@ bool	consecutive_redirections(t_token *t)
 }
 
 //PERFORMS CHECKS ON THE SYNTAX OF THE TOKEN LIST
-bool	syntax_check(t_token *t)
+bool	syntax_check(t_token *t, t_shell *shell)
 {
 	if (!t)
 		return (false);
 	if (ft_strncmp(t->str, "|", 1) == 0)
 	{
 		printf(RED "minishell: syntax error near unexpected token '|'\n" RES);
+		shell->exit_status = 2;
 		return (false);
 	}
-	if (!consecutive_redirections(t) || !redirection_at_end(t))
+	if (!consecutive_redirections(t, shell) || !redirection_at_end(t, shell))
 		return (false);
 	return (true);
 }

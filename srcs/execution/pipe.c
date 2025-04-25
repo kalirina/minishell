@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 17:33:58 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/23 15:06:43 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/25 17:51:07 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@ void	execute_pipeline(t_shell *shell, t_executer *ex)
 		i++;
 	}
 	close_all_pipes(ex->pipe, ex->n_cmds);
-	handle_wait_signals(ex, &sigint_flag, &sigquit_flag);
+	handle_wait_signals(ex, &sigint_flag, &sigquit_flag, shell);
 	signal(SIGINT, handle_sigint);
 	if (sigint_flag)
 		write(STDOUT_FILENO, "\n", 1);
@@ -86,7 +86,8 @@ void	execute_pipeline(t_shell *shell, t_executer *ex)
 		write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
 }
 
-void	handle_wait_signals(t_executer *ex, int *sigi, int *sigq)
+void	handle_wait_signals(t_executer *ex, int *sigi,
+			int *sigq, t_shell *shell)
 {
 	int	i;
 	int	status;
@@ -99,6 +100,15 @@ void	handle_wait_signals(t_executer *ex, int *sigi, int *sigq)
 			*sigi = 1;
 		else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGQUIT)
 			*sigq = 1;
+		if (i == ex->n_cmds - 1)
+		{
+			if (WIFEXITED(status))
+				shell->exit_status = WEXITSTATUS(status);
+			else if (WIFSIGNALED(status))
+				shell->exit_status = 128 + WTERMSIG(status);
+			else
+				shell->exit_status = 1;
+		}
 		i++;
 	}
 }

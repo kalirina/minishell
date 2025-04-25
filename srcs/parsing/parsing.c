@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/07 14:25:32 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/23 20:10:20 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/25 16:13:55 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,7 +95,7 @@ t_command	*parse_cmd(t_token **tokens)
 	return (cmd);
 }
 
-t_command	*parse_tokens(t_token **tokens)
+t_command	*parse_tokens(t_token **tokens, t_shell *shell)
 {
 	t_command	*first;
 	t_command	*current;
@@ -108,8 +108,11 @@ t_command	*parse_tokens(t_token **tokens)
 		{
 			*tokens = (*tokens)->next;
 			if (!first || !(*tokens) || ft_strncmp((*tokens)->str, "|", 1) == 0)
+			{
+				shell->exit_status = 2;
 				return (printf(RED "minishell: syntax error "
 						"near unexpected token '|'\n" RES), NULL);
+			}
 			current->next = parse_cmd(tokens);
 			current = current->next;
 		}
@@ -129,7 +132,7 @@ int	parser(t_shell *shell)
 	if (expand(shell) == 0)
 	{
 		perform_quote_removal(shell);
-		shell->cmd = parse_tokens(&shell->tokens);
+		shell->cmd = parse_tokens(&shell->tokens, shell);
 	}
 	free_tokens(head, shell);
 	return (0);

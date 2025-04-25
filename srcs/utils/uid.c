@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   uid.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/21 18:16:51 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/24 19:54:29 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/25 17:53:22 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,13 @@ bool	check_empty_str(char *str)
 		i++;
 	}
 	return (true);
+}
+
+t_shell	*get_shell(t_shell *ptr)
+{
+	static t_shell	*shell = NULL;
+
+	if (ptr)
+		shell = ptr;
+	return (shell);
 }

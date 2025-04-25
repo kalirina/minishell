@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/03/23 21:09:21 by irkalini          #+#    #+#             */
-/*   Updated: 2025/04/21 19:15:02 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/25 16:09:13 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	skip(char *line)
 	return (1);
 }
 
-int	slash(char *line)
+int	slash(char *line, t_shell *shell)
 {
 	int	i;
 
@@ -45,6 +45,7 @@ int	slash(char *line)
 			return (0);
 	}
 	printf(RED "minishell: %s: Is a directory\n" RES, line);
+	shell->exit_status = 126;
 	return (1);
 }
 

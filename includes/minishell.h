@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/25 15:45:08 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/25 17:25:25 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,7 @@ typedef struct s_shell
 	int					exit_status;
 	int					uid;
 	bool				skip_cmd;
+	int					sigint;
 	char				*line_buffer;
 }	t_shell;
 
@@ -111,7 +112,7 @@ char			*get_heredoc_input(t_shell *shell, char *delimiter,
 					int delimiter_size);
 char			*echo_env_val(t_shell *shell, char *var);
 bool			is_space(char str);
-bool			syntax_check(t_token *t);
+bool			syntax_check(t_token *t, t_shell *shell);
 bool			check_quotes_inquotes(t_expansion *exp);
 bool			check_dollar_quotes(t_expansion *exp);
 void			free_command(t_command *cmd);
@@ -134,13 +135,14 @@ void			handle_sigint(int signo);
 void			handle_heredoc_sigint(int sig);
 //utils
 int				safe_open(char *name);
+t_shell			*get_shell(t_shell *ptr);
 bool			check_empty_str(char *str);
 int				get_uid(void);
 void			handle_shlvl(t_shell *shell);
 void			init_environ(t_shell *shell, char **environ);
 int				init_shell(t_shell **shell, char **env);
 int				skip(char *line);
-int				slash(char *line);
+int				slash(char *line, t_shell *shell);
 char			*new_strjoin(char *s1, char *s2);
 void			print_banner(void);
 void			ft_exit(t_shell *shell, int exit_status, t_executer *ex);
@@ -174,7 +176,8 @@ int				is_builtin(char **args);
 char			*get_exec_path(t_shell *shell, char *cmd);
 char			*find_cmd_in_path(t_shell *shell, char *cmd);
 void			handle_exec_status(t_shell *shell, int status);
-void			handle_wait_signals(t_executer *ex, int *sigi, int *sigq);
+void			handle_wait_signals(t_executer *ex, int *sigi, int *sigq,
+					t_shell *shell);
 char			*check_path_entry(
 					const char *dir,
 					const char *cmd,

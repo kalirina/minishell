@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   heredoc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
+/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 16:55:29 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/25 15:50:18 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/25 17:19:32 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,10 @@ int	heredoc_fork(t_shell *shell, char *delimiter, t_executer *ex)
 		signal(SIGINT, SIG_IGN);
 		waitpid(child_pid, &status, 0);
 		if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
+		{
+			shell->exit_status = 130;
 			return (-1);
+		}
 	}
 	signal(SIGINT, handle_sigint);
 	return (0);
