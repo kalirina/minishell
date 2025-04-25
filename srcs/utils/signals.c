@@ -3,14 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
+/*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 16:34:54 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/23 20:45:40 by irkalini         ###   ########.fr       */
+/*   Updated: 2025/04/24 23:40:19 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+extern volatile sig_atomic_t	g_heredoc_interrupt;
 
 void	handle_sigint(int signo)
 {
@@ -19,6 +20,14 @@ void	handle_sigint(int signo)
 	rl_replace_line("", 0);
 	rl_on_new_line();
 	rl_redisplay();
+}
+
+void	handle_heredoc_sigint(int sig)
+{
+	(void)sig;
+	g_heredoc_interrupt = 1;
+	write(STDOUT_FILENO, "\n", 1);
+	close(STDIN_FILENO);
 }
 
 void	ft_exit(t_shell *shell, int exit_status, t_executer *ex)

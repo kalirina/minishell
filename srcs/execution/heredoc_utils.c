@@ -6,83 +6,94 @@
 /*   By: enrmarti <enrmarti@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 12:28:36 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/24 17:59:22 by enrmarti         ###   ########.fr       */
+/*   Updated: 2025/04/24 23:35:35 by enrmarti         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	preprocess_heredoc(t_shell *shell)
+char	*get_var_name(char *start)
 {
-	t_redirection	*current;
-	t_command		*cmds;
+	int	len;
 
-	cmds = shell->cmd;
-	while (cmds)
-	{
-		current = cmds->input;
-		while (current)
-		{
-			if (current->heredoc)
-				current->fd_heredoc = handle_heredoc(shell, current);
-			current = current->next;
-		}
-		cmds = cmds->next;
-	}
+	len = 0;
+	while (start[len] && (isalnum(start[len]) || start[len] == '_'))
+	len++;
+	return (ft_substr(start, 0, len));
 }
 
-bool	check_empty_cmd(t_shell *shell, char *cmd)
+void	default_heredoc_var(t_shell *shell, char *line, char **res, int *i)
 {
-	if (!cmd || !cmd[0])
-		return (print_error(cmd, NULL, "command not found"), true);
-	if (check_empty_str(cmd))
+	char	*var_name;
+	char	*value;
+
+	var_name = get_var_name(&line[*i]);
+	value = NULL;
+	if (ft_strncmp(var_name, "UID", 3) == 0 && ft_strlen(var_name) == 3)
+		value = ft_itoa(shell->uid);
+	else
+		value = echo_env_val(shell, var_name);
+	if (value)
 	{
-		shell->exit_status = 0;
-		shell->skip_cmd = true;
-		return (true);
+		*res = new_strjoin(*res, value);
+		free(value);
 	}
-	return (false);
+	(*i) += ft_strlen(var_name);
+	free(var_name);
 }
 
-char	*get_exec_path(t_shell *shell, char *cmd)
+void	expand_heredoc_var(t_shell *shell, char *line, char **res, int *i)
 {
-	char	*path;
+	char	*value;
 
-	if (check_empty_cmd(shell, cmd))
+	if (!line[*i] || line[*i] == '='
+		|| line[*i] == ':' || line[*i] == ' ')
+		*res = append_char(*res, '$');
+	else if (ft_isdigit(line[*i]))
+		(*i)++;
+	else if (line[*i] == '?')
+	{
+		value = ft_itoa(shell->exit_status);
+		*res = new_strjoin(*res, value);
+		free(value);
+		(*i)++;
+	}
+	else if (line[*i] == '$')
+	{
+		value = ft_itoa(getpid());
+		*res = new_strjoin(*res, value);
+		free(value);
+		(*i)++;
+	}
+	else
+		default_heredoc_var(shell, line, res, i);
+}
+
+char	*expand_heredoc_line(t_shell *shell, char *line, int len)
+{
+	int		i;
+	char	*res;
+
+	i = 0;
+	res = ft_strdup("");
+	if (!res)
 		return (NULL);
-	if (ft_strchr(cmd, '/'))
+	while (i < len)
 	{
-		path = ft_strdup(cmd);
-		if (!path)
-			return (perror("minishell: ft_strdup failed"), NULL);
-		if (access(path, F_OK) == -1)
-			print_error(NULL, path, strerror(errno));
-		else if (access(path, X_OK) == -1)
-			print_error(NULL, path, strerror(errno));
+		if (line[i] == '\\')
+		{
+			if (!line[i + 1])
+				return (free(line), res);
+			res = append_char(res, line[i + 1]);
+			i += 2;
+		}
+		else if (line[i] == '$')
+		{
+			i++;
+			expand_heredoc_var(shell, line, &res, &i);
+		}
 		else
-			return (path);
-		return (free(path), NULL);
+			res = append_char(res, line[i++]);
 	}
-	else
-	{
-		path = find_cmd_in_path(shell, cmd);
-		if (!path)
-			return (print_error(cmd, NULL, "command not found"), NULL);
-		return (path);
-	}
-	return (path);
-}
-
-void	handle_exec_status(t_shell *shell, int status)
-{
-	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-		write(STDOUT_FILENO, "\n", 1);
-	else if (WIFSIGNALED(status) && WTERMSIG(status) == SIGQUIT)
-		write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
-	if (WIFEXITED(status))
-		shell->exit_status = WEXITSTATUS(status);
-	else if (WIFSIGNALED(status))
-		shell->exit_status = 128 + WTERMSIG(status);
-	else
-		shell->exit_status = 1;
+	return (free(line), res);
 }
