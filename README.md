@@ -128,15 +128,6 @@ Runs the shell through Valgrind to detect memory leaks.
 * Makefile
 * Linux / Unix Environment
 
-### Articles & Tutorials
-
-* Bash Manual
-* GNU Readline Documentation
-* Linux Programmer's Manual (man pages)
-* POSIX Shell Command Language Specification
-* Advanced Programming in the UNIX Environment (Stevens & Rago)
-* The Linux Programming Interface (Michael Kerrisk)
-
 ### AI Usage
 
 AI was used to:
