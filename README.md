@@ -1,65 +1,150 @@
+*This project has been created as part of the 42 curriculum by enrmarti* *and* *irkalini.*
+
 # Minishell
 
-This Ecole 42 project is a custom implementation of a command-line interpreter, similar to shells like `bash` or `zsh`. The primary goal is to replicate core shell functionalities, providing a deeper understanding of process management, command parsing, and execution flows within a Unix-like environment. The shell processes user input, handles command execution, manages environment variables, and supports essential features like pipes and redirections.
+## Description
+
+Minishell is a custom implementation of a Unix command-line interpreter inspired by Bash.
+
+The goal of the project is to understand how shells work internally by implementing command parsing, process creation, signal handling, environment management, pipes, and redirections.
+
+![Minishell Demo](assets/minishell_demo.png)
+
+---
+
+## Instructions
+
+Compile the project:
+
+```bash
+make
+```
+
+Run the shell:
+
+```bash
+./minishell
+```
+
+Prerequisites:
+
+* Unix-like operating system (Linux, macOS)
+* GCC compiler
+* Make
+* Readline library
+
+---
 
 ## Features
 
--   **Command Parsing and Execution:** Parses command lines with arguments, quotes (`'` and `"`), and executes external commands found in the system's `PATH`.
--   **Pipelines:** Supports command pipelines using the `|` operator to chain multiple commands.
--   **I/O Redirections:**
-    -   `<`: Redirect standard input.
-    -   `>`: Redirect standard output (truncate).
-    -   `>>`: Redirect standard output (append).
--   **Here Documents:** Implements here-documents (`<<`) for providing multi-line input to commands.
--   **Environment Variable Expansion:**
-    -   Expands environment variables (e.g., `$USER`, `$PATH`).
-    -   Supports special variables: `$?` (last command's exit status), `$$` (process ID), and `$UID`.
--   **Signal Handling:**
-    -   `Ctrl+C` (`SIGINT`): Displays a new prompt without exiting the shell, or terminates the running process.
-    -   `Ctrl+\\` (`SIGQUIT`): Ignored in the interactive prompt; terminates the running process with a core dump.
-    -   `Ctrl+D`: Exits the shell.
--   **Built-in Commands:**
-    -   `echo`: Prints arguments to the standard output, with support for the `-n` flag.
-    -   `cd`: Changes the current directory.
-    -   `pwd`: Displays the current working directory.
-    -   `export`: Sets or displays environment variables.
-    -   `unset`: Removes environment variables.
-    -   `env`: Lists all environment variables.
-    -   `exit`: Terminates the shell with a specified exit status.
+### Command Parsing and Execution
 
-## Getting Started
+* Parses command lines with arguments.
+* Supports single quotes (`'`) and double quotes (`"`).
+* Executes external commands found through the system `PATH`.
 
-### Prerequisites
+### Pipelines
 
--   A Unix-like operating system (Linux, macOS)
--   `gcc` compiler
--   `make`
--   `readline` library
+* Supports command pipelines using the `|` operator.
 
-### Installation & Execution
+### I/O Redirections
 
-1.  **Clone the repository:**
-    ```sh
-    git clone https://github.com/kalirina/minishell.git
-    cd minishell
-    ```
+* `<` : redirect standard input.
+* `>` : redirect standard output (truncate).
+* `>>` : redirect standard output (append).
 
-2.  **Compile the project:**
-    ```sh
-    make
-    ```
+### Here Documents
 
-3.  **Run the shell:**
-    ```sh
-    ./minishell
-    ```
+* Supports here-documents using the `<<` operator.
 
-## Makefile Commands
+### Environment Variable Expansion
 
-This project includes a `Makefile` with several useful targets:
+* Expands environment variables such as `$USER` and `$PATH`.
+* Supports special variables:
 
--   `make` or `make all`: Compiles the source files and creates the `minishell` executable.
--   `make clean`: Removes all intermediate object files.
--   `make fclean`: Removes all compiled files, including the `minishell` executable.
--   `make re`: Cleans the project and recompiles everything from scratch.
--   `make valgrind`: Runs `minishell` with Valgrind to check for memory leaks. A suppression file (`ignore.supp`) is used to filter out known leaks from the `readline` library.
+  * `$?` : last command exit status
+  * `$$` : current process ID
+  * `$UID` : user identifier
+
+### Signal Handling
+
+* `Ctrl+C` (`SIGINT`) displays a new prompt or interrupts the running process.
+* `Ctrl+\` (`SIGQUIT`) is ignored in interactive mode and terminates running processes.
+* `Ctrl+D` exits the shell.
+
+### Built-in Commands
+
+* `echo`
+* `cd`
+* `pwd`
+* `export`
+* `unset`
+* `env`
+* `exit`
+
+---
+
+## Available Makefile commands:
+
+```bash
+make
+```
+
+Compiles the project and creates the `minishell` executable.
+
+```bash
+make clean
+```
+
+Removes object files.
+
+```bash
+make fclean
+```
+
+Removes object files and the executable.
+
+```bash
+make re
+```
+
+Recompiles the project from scratch.
+
+```bash
+make valgrind
+```
+
+Runs the shell through Valgrind to detect memory leaks.
+
+---
+
+## Resources
+
+### Technologies
+
+* C
+* GNU Readline
+* POSIX System Calls
+* Makefile
+* Linux / Unix Environment
+
+### Articles & Tutorials
+
+* Bash Manual
+* GNU Readline Documentation
+* Linux Programmer's Manual (man pages)
+* POSIX Shell Command Language Specification
+* Advanced Programming in the UNIX Environment (Stevens & Rago)
+* The Linux Programming Interface (Michael Kerrisk)
+
+### AI Usage
+
+AI was used to:
+
+* Explain shell-related concepts and Unix process management.
+* Review parsing and execution logic.
+* Clarify signal handling behavior.
+* Assist with debugging strategies and memory management.
+* Improve project documentation.
+
+The final implementation, architecture decisions, debugging, testing, and validation were completed manually.

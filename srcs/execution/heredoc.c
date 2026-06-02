@@ -6,7 +6,7 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/03 16:55:29 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/25 19:03:21 by irkalini         ###   ########.fr       */
+/*   Updated: 2026/06/02 16:59:37 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,11 +69,9 @@ void	heredoc_child(t_shell *shell, char *delimiter, t_executer *ex)
 
 int	heredoc_fork(t_shell *shell, char *delimiter, t_executer *ex)
 {
-	char	*result;
 	pid_t	child_pid;
 	int		status;
 
-	result = NULL;
 	g_heredoc_interrupt = 0;
 	child_pid = fork();
 	if (child_pid == -1)

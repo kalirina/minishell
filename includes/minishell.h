@@ -6,13 +6,14 @@
 /*   By: irkalini <irkalini@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/02/21 13:55:50 by enrmarti          #+#    #+#             */
-/*   Updated: 2025/04/25 19:04:23 by irkalini         ###   ########.fr       */
+/*   Updated: 2026/06/02 16:59:00 by irkalini         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
+# include <stdio.h>
 # include <signal.h>
 # include "../srcs/libft/libft.h"
 # include <stdlib.h>
